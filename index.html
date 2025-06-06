@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三翎镜 Triprisan Media - 品牌文化价值赋能者</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #4a1c8c;
+            --secondary: #7c4dff;
+            --accent: #ff6b6b;
+            --light: #f0f4ff;
+            --dark: #1a1a2e;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(122, 67, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 107, 107, 0.1) 0%, transparent 20%);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: all 0.4s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-left: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-icon::before {
+            content: "";
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            background: var(--dark);
+            border-radius: 50%;
+        }
+        
+        .logo-icon::after {
+            content: "";
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 页面部分 */
+        section {
+            min-height: 100vh;
+            padding: 100px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-content {
+            width: 100%;
+        }
+        
+        /* 封面页 */
+        #cover {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(74, 28, 140, 0.2) 0%, rgba(26, 26, 46, 1) 70%);
+        }
+        
+        .cover-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+        
+        .cover-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+        
+        .cover-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #d0d0e8;
+        }
+        
+        .cover-tagline {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+            color: #a0a0c0;
+        }
+        
+        .slogan {
+            font-size: 1.8rem;
+            margin: 40px 0;
+            padding: 15px 30px;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .version {
+            font-size: 1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-top: 20px;
+        }
+        
+        .light-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* 品牌理念页 */
+        #philosophy {
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            display: inline-block;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 0 20px;
+        }
+        
+        .section-title::before,
+        .section-title::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--secondary), transparent);
+        }
+        
+        .section-title::before {
+            left: 0;
+        }
+        
+        .section-title::after {
+            right: 0;
+        }
+        
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .philosophy-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .philosophy-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(124, 77, 255, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .philosophy-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(74, 28, 140, 0.3);
+            border: 1px solid rgba(124, 77, 255, 0.4);
+        }
+        
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-family: 'Raleway', sans-serif;
+        }
+        
+        .card-content {
+            font-size: 1.1rem;
+            color: #c0c0e0;
+        }
+        
+        /* 公司定位页 */
+        #positioning {
+            background: radial-gradient(circle at 80% 30%, rgba(26, 26, 46, 0.9) 0%, rgba(10, 10, 20, 0.9) 100%);
+        }
+        
+        .positioning-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .tagline {
+            font-size: 2.2rem;
+            margin-bottom: 50px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .positioning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .positioning-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid rgba(124, 77, 255, 0.1);
+        }
+        
+        .positioning-item i {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        
+        .positioning-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .mission-statement {
+            font-size: 1.3rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent);
+            text-align: left;
+            max-width: 800px;
+            margin: 50px auto 0;
+        }
+        
+        /* 业务范围页 */
+        #services {
+            background: linear-gradient(to bottom, rgba(26, 26, 46, 0.9), rgba(10, 10, 20, 0.9));
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background: rgba(30, 30, 50, 0.6);
+            border-radius: 15px;
+            padding: 40px 30px;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 107, 107, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
+        }
+        
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .service-card h3 i {
+            margin-right: 15px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .service-list {
+            list-style: none;
+        }
+        
+        .service-list li {
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        
+        .service-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .service-list li i {
+            color: var(--accent);
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        
+        /* 联系方式页 */
+        #contact {
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .contact-title {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            font-family: 'Raleway', sans-serif;
+        }
+        
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .social-card {
+            width: 140px;
+            padding: 25px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--secondary);
+        }
+        
+        .social-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .social-name {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .qr-placeholder {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient);
+            border-radius: 10px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .brand-footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .brand-footer p {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .cover-title {
+                font-size: 2.8rem;
+            }
+            
+            .cover-subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .slogan {
+                font-size: 1.4rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1>三翎镜</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#cover">首页</a></li>
+                <li><a href="#philosophy">品牌理念</a></li>
+                <li><a href="#positioning">公司定位</a></li>
+                <li><a href="#services">业务范围</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 封面页 -->
+    <section id="cover">
+        <div class="cover-content">
+            <div class="cover-subtitle">三翎镜营销咨询（南京）有限公司</div>
+            <h1 class="cover-title">Triprisan Media</h1>
+            <div class="slogan">为品牌文化价值赋能</div>
+            <p class="cover-tagline">为行业领先品牌提供整合营销解决方案<br>Strategic Integrated Marketing Solutions for Industry-Leading Brands</p>
+            <div class="version">2025 V1.0</div>
+        </div>
+        
+        <!-- 动态粒子背景 -->
+        <div class="light-particle" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
+        <div class="light-particle" style="top: 40%; left: 80%; animation-delay: 2s;"></div>
+        <div class="light-particle" style="top: 70%; left: 40%; animation-delay: 4s;"></div>
+        <div class="light-particle" style="top: 25%; left: 65%; animation-delay: 6s;"></div>
+        <div class="light-particle" style="top: 60%; left: 10%; animation-delay: 8s;"></div>
+    </section>
+
+    <!-- 品牌理念页 -->
+    <section id="philosophy">
+        <div class="container section-content">
+            <div class="section-title">
+                <h2>品牌理念</h2>
+            </div>
+            
+            <div class="philosophy-grid">
+                <div class="philosophy-card">
+                    <div class="card-icon">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <h3 class="card-title">镜·光之量子</h3>
+                    <p class="card-content">触碰光的能量，以量子般的想象力，引领品牌设计革新。我们以创新思维激发品牌潜能，创造突破传统的设计解决方案。</p>
+                </div>
+                
+                <div class="philosophy-card">
+                    <div class="card-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="card-title">镜·光之色散</h3>
+                    <p class="card-content">顺着光的路径，挖掘最深的品牌价值，绘制多彩传播视界。我们深入探索品牌核心，构建多维度的传播生态系统。</p>
+                </div>
+                
+                <div class="philosophy-card">
+                    <div class="card-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="card-title">镜·光之霓虹</h3>
+                    <p class="card-content">汲取光影灵感，打造绚丽的品牌形象，传递无限的灵感与温暖。我们融合艺术与技术，创造令人难忘的品牌体验。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 公司定位页 -->
+    <section id="positioning">
+        <div class="container section-content">
+            <div class="positioning-content">
+                <div class="section-title">
+                    <h2>公司定位</h2>
+                </div>
+                
+                <div class="tagline">不止于传播——中小品牌的品牌价值放大器</div>
+                
+                <div class="positioning-grid">
+                    <div class="positioning-item">
+                        <i class="fas fa-industry"></i>
+                        <h3>行业深耕</h3>
+                        <p>专注新能源汽车行业十年，洞悉行业发展趋势</p>
+                    </div>
+                    
+                    <div class="positioning-item">
+                        <i class="fas fa-globe-asia"></i>
+                        <h3>全球服务</h3>
+                        <p>扎根南京，服务全球客户，跨文化品牌解决方案</p>
+                    </div>
+                    
+                    <div class="positioning-item">
+                        <i class="fas fa-users"></i>
+                        <h3>精英团队</h3>
+                        <p>10余人专业团队，多元背景的创意与策略专家</p>
+                    </div>
+                </div>
+                
+                <div class="mission-statement">
+                    <p>三翎镜是专注新能源汽车行业的品牌营销咨询公司，以十年行业实践经验为基石，服务全球20+领军品牌生态链。我们致力于陪伴中小品牌成长，提供战略级整合营销解决方案，开创充满生机的品牌文化价值未来。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 业务范围页 -->
+    <section id="services">
+        <div class="container section-content">
+            <div class="section-title">
+                <h2>业务范围</h2>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3><i class="fas fa-pen-fancy"></i> 品牌全案</h3>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check-circle"></i> VI系统设计</li>
+                        <li><i class="fas fa-check-circle"></i> CI系统构建</li>
+                        <li><i class="fas fa-check-circle"></i> 网页与UI设计</li>
+                        <li><i class="fas fa-check-circle"></i> IP形象设计</li>
+                        <li><i class="fas fa-check-circle"></i> 品牌策略定位</li>
+                        <li><i class="fas fa-check-circle"></i> 活动策划执行</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <h3><i class="fas fa-building"></i> 空间设计</h3>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check-circle"></i> 展台设计搭建</li>
+                        <li><i class="fas fa-check-circle"></i> 展厅规划实施</li>
+                        <li><i class="fas fa-check-circle"></i> 办公空间设计</li>
+                        <li><i class="fas fa-check-circle"></i> 导视系统设计</li>
+                        <li><i class="fas fa-check-circle"></i> 商业空间规划</li>
+                        <li><i class="fas fa-check-circle"></i> 环境品牌设计</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <h3><i class="fas fa-video"></i> 视频制作</h3>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check-circle"></i> MG动画制作</li>
+                        <li><i class="fas fa-check-circle"></i> 品牌宣传片</li>
+                        <li><i class="fas fa-check-circle"></i> 三维产品视频</li>
+                        <li><i class="fas fa-check-circle"></i> 创意短视频</li>
+                        <li><i class="fas fa-check-circle"></i> 产品演示动画</li>
+                        <li><i class="fas fa-check-circle"></i> 虚拟现实体验</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <h3><i class="fas fa-hashtag"></i> 社媒运营</h3>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check-circle"></i> 内容策略规划</li>
+                        <li><i class="fas fa-check-circle"></i> 精准广告投放</li>
+                        <li><i class="fas fa-check-circle"></i> KOL/KOC推广</li>
+                        <li><i class="fas fa-check-circle"></i> 社交媒体引流</li>
+                        <li><i class="fas fa-check-circle"></i> 品牌社区运营</li>
+                        <li><i class="fas fa-check-circle"></i> 数据分析优化</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式页 -->
+    <section id="contact">
+        <div class="container">
+            <h2 class="contact-title">开启品牌价值升级之旅</h2>
+            
+            <div class="social-grid">
+                <div class="social-card">
+                    <div class="social-icon">
+                        <i class="fab fa-weixin"></i>
+                    </div>
+                    <div class="qr-placeholder">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="social-name">微信公众号</div>
+                </div>
+                
+                <div class="social-card">
+                    <div class="social-icon">
+                        <i class="fab fa-douyin"></i>
+                    </div>
+                    <div class="qr-placeholder">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="social-name">抖音</div>
+                </div>
+                
+                <div class="social-card">
+                    <div class="social-icon">
+                        <i class="fab fa-xiaohongshu"></i>
+                    </div>
+                    <div class="qr-placeholder">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="social-name">小红书</div>
+                </div>
+                
+                <div class="social-card">
+                    <div class="social-icon">
+                        <i class="fab fa-zcool"></i>
+                    </div>
+                    <div class="qr-placeholder">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="social-name">站酷</div>
+                </div>
+            </div>
+            
+            <div class="brand-footer">
+                <p>2025 V1.0 · 为品牌文化价值赋能</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // 创建更多粒子
+        document.addEventListener('DOMContentLoaded', function() {
+            const coverSection = document.getElementById('cover');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('light-particle');
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                coverSection.appendChild(particle);
+            }
+            
+            // 卡片悬停效果增强
+            const cards = document.querySelectorAll('.philosophy-card, .service-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = 10;
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = 1;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "Page01": {
+    "img": "ejet-1. database selection.png",
+    "orig_size": [
+      1920,
+      938
+    ],
+    "coords": []
+  },
+  "Page02": {
+    "img": "image.png",
+    "orig_size": [
+      1758,
+      990
+    ],
+    "coords": []
+  },
+  "Page03": {
+    "img": "elease-1. lease portfolio.png",
+    "orig_size": [
+      1920,
+      938
+    ],
+    "coords": []
+  },
+  "Page04": {
+    "img": "elease-2. step-up rent.png",
+    "orig_size": [
+      1920,
+      938
+    ],
+    "coords": []
+  },
+  "Page05": {
+    "img": "elease-3. export report.png",
+    "orig_size": [
+      1920,
+      938
+    ],
+    "coords": []
+  }
+}

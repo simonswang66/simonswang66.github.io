@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>交易对手方列表 - 打标与浮动列表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Ant Design CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/antd@5.19.1/dist/reset.css" />
+    <link rel="stylesheet" href="https://unpkg.com/antd@5.19.1/dist/antd.min.css" />
+    <style>
+      body {
+        background: #f5f5f5;
+        padding: 16px;
+      }
+      .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .table-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+      .table-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      /* 浮动面板样式（按钮上方展开） */
+      .floating-panel-wrapper {
+        position: fixed;
+        right: 24px;
+        bottom: 88px; /* 留出圆形按钮空间 */
+        z-index: 1000;
+        width: 420px;
+        max-width: calc(100vw - 48px);
+      }
+      .floating-panel {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        height: 50vh; /* 页面高度的一半 */
+      }
+      .floating-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fafafa;
+      }
+      .floating-panel-body {
+        padding: 8px 12px;
+        overflow: auto;
+      }
+
+      .tagged-list {
+        width: 100%;
+      }
+      .tagged-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border-radius: 6px;
+        transition: background 0.2s ease;
+      }
+      .tagged-item:hover {
+        background: #fafafa;
+      }
+      .tagged-item .meta {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .tagged-item .meta .name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 280px;
+      }
+      .tagged-item .actions {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .tagged-item:hover .actions {
+        opacity: 1;
+      }
+      .empty-tip {
+        padding: 24px 0;
+        color: #999;
+        text-align: center;
+      }
+
+      /* 让 FloatButton 为圆形（AntD默认即圆形，这里确保无宽高覆盖） */
+      .ant-float-btn {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+      }
+      .ant-float-btn .ant-float-btn-body {
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- dayjs -->
+    <script src="https://unpkg.com/dayjs@1.11.10/dayjs.min.js"></script>
+    <!-- Ant Design JS -->
+    <script src="https://unpkg.com/antd@5.19.1/dist/antd.min.js"></script>
+    <script>
+      const { useState, useMemo } = React;
+      const {
+        Table,
+        Tag,
+        Input,
+        Button,
+        Space,
+        FloatButton,
+        Popconfirm,
+        message,
+        Tooltip,
+        Typography,
+        Empty,
+        Segmented,
+        App,
+        ConfigProvider,
+        Badge,
+      } = antd;
+      const { Text } = Typography;
+
+      // Mock 数据生成
+      function getRandomItem(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      function randomFloat(min, max, decimals = 2) {
+        const num = Math.random() * (max - min) + min;
+        return parseFloat(num.toFixed(decimals));
+      }
+
+      const industries = [
+        "制造业",
+        "互联网",
+        "金融",
+        "物流",
+        "医疗",
+        "教育",
+        "能源",
+        "建筑",
+        "零售",
+        "餐饮",
+      ];
+      const statuses = ["存续", "在业", "迁出", "吊销", "注销"];
+      const scopes = [
+        "技术服务、技术开发、技术咨询、技术交流",
+        "货物与技术进出口",
+        "软件开发；信息系统集成服务",
+        "供应链管理服务；国内货物运输代理",
+        "商业保理；企业管理咨询",
+        "餐饮服务；食品销售",
+        "工程施工总承包；建筑工程设计",
+        "电力销售；新能源技术推广服务",
+      ];
+
+      function genCompanyName(i) {
+        const regions = ["北京", "上海", "深圳", "杭州", "广州", "成都", "武汉", "苏州"];
+        const suffix = ["科技", "信息", "实业", "集团", "网络", "金融", "贸易", "物流", "能源", "医疗"];
+        return `${getRandomItem(regions)}${getRandomItem(suffix)}有限公司${i}`;
+      }
+
+      function mockData(count = 160) {
+        const list = [];
+        for (let i = 1; i <= count; i++) {
+          const inflow = randomFloat(50, 5000);
+          const outflow = randomFloat(20, 4800);
+          const total = parseFloat((inflow + outflow).toFixed(2));
+          list.push({
+            id: i,
+            name: genCompanyName(i),
+            totalAmount: total,
+            inflowAmount: inflow,
+            outflowAmount: outflow,
+            txnCount: randomInt(1, 800),
+            status: getRandomItem(statuses),
+            regCap: randomFloat(100, 50000),
+            industry: getRandomItem(industries),
+            scope: getRandomItem(scopes),
+          });
+        }
+        return list;
+      }
+
+      function currencyFormat(num) {
+        return new Intl.NumberFormat("zh-CN", {
+          style: "currency",
+          currency: "CNY",
+          maximumFractionDigits: 2,
+        }).format(num);
+      }
+
+      function AppPage() {
+        const [data] = useState(() => mockData(160));
+        const [keyword, setKeyword] = useState("");
+        const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+        const [tagged, setTagged] = useState([]); // 已打标记录 id[]
+        const [panelOpen, setPanelOpen] = useState(false);
+        const [industryFilter, setIndustryFilter] = useState("全部");
+
+        const industryOptions = useMemo(() => ["全部", ...industries], []);
+
+        const filteredData = useMemo(() => {
+          let list = data;
+          if (keyword.trim()) {
+            const kw = keyword.trim().toLowerCase();
+            list = list.filter(
+              (x) =>
+                x.name.toLowerCase().includes(kw) ||
+                x.industry.toLowerCase().includes(kw) ||
+                String(x.txnCount).includes(kw) ||
+                x.scope.toLowerCase().includes(kw)
+            );
+          }
+          if (industryFilter !== "全部") {
+            list = list.filter((x) => x.industry === industryFilter);
+          }
+          return list;
+        }, [data, keyword, industryFilter]);
+
+        const columns = useMemo(() => {
+          return [
+            {
+              title: "对手方公司名称",
+              dataIndex: "name",
+              key: "name",
+              fixed: "left",
+              width: 240,
+              sorter: (a, b) => a.name.localeCompare(b.name, "zh"),
+              render: (text, record) => {
+                const isTagged = tagged.includes(record.id);
+                return (
+                  React.createElement(Space, { size: 6 },
+                    React.createElement(Text, { strong: true }, text),
+                    isTagged ? React.createElement(Tag, { color: "blue" }, "已标") : null
+                  )
+                );
+              },
+            },
+            {
+              title: "交易总额",
+              dataIndex: "totalAmount",
+              key: "totalAmount",
+              width: 140,
+              align: "right",
+              sorter: (a, b) => a.totalAmount - b.totalAmount,
+              render: (v) => currencyFormat(v),
+            },
+            {
+              title: "流入金额",
+              dataIndex: "inflowAmount",
+              key: "inflowAmount",
+              width: 140,
+              align: "right",
+              sorter: (a, b) => a.inflowAmount - b.inflowAmount,
+              render: (v) => currencyFormat(v),
+            },
+            {
+              title: "流出金额",
+              dataIndex: "outflowAmount",
+              key: "outflowAmount",
+              width: 140,
+              align: "right",
+              sorter: (a, b) => a.outflowAmount - b.outflowAmount,
+              render: (v) => currencyFormat(v),
+            },
+            {
+              title: "交易笔数",
+              dataIndex: "txnCount",
+              key: "txnCount",
+              width: 120,
+              align: "right",
+              sorter: (a, b) => a.txnCount - b.txnCount,
+            },
+            {
+              title: "经营状态",
+              dataIndex: "status",
+              key: "status",
+              width: 120,
+              filters: statuses.map((s) => ({ text: s, value: s })),
+              onFilter: (value, record) => record.status === value,
+              render: (v) => {
+                const colorMap = {
+                  存续: "green",
+                  在业: "blue",
+                  迁出: "orange",
+                  吊销: "red",
+                  注销: "volcano",
+                };
+                return React.createElement(Tag, { color: colorMap[v] || "default" }, v);
+              },
+            },
+            {
+              title: "注册资本(万)",
+              dataIndex: "regCap",
+              key: "regCap",
+              width: 150,
+              align: "right",
+              sorter: (a, b) => a.regCap - b.regCap,
+              render: (v) => v.toLocaleString("zh-CN"),
+            },
+            {
+              title: "行业",
+              dataIndex: "industry",
+              key: "industry",
+              width: 120,
+              filters: industries.map((s) => ({ text: s, value: s })),
+              onFilter: (value, record) => record.industry === value,
+            },
+            {
+              title: "经营范围",
+              dataIndex: "scope",
+              key: "scope",
+              ellipsis: true,
+              width: 320,
+            },
+          ];
+        }, [tagged]);
+
+        const rowSelection = {
+          selectedRowKeys,
+          onChange: (keys) => setSelectedRowKeys(keys),
+          preserveSelectedRowKeys: true,
+        };
+
+        const handleTagSelected = () => {
+          if (selectedRowKeys.length === 0) return;
+          const set = new Set(tagged);
+          selectedRowKeys.forEach((k) => set.add(k));
+          setTagged([...set]);
+          setSelectedRowKeys([]);
+          message.success("已打标所选记录");
+          setPanelOpen(true); // 打开浮动面板
+        };
+
+        const removeTagged = (id) => {
+          setTagged((prev) => prev.filter((x) => x !== id));
+        };
+
+        const clearTagged = () => {
+          setTagged([]);
+        };
+
+        const taggedItems = useMemo(() => {
+          const map = new Map(data.map((d) => [d.id, d]));
+          return tagged.map((id) => map.get(id)).filter(Boolean);
+        }, [tagged, data]);
+
+        const Toolbar = () =>
+          React.createElement("div", { className: "table-toolbar" },
+            React.createElement(Space, { size: 8 },
+              React.createElement(Input.Search, {
+                allowClear: true,
+                placeholder: "搜索公司/行业/笔数/范围",
+                onSearch: (v) => setKeyword(v),
+                onChange: (e) => setKeyword(e.target.value),
+                style: { width: 320 },
+              }),
+              React.createElement(Segmented, {
+                options: industryOptions,
+                value: industryFilter,
+                onChange: setIndustryFilter,
+              })
+            ),
+            React.createElement(Space, { size: 8 },
+              React.createElement(Tooltip, {
+                title: selectedRowKeys.length ? "" : "请先勾选记录",
+              },
+                React.createElement(Button, {
+                  type: "primary",
+                  disabled: selectedRowKeys.length === 0,
+                  onClick: handleTagSelected,
+                }, "打标")
+              )
+            )
+          );
+
+        // 浮动面板（按钮上方展开）
+        const FloatingPanel = () =>
+          !panelOpen ? null : React.createElement("div", { className: "floating-panel-wrapper" },
+            React.createElement("div", { className: "floating-panel" },
+              React.createElement("div", { className: "floating-panel-header" },
+                React.createElement("div", null, `已打标记录（${taggedItems.length}）`),
+                React.createElement(Space, null,
+                  taggedItems.length > 0
+                    ? React.createElement(Popconfirm, {
+                        title: "确认清空已打标列表？",
+                        onConfirm: clearTagged,
+                      }, React.createElement(Button, { danger: true, size: "small" }, "清空"))
+                    : null,
+                  React.createElement(Button, { type: "text", onClick: () => setPanelOpen(false) }, "收起")
+                )
+              ),
+              React.createElement("div", { className: "floating-panel-body" },
+                taggedItems.length === 0
+                  ? React.createElement("div", { className: "empty-tip" },
+                      React.createElement(Empty, { description: "暂无打标记录" })
+                    )
+                  : React.createElement("div", { className: "tagged-list" },
+                      taggedItems.map((item) =>
+                        React.createElement("div", { key: item.id, className: "tagged-item" },
+                          React.createElement("div", { className: "meta" },
+                            React.createElement(Text, { strong: true, className: "name" }, item.name),
+                            React.createElement(Space, { size: 8 },
+                              React.createElement(Tag, { color: "blue" }, `行业: ${item.industry}`),
+                              React.createElement(Tag, { color: "green" }, `总额: ${currencyFormat(item.totalAmount)}`)
+                            )
+                          ),
+                          React.createElement("div", { className: "actions" },
+                            React.createElement(Tooltip, { title: "移除" },
+                              React.createElement(Button, {
+                                size: "small",
+                                danger: true,
+                                onClick: () => removeTagged(item.id),
+                              }, "删除")
+                            )
+                          )
+                        )
+                      )
+                    )
+              )
+            )
+          );
+
+        return React.createElement(ConfigProvider, { theme: { token: { colorPrimary: "#1677ff" } } },
+          React.createElement(App, null,
+            React.createElement("div", { className: "page-container" },
+              React.createElement("div", { className: "table-card" },
+                React.createElement(Toolbar, null),
+                React.createElement(Table, {
+                  rowKey: "id",
+                  dataSource: filteredData,
+                  columns,
+                  rowSelection,
+                  pagination: {
+                    pageSize: 10,
+                    showQuickJumper: true,
+                    showSizeChanger: true,
+                    pageSizeOptions: [10, 20, 50, 100],
+                    showTotal: (total) => `共 ${total} 条`,
+                  },
+                  scroll: { x: 1300 },
+                })
+              )
+            ),
+
+            // 圆形 Float Button（右下角），点击展开/收起面板
+            React.createElement(Badge, {
+              count: taggedItems.length,
+              color: "blue",
+              overflowCount: 99,
+              offset: [-4, 4],
+            },
+              React.createElement(FloatButton, {
+                shape: "circle", // 确保为圆形
+                type: "primary",
+                style: { right: 24, bottom: 24 },
+                tooltip: "已打标列表",
+                onClick: () => setPanelOpen((v) => !v),
+                icon: React.createElement(antd.icons?.TagsOutlined || function() { return React.createElement("span", null, "标"); })
+              })
+            ),
+
+            React.createElement(FloatingPanel, null)
+          )
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(React.createElement(AppPage));
+    </script>
+  </body>
+</html>

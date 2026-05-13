@@ -12,6 +12,7 @@
   --border:#334155;--border2:#475569;
   --accent:#3B82F6;--accent-hover:#2563EB;
   --danger-bg:rgba(239,68,68,0.2);--danger-border:#EF4444;--danger-text:#EF4444;
+  --modal-overlay:rgba(0,0,0,0.7);
 }
 [data-theme="light"]{
   --bg:#F8FAFC;--bg2:#FFFFFF;--bg3:#E2E8F0;
@@ -19,6 +20,7 @@
   --border:#E2E8F0;--border2:#CBD5E1;
   --accent:#3B82F6;--accent-hover:#2563EB;
   --danger-bg:rgba(239,68,68,0.1);--danger-border:#EF4444;--danger-text:#EF4444;
+  --modal-overlay:rgba(15,23,42,0.5);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .header{position:sticky;top:0;z-index:50;background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:12px}
@@ -69,6 +71,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;ba
 .toast.show{opacity:1}
 .toast.success{border-color:#22C55E}
 .toast.error{border-color:var(--danger-border)}
+/* Clear button */
+.btn-clear{padding:4px 8px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:10px;cursor:pointer;transition:all .2s}
+.btn-clear:hover{color:var(--danger-border, #EF4444);border-color:var(--danger-border, #EF4444)}
+/* Dialog */
+.modal-overlay{display:none;position:fixed;inset:0;background:var(--modal-overlay);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.dialog-card{width:380px;padding:28px 24px 20px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:dialogIn .2s ease-out;background:var(--bg2);border:1px solid var(--border)}
+@keyframes dialogIn{from{opacity:0;transform:scale(.95)translateY(-10px)}to{opacity:1;transform:scale(1)translateY(0)}}
+.dialog-msg{text-align:center;font-size:14px;line-height:1.7;color:var(--text);margin-bottom:20px;white-space:pre-line}
+.dialog-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;padding:10px 12px;margin-bottom:20px;font-family:inherit}
+.dialog-input:focus{outline:none;border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+.dialog-btns{display:flex;justify-content:center;gap:10px}
+.dialog-btns button{min-width:90px;padding:8px 24px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:13px;font-weight:500;cursor:pointer}
+.dialog-btns button.primary{background:#3B82F6;color:#fff;border-color:#3B82F6}
+.dialog-btns button.primary:hover{background:#2563EB}
+.dialog-btns button:hover{background:var(--bg3)}
+#dialogCancel{background:var(--bg);border-color:var(--border2);color:var(--text2)}
 </style>
 </head>
 <body>
@@ -77,8 +96,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;ba
   <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">◑ Light</button>
   <input class="project-name" id="projectName" placeholder="Untitled Project" value="" onchange="onProjectNameChange()">
   <div class="actions">
-    <button onclick="clearAll()">Clear All</button>
-    <button class="btn-primary" id="exportBtn" onclick="exportZip()" disabled>Export Zip</button>
+    <button class="btn-clear" onclick="clearAll()" title="Clear all local data">Clear All</button>
+    <button class="btn-primary" id="exportBtn" onclick="exportZip()">Export Zip</button>
   </div>
 </div>
 
@@ -146,7 +165,7 @@ function pageNum(i){return String(i+1).padStart(2,"0")}
 
 function renderPages(){
   const list=document.getElementById("pageList");
-  if(pages.length===0){list.innerHTML='<div class="empty-state">Upload images to get started</div>';updateExportBtn();return}
+  if(pages.length===0){list.innerHTML='<div class="empty-state">Upload images to get started</div>';return}
   list.innerHTML=pages.map((p,i)=>{
     const url=URL.createObjectURL(p.file);
     return '<div class="page-item" draggable="true" data-idx="'+i+'">'+
@@ -179,15 +198,14 @@ function renderPages(){
     });
     item.addEventListener("dragend",function(){this.style.opacity="1"});
   });
-  updateExportBtn();
 }
 
 function updateModule(idx,val){pages[idx].module=val}
 function moveUp(i){if(i>0){[pages[i-1],pages[i]]=[pages[i],pages[i-1]];renderPages()}}
 function moveDown(i){if(i<pages.length-1){[pages[i+1],pages[i]]=[pages[i],pages[i+1]];renderPages()}}
 function removePage(i){pages.splice(i,1);renderPages()}
-function clearAll(){if(!pages.length&&!projectName)return;if(confirm("确认清空所有页面？/ Clear all pages?")){pages=[];projectName="";document.getElementById("projectName").value="";localStorage.removeItem("builder-projectName");renderPages()}}
-function updateExportBtn(){document.getElementById("exportBtn").disabled=pages.length===0}
+function clearAll(){if(!pages.length&&!projectName)return;showConfirm("确认清空所有页面？\nClear all pages?",function(ok){if(ok){pages=[];projectName="";document.getElementById("projectName").value="";localStorage.removeItem("builder-projectName");renderPages()}})}
+
 
 function escAttr(s){return s.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 function escHtml(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
@@ -213,7 +231,9 @@ function toggleTheme(){
 
 // ===== EXPORT =====
 async function exportZip(){
-  if(pages.length===0)return;
+  if(!projectName.trim()&&pages.length===0){showAlert("请输入项目名称并上传图片。\nPlease enter a project name and upload images.");return}
+  if(!projectName.trim()){showAlert("请输入项目名称。\nPlease enter a project name.");return}
+  if(pages.length===0){showAlert("请至少上传一张图片。\nPlease upload at least one image.");return}
   const btn=document.getElementById("exportBtn");btn.disabled=true;btn.textContent="Building...";
 
   try{
@@ -263,9 +283,38 @@ function showToast(msg,type){
   setTimeout(()=>t.classList.remove("show"),2500);
 }
 
+// ===== DIALOG =====
+var dialogCb=null;
+function showAlert(msg){showDialog(msg,"alert")}
+function showConfirm(msg,cb){dialogCb=cb;showDialog(msg,"confirm")}
+function showDialog(msg,type,def){
+  var overlay=document.getElementById("customDialog"),input=document.getElementById("dialogInput"),
+      cancel=document.getElementById("dialogCancel"),ok=document.getElementById("dialogOk");
+  document.getElementById("dialogMsg").textContent=msg;
+  if(type==="prompt"){input.style.display="block";input.value=def||"";input.focus()}
+  else{input.style.display="none"}
+  if(type==="alert"){cancel.style.display="none";ok.textContent="OK"}
+  else{cancel.style.display="inline";ok.textContent=type==="prompt"?"Submit":"Yes"}
+  overlay.classList.add("show");
+  ok.onclick=function(){overlay.classList.remove("show");if(dialogCb)dialogCb(type==="prompt"?input.value.trim():true)}
+  cancel.onclick=function(){overlay.classList.remove("show");if(dialogCb)dialogCb(false)}
+}
+
 // ===== INIT =====
 renderPages();
 </script>
+
+<!-- Custom Dialog -->
+<div class="modal-overlay" id="customDialog">
+  <div class="dialog-card">
+    <p class="dialog-msg" id="dialogMsg"></p>
+    <input class="dialog-input" id="dialogInput" style="display:none" placeholder="">
+    <div class="dialog-btns">
+      <button id="dialogCancel">Cancel</button>
+      <button class="primary" id="dialogOk">OK</button>
+    </div>
+  </div>
+</div>
 
 <!-- REVIEW.HTML TEMPLATE — injected with PAGE_DATA at export time -->
 <script type="text/template" id="reviewTemplate"><!DOCTYPE html>

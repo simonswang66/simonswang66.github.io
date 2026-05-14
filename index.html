@@ -133,6 +133,66 @@
     }
     .footer a { color: #888; text-decoration: none; }
     .footer a:hover { color: #444; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px 24px;
+      max-width: 480px;
+      width: calc(100% - 32px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .modal .modal-body {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .modal .modal-body ol {
+      padding-left: 20px;
+      margin: 8px 0 0;
+    }
+    .modal .modal-body li { margin-bottom: 4px; }
+    .modal .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .modal .modal-actions button {
+      padding: 8px 20px;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+    .btn-cancel {
+      background: #f5f5f5;
+      color: #555;
+    }
+    .btn-cancel:hover { background: #e5e5e5; }
+    .btn-confirm {
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn-confirm:hover { background: #1d4ed8; }
   </style>
 </head>
 <body>
@@ -152,6 +212,7 @@
       <p class="desc">UI 原型图评审协作工具。上传原型图、配置页面、导出分发包，即可分发给评审者进行评论协作。</p>
       <div class="tool-links">
         <a class="link-primary" href="ui-comment-tool/builder.html">&#9881; Builder</a>
+        <a class="link-secondary" href="#" onclick="showSampleModal();return false;">&#128269; 示例</a>
       </div>
     </div>
 
@@ -170,6 +231,61 @@
 <div class="footer">
   <a href="https://github.com/simonswang66/simonswang66.github.io">GitHub</a>
 </div>
+
+<div class="modal-overlay" id="sampleModal">
+  <div class="modal">
+    <h3>UI Comment Tool — Reviewer 使用示例</h3>
+    <div class="modal-body">
+      <p>点击下方"确认下载"按钮后，浏览器会下载一个 <code>comment.json</code> 示例文件。</p>
+      <p style="margin-top:12px;"><strong>如何使用：</strong></p>
+      <ol>
+        <li>在打开的 Reviewer 页面中设置一个昵称</li>
+        <li>点击页面中的 <strong>Import</strong> 按钮</li>
+        <li>选择刚刚下载的 <code>comment.json</code> 文件导入</li>
+        <li>即可在原型图上看到示例评论标注</li>
+      </ol>
+      <p style="margin-top:12px;color:#888;font-size:13px;">建议使用 Chrome 内核浏览器以获得最佳体验。</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSampleModal()">取消</button>
+      <button class="btn-confirm" onclick="downloadSample()">确认下载</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showSampleModal() {
+  document.getElementById('sampleModal').classList.add('active');
+}
+function closeSampleModal() {
+  document.getElementById('sampleModal').classList.remove('active');
+}
+function downloadSample() {
+  fetch('ui-comment-tool/sample/comment.json')
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.blob();
+    })
+    .then(function(blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'comment.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      closeSampleModal();
+    })
+    .catch(function() {
+      alert('下载失败。如果你是通过 file:// 打开的页面，请在项目目录下运行：\n\n    python3 -m http.server 8000\n\n然后访问 http://localhost:8000');
+    });
+  window.open('ui-comment-tool/sample/review_sample.html', '_blank');
+}
+document.getElementById('sampleModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSampleModal();
+});
+</script>
 
 </body>
 </html>

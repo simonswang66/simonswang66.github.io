@@ -1,0 +1,355 @@
+{
+  "Page01": {
+    "img": "01 1. KDC delivery confirmation.png",
+    "orig_size": [
+      1880,
+      1126
+    ],
+    "coords": [
+      {
+        "id": "1",
+        "x": 1796,
+        "y": 673
+      },
+      {
+        "id": "Q1",
+        "x": 350,
+        "y": 387
+      },
+      {
+        "id": "Q2",
+        "x": 670,
+        "y": 456
+      }
+    ]
+  },
+  "Page02": {
+    "img": "02 2.1 Workbook Scaling & Information Test.png",
+    "orig_size": [
+      1880,
+      921
+    ],
+    "coords": [
+      {
+        "id": "2",
+        "x": 740,
+        "y": 401
+      },
+      {
+        "id": "3",
+        "x": 411,
+        "y": 495
+      },
+      {
+        "id": "4",
+        "x": 1857,
+        "y": 499
+      }
+    ]
+  },
+  "Page03": {
+    "img": "03 2.1 Workbook Scaling & Information Test - Select Job.png",
+    "orig_size": [
+      1880,
+      921
+    ],
+    "coords": [
+      {
+        "id": "5",
+        "x": 816,
+        "y": 544
+      },
+      {
+        "id": "6",
+        "x": 806,
+        "y": 972
+      },
+      {
+        "id": "Q3",
+        "x": 1579,
+        "y": 614
+      },
+      {
+        "id": "Q4",
+        "x": 1162,
+        "y": 738
+      },
+      {
+        "id": "Q5",
+        "x": 1400,
+        "y": 797
+      }
+    ]
+  },
+  "Page04": {
+    "img": "04 2.2 Information Test.png",
+    "orig_size": [
+      1880,
+      1075
+    ],
+    "coords": [
+      {
+        "id": "7",
+        "x": 157,
+        "y": 573
+      },
+      {
+        "id": "8",
+        "x": 731,
+        "y": 664
+      },
+      {
+        "id": "9",
+        "x": 533,
+        "y": 800
+      },
+      {
+        "id": "10",
+        "x": 578,
+        "y": 1067
+      },
+      {
+        "id": "11",
+        "x": 1700,
+        "y": 1101
+      },
+      {
+        "id": "Q6",
+        "x": 1372,
+        "y": 1143
+      }
+    ]
+  },
+  "Page05": {
+    "img": "05 2.2 Entity selection scenarios.png",
+    "orig_size": [
+      1880,
+      1300
+    ],
+    "coords": [
+      {
+        "id": "12",
+        "x": 524,
+        "y": 215
+      },
+      {
+        "id": "13",
+        "x": 533,
+        "y": 441
+      },
+      {
+        "id": "14",
+        "x": 1106,
+        "y": 1042
+      }
+    ]
+  },
+  "Page06": {
+    "img": "06 3. D&A results summary .png",
+    "orig_size": [
+      1880,
+      1680
+    ],
+    "coords": [
+      {
+        "id": "15",
+        "x": 649,
+        "y": 461
+      },
+      {
+        "id": "Q7",
+        "x": 1328,
+        "y": 902
+      },
+      {
+        "id": "Q8",
+        "x": 1615,
+        "y": 1407
+      }
+    ]
+  },
+  "Page07": {
+    "img": "07 3. D&A results summary - scaling overview .png",
+    "orig_size": [
+      1880,
+      921
+    ],
+    "coords": [
+      {
+        "id": "16",
+        "x": 1172,
+        "y": 996
+      }
+    ]
+  },
+  "Page08": {
+    "img": "08 4.1 Outlier.png",
+    "orig_size": [
+      1880,
+      1580
+    ],
+    "coords": [
+      {
+        "id": "17",
+        "x": 834,
+        "y": 887
+      },
+      {
+        "id": "18",
+        "x": 249,
+        "y": 1065
+      },
+      {
+        "id": "19",
+        "x": 1672,
+        "y": 685
+      },
+      {
+        "id": "20",
+        "x": 1117,
+        "y": 887
+      },
+      {
+        "id": "21",
+        "x": 1831,
+        "y": 842
+      },
+      {
+        "id": "22",
+        "x": 900,
+        "y": 1002
+      },
+      {
+        "id": "23",
+        "x": 1618,
+        "y": 910
+      },
+      {
+        "id": "24",
+        "x": 751,
+        "y": 1382
+      },
+      {
+        "id": "Q9",
+        "x": 1146,
+        "y": 489
+      }
+    ]
+  },
+  "Page09": {
+    "img": "09 4.1 Outlier - create sub_group.png",
+    "orig_size": [
+      1880,
+      1580
+    ],
+    "coords": [
+      {
+        "id": "25",
+        "x": 1918,
+        "y": 668
+      },
+      {
+        "id": "26",
+        "x": 859,
+        "y": 934
+      }
+    ]
+  },
+  "Page10": {
+    "img": "10 4.1 Outlier - create sub_group.png",
+    "orig_size": [
+      1880,
+      1580
+    ],
+    "coords": [
+      {
+        "id": "27",
+        "x": 1931,
+        "y": 749
+      }
+    ]
+  },
+  "Page11": {
+    "img": "11 4.2 Not tested.png",
+    "orig_size": [
+      1880,
+      950
+    ],
+    "coords": [
+      {
+        "id": "28",
+        "x": 143,
+        "y": 697
+      },
+      {
+        "id": "Q10",
+        "x": 1000,
+        "y": 784
+      }
+    ]
+  },
+  "Page12": {
+    "img": "12 4.2 Not tested - Full detail.png",
+    "orig_size": [
+      1880,
+      950
+    ],
+    "coords": [
+      {
+        "id": "29",
+        "x": 859,
+        "y": 462
+      }
+    ]
+  },
+  "Page13": {
+    "img": "13 4.3 Other Not tested.png",
+    "orig_size": [
+      1880,
+      921
+    ],
+    "coords": [
+      {
+        "id": "30",
+        "x": 132,
+        "y": 721
+      }
+    ]
+  },
+  "Page14": {
+    "img": "14 4.3 Other Not tested - Full detail.png",
+    "orig_size": [
+      1880,
+      921
+    ],
+    "coords": []
+  },
+  "Page15": {
+    "img": "15 5.1 Audit Response Summary.png",
+    "orig_size": [
+      1880,
+      1380
+    ],
+    "coords": [
+      {
+        "id": "31",
+        "x": 1598,
+        "y": 1175
+      }
+    ]
+  },
+  "Page16": {
+    "img": "16 5.2 Working paper generation.png",
+    "orig_size": [
+      1880,
+      921
+    ],
+    "coords": [
+      {
+        "id": "Q11",
+        "x": 324,
+        "y": 853
+      }
+    ]
+  }
+}

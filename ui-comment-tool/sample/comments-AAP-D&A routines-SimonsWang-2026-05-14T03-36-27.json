@@ -1,0 +1,881 @@
+{
+  "version": 1,
+  "exportedAt": "2026-05-14T03:36:27.365Z",
+  "exportedBy": "SimonsWang",
+  "comments": [
+    {
+      "uuid": "bbab15939a2443979e3a2c8cea6a9cbb",
+      "pageNum": "01",
+      "classification": "uiux",
+      "title": "Alteryx Job Action列",
+      "detail": "\"control points for duplicate run? last execution? PBI?\"— 询问校验点、是否只取最后一次执行结果、是否有 PBI 支撑",
+      "reference": "SRS 6.2.2.2 p15、6.2.3.2 p26（M2F2-F3 校验点1-7）：已定义 Period Type+Stream 不重复、URL 不重复、Entity/Currency/GDNV 一致性。Last execution 和 PBI 口径未覆盖。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1786.5695142378559,
+        "y": 520.2801601994936
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "校验点已在SRS中考虑。新增View PBI列，需要提供已有URL样例。Last execution列待讨论。"
+        }
+      ]
+    },
+    {
+      "uuid": "6f9e0004fea946008f2d5ccfa4480de9",
+      "pageNum": "01",
+      "classification": "question",
+      "title": "Step 1.1中参数是Global配置，还是每个Job不同",
+      "detail": "Step 1.1中Is multiple entities和Is multiple currencies等输入，是task全局参数，还是每个Alteryx Job分别输入？",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 312.3182327678493,
+        "y": 187.1568242213574
+      },
+      "replies": []
+    },
+    {
+      "uuid": "0d495eac72de43a2a403e80bb07432ca",
+      "pageNum": "01",
+      "classification": "question",
+      "title": "如何判断Multiple Currencies",
+      "detail": "如果original currency（币种）和用户输入的reporting currency不一致，认为是single currency还是multiple currencies？",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 626.6530144456618,
+        "y": 284.4302716590471
+      },
+      "replies": []
+    },
+    {
+      "uuid": "35fce07ae82941a89c09e8e21ef1b4e5",
+      "pageNum": "02",
+      "classification": "uiux",
+      "title": "Scaling和Info Test是否要拆开",
+      "detail": "\"split scaling & info test (2 different nature)\"— 认为 Workbook scaling 与 Information test 性质不同，是否应拆开",
+      "reference": "SRS 6.3 p28-32（M3F1/M3F2）：已拆为两个子功能。M3F1 #7 定义完成 2.1 后点击 Proceed 跳转 2.2。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 679.7033867233214,
+        "y": 108.92160762628012
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "Step 2.2只有在Step 2.1完成后才展示，也可以进一步讨论是否需要拆分大Step"
+        }
+      ]
+    },
+    {
+      "uuid": "a4596839e5a246fb85d8bf876742ac9c",
+      "pageNum": "02",
+      "classification": "wording",
+      "title": "仅针对Final Audit job",
+      "detail": "\"only Final Audit job\"— 询问是否仅展示 Final Audit 类型的 Job",
+      "reference": "SRS 6.3.1.2 p28、6.3.1.3 p30（M3F1 数据项 #8-13）：仅展示 Period Type = Final Audit 的 Job。Pre-final/Dry run 仅在 Step 1.2 出现，不进入 Workbook。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 373.30576441102755,
+        "y": 236.83414447943505
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "仅Final Audit job已在SRS中考虑，需要提供这个模块guidance的详细文字描述"
+        }
+      ]
+    },
+    {
+      "uuid": "41d3981304504966a5818a462f72a0fb",
+      "pageNum": "02",
+      "classification": "uiux",
+      "title": "Reset和修改Threshold的downstream impact",
+      "detail": "\"control action for reset? →change existing one? →add brand new entity/job?\"— 对 Save/Reset/Add New Workbook 的行为不清楚",
+      "reference": "SRS 6.3.1.2 p29 #4-#5（M3F1）：修改 Job/Analysis Type 后保存，后续流程结果将被重置；修改 PM/AMPT/Threshold 后保存，后续判断结果可能受影响。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1813.6516290726818,
+        "y": 244.61017774898164
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "修改 Job/Analysis Type 会重置后续流程，修改阈值会影响后续判断"
+        }
+      ]
+    },
+    {
+      "uuid": "c5a77107fc28430ab01963bd35eae357",
+      "pageNum": "03",
+      "classification": "uiux",
+      "title": "Workbook 序号生成规则",
+      "detail": "\"WB1 or WB2? Don't understand how it record back\"— 不清楚弹窗创建的 Workbook 如何回写到主表",
+      "reference": "SRS 6.3.1.2 p28 #2（M3F1）：点击 Add 弹窗选择 Job 和 Analysis Type，提交后表格新增一行。Workbook No. 为系统自动生成序号。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 783.9514015499672,
+        "y": 278.29152038412667
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "Workbook No.是序号，每次新增会+1，UI图仅为样例"
+        }
+      ]
+    },
+    {
+      "uuid": "b6a2a818e9b249ee99bee8eb8025b4cb",
+      "pageNum": "03",
+      "classification": "uiux",
+      "title": "Analysis Type场景问题",
+      "detail": "\"Don't understand this; refers to E1-E3 combined analysis? E4 individual analysis?\"— 对 Analysis Type 引用关系不清楚",
+      "reference": "SRS 6.3.1.2 p28-29 #2/#6（M3F1）：Individual 逐 Entity 单独分析；Combined 合并所选 Entity 至 Group Level，后续仅 Group Level 可选。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 787.1443840061074,
+        "y": 704.4134183153274
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "Individual时，拆分每个entity单独处理。Combined时，选择需要合并至Group Level的entity。"
+        }
+      ]
+    },
+    {
+      "uuid": "c4cc63efe678420ea9d4e22b86972ed6",
+      "pageNum": "03",
+      "classification": "question",
+      "title": "Multiple Currencies问题",
+      "detail": "如果Full Detail文件没有original currency字段，则以reporting currency作为original currency",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1524.345246884747,
+        "y": 350.1809533854677
+      },
+      "replies": []
+    },
+    {
+      "uuid": "adbd64c01a2a4e319bbf4f02b926fa7f",
+      "pageNum": "03",
+      "classification": "question",
+      "title": "Single Entity场景的entity code定义",
+      "detail": "如果Full Detail文件没有entity code字段，则让用户在页面输入entity code，是否需要判断是否和其他job的entity code重复？",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1114.8822055137844,
+        "y": 460.98608244057027
+      },
+      "replies": []
+    },
+    {
+      "uuid": "f0d5aa23a3cb46219c4c1a7462de48d4",
+      "pageNum": "03",
+      "classification": "question",
+      "title": "Combined Job下entity code是否允许重复",
+      "detail": "同一个Workbook下选择的多个job，是否运行entity code一致，如UI图中，最后会合并为Entity 1～Entity 4",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1339.691111546401,
+        "y": 510.57196598711204
+      },
+      "replies": []
+    },
+    {
+      "uuid": "f47282dc58814d4eae0d9011340da587",
+      "pageNum": "04",
+      "classification": "uiux",
+      "title": "Workbook/Entity场景",
+      "detail": "\"How does this come from?\" — 询问 Workbook/Entity 选择器的数据来源",
+      "reference": "SRS 6.3.2.2 p31 #2（M3F2）：用户依次切换 Workbook 及对应 Entity/Group，来源 refer to M3F1 #6。前序未完成的 Entity/Group 不可选中。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 138.1390977443609,
+        "y": 358.07894736842104
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "根据Scaling的配置，先选择Workbook，再选择对应的Group/Entity"
+        }
+      ]
+    },
+    {
+      "uuid": "cfdaabe22941446a9a43b5fd9bad1634",
+      "pageNum": "04",
+      "classification": "methodology",
+      "title": "Controls Approach处理方法",
+      "detail": "\"How is this?\" — 询问 Information test approach 的操作逻辑",
+      "reference": "SRS 6.3.2.2 p31-32 #3-#6、6.3.2.3 p32（M3F2）：Direct-testing 计算 sample size；Controls 仅展示表格；Mixed 两者并行。W/P 模板清单见 M3F2 数据项 #1-5。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 693.3045112781955,
+        "y": 464.15789473684214
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "Information test 分为Direct/Controls/Mixed三种Approach，对应三个不同的matrix和W/P，其中W/P模板需要提供"
+        }
+      ]
+    },
+    {
+      "uuid": "6b398a3e4ddf4817aab818495e09eed5",
+      "pageNum": "04",
+      "classification": "uiux",
+      "title": "Sample Size计算",
+      "detail": "\"X corrected yet\" — 指向 Minimum sample size 180，质疑样本量计算",
+      "reference": "SRS 6.3.2.2 p31 #5、6.3.2.3 p32 #4（M3F2）：sample size 按 population size × inherent risk 基于 KAGE 矩阵自动生成。180 为 mock 值，完整矩阵需业务提供。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 602.8220551378446,
+        "y": 583.1967418546366
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "UI原型图仅为样例，实际会根据matrix表格计算"
+        }
+      ]
+    },
+    {
+      "uuid": "6f7869e4533841b8a810c3a3cb8e64d1",
+      "pageNum": "04",
+      "classification": "uiux",
+      "title": "Information Test Matrix",
+      "detail": "\"Need to emphasize (level up)\"",
+      "reference": "SRS 6.3.2.3 p32 #3（M3F2）：已定义 inherent risk 四级选项。页面 guidance 文案和 level-up 强调逻辑 SRS 未覆盖，需业务方提供。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 561.0388471177944,
+        "y": 865.2756892230577
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "To be discussed"
+        }
+      ]
+    },
+    {
+      "uuid": "d4555fcabc944a7a889208fd98e9e447",
+      "pageNum": "04",
+      "classification": "methodology",
+      "title": "不同类型的info test approach处理",
+      "detail": "\"difference between mixed approach / direct-test approach\" — 要求强调方法适用场景与差异",
+      "reference": "SRS 6.3.2.2 p31-32 #4-#6（M3F2）：三种 Approach 行为已定义。适用场景判断标准 SRS 未定义，需业务方补充。W/P 模板需业务提供。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1777.2857142857142,
+        "y": 895.5050125313282
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "Information test 分为Direct/Controls/Mixed三种Approach，对应三个不同的matrix和W/P，其中W/P需要提供"
+        }
+      ]
+    },
+    {
+      "uuid": "fa3a9adbe81c4564a4e3490ca021a896",
+      "pageNum": "04",
+      "classification": "question",
+      "title": "Info Test W/P模版",
+      "detail": "Control test是否只需要生成对应的W/P即可？D&A routine information test的direct-test approach和control approach的W/P模板需要提供",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1343.733082706767,
+        "y": 945.0476190476192
+      },
+      "replies": []
+    },
+    {
+      "uuid": "61cd9321ceb641d3afd743ff0f334fa7",
+      "pageNum": "05",
+      "classification": "uiux",
+      "title": "Combined analysis场景",
+      "detail": "\"refer to E1+E2+E3 in step 2.1 or E1+E2+E3+E4?\" — 追问 Combined analysis 到底引用哪些 entity",
+      "reference": "SRS 6.3.1.2 p28 #2（M3F1）：Combined analysis 展示所选 Job 中所有 Entity Code 去重结果，用户勾选 Workbook 需涵盖的 Entity。场景 2 样例见 M3F1 #6。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 524,
+        "y": 131.94554304837237
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "这是 Combined analysis 场景的样例，根据 UI 原型中场景举例，涵盖 E1+E2+E3"
+        }
+      ]
+    },
+    {
+      "uuid": "6d8234746e2749dfb51046f839684581",
+      "pageNum": "05",
+      "classification": "uiux",
+      "title": "Individual analysis场景",
+      "detail": "\"If Step 2.1 already combined analysis, why need split again to perform work?\" — 核心疑问：Combined 后为何还看到 entity 分支",
+      "reference": "SRS 6.3.1.2 p29 #6（M3F1 场景 2-3）：Combined analysis 后续仅 Group Level；Individual analysis 后续逐个 Entity。页面 05 为所有场景汇总，非仅 Combined。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 533,
+        "y": 365.8554913294798
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "已经标注了这个是 Individual analysis 场景的样例"
+        }
+      ]
+    },
+    {
+      "uuid": "bf95478f44c247dcbba27f29691efba2",
+      "pageNum": "05",
+      "classification": "uiux",
+      "title": "Workflow in platform样例",
+      "detail": "\"similarity need to be clear - what group level vs combined analysis is here\" — 统一术语：Combined analysis 是 analysis type，Group Level 是执行对象",
+      "reference": "SRS 6.3.1.2 p29 #6、6.3.1.3 p30 #2-#3（M3F1）：Combined analysis 为 Entity Type 场景类型；Group Level 为该类型在后续步骤中的执行/展示对象。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1106,
+        "y": 1042
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "这一页把所有的场景均进行了列举，而非仅对应 Combined analysis 场景"
+        }
+      ]
+    },
+    {
+      "uuid": "eeebbde202e74657a6e05458b2dd33c8",
+      "pageNum": "06",
+      "classification": "uiux",
+      "title": "Status tracking样例说明",
+      "detail": "\"scaling issue\" — 指向 Status Tracking / Workbook scaling overview",
+      "reference": "SRS 6.4.1.2 p33-34（M4F1）：Status Tracking 展示 Workbook 与 Entity/Group 数据链路，绿色=已完成，蓝色=进行中。overview 弹窗展示完整流程链路与 Step 2.1 配置表。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 403.6699117736538,
+        "y": 402.2229996957712
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "UI图中样例为当前task有2个WB，WB1有4个entity（4行），WB2有1个entity（1行），每行中的四个点为information test, D&A result summary, audit response determination, W/P generation四个步骤"
+        }
+      ]
+    },
+    {
+      "uuid": "8e06f969929b4a3985cae6adcaa99df9",
+      "pageNum": "06",
+      "classification": "question",
+      "title": "currency下拉框场景澄清",
+      "detail": "D&A result summary表格中，仅当Entity下的所有original currency和reporting currency都不一致时，才不展示Invoice value- original currency列；其余场景都需要展示Invoice value- original currency列，original currency为下拉框，可选项是Entity下的所有original currency的值",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1057.1971555303653,
+        "y": 850.8895649528446
+      },
+      "replies": []
+    },
+    {
+      "uuid": "7d7b7c21e0c3418a8e0004e3fee9ccae",
+      "pageNum": "06",
+      "classification": "question",
+      "title": "Total revenue per TB",
+      "detail": "Total revenue per TB是否需要用户在页面输入并计算？对于Revenue to Cash的routine，还有其他字段需要输入？",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1379.994686415143,
+        "y": 1350.775409701703
+      },
+      "replies": []
+    },
+    {
+      "uuid": "2d9b79ccb75445438a9f0e7dd40ba0e8",
+      "pageNum": "07",
+      "classification": "uiux",
+      "title": "Group level in Scaling matrix",
+      "detail": "圈出 Group Level，标注 \"clarify\" — 需解释 Group Level 在 Combined analysis 下代表多个 entity 的合并分析结果，而非真实 entity",
+      "reference": "SRS 6.3.1.2 p29 #3/#6、6.4.1.2 p33（M3F1/M4F1）：多个 Entity 的 Workbook 额外展示 Group Level 行；Combined analysis 下仅 Group Level 可选。Individual analysis 时 Group Level 行的 PM/AMPT/Threshold 不校验必填为澄清结论，SRS 未覆盖。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1122.9984379787143,
+        "y": 724.6411620232947
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "只要WB下有多个Entity，都在PM、AMPT配置表中展示Group Level行，方便用户切换Combined/Individual analysis时的outlier阈值判断，其中用户选择Individual analysis时，group level配置的PM、AMPT、threshold等值不校验必填"
+        }
+      ]
+    },
+    {
+      "uuid": "b73c17e45e6e4fc8bddd01f0ede83f57",
+      "pageNum": "08",
+      "classification": "methodology",
+      "title": "Total SI Value求和规则（绝对值or净值）",
+      "detail": "\"aggregate -> absolute? net?\" — 询问差异汇总口径是净额还是绝对值",
+      "reference": "SRS 6.5.1.2 p43 #2、p45 #5(4)（M5F1）：Total Invoice Value 为 outlier invoice value 汇总；各 variance 为 Outliers for Sampling 绝对值之和。澄清结论（净值 vs 绝对值）为新增口径，需更新 SRS。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 634.5171889260724,
+        "y": 846.1420748402799
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "根据之前的澄清，Total SI Value按照净值求和，Value&Quantity Variance按照Outliers for Sampling列绝对值求和"
+        }
+      ]
+    },
+    {
+      "uuid": "e2c3377849e947f98a3a73983905cc3e",
+      "pageNum": "08",
+      "classification": "methodology",
+      "title": "Sub-group类型如何处理zero value",
+      "detail": "\"where are the zero values/quantities to be specific check -> generate and draw out any variance amount\" — 询问zero values的检查",
+      "reference": "SRS 6.5.1.2 p45 #5(3)-(5)（M5F1）：Transaction Filter 基于 Full Detail 表头自定义字段筛选，汇总筛选结果。zero value 预置筛选和默认 Sub-group 为澄清结论，SRS 未覆盖。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 114.51015276730112,
+        "y": 1019.3220907601969
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "根据之前的澄清，用户可以使用自定义字段进行筛选，不再预置默认的sub-group"
+        }
+      ]
+    },
+    {
+      "uuid": "b7c8ec1ae4c9422181e8545f027f9706",
+      "pageNum": "08",
+      "classification": "uiux",
+      "title": "Outlier Dashboard计算结果",
+      "detail": "\"Total are 200k?\" / 圈出 Total SI Value — 质疑计算结果",
+      "reference": "SRS 6.5.1.2 p43 #2（M5F1）：系统根据用户选择范围实时计算 Total Invoice Value (full population) 和 Total Invoice Value (with audit response)。原型中数值为 mock 数据。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1501.4400199299948,
+        "y": 634.5284453909339
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "仅为UI原型样例，实际系统会按照数据实时计算"
+        }
+      ]
+    },
+    {
+      "uuid": "9d37f9f6ec3541e7bc946aef0d7f0453",
+      "pageNum": "08",
+      "classification": "methodology",
+      "title": "Value & Quantity Variance求和规则",
+      "detail": "\"absolute amount? where these number column from?\" — 指向 variance 列计算来源",
+      "reference": "SRS 6.5.1.2 p45 #5(4)、6.5.1.3 p47-48 #4-#6（M5F1 数据项）：SO/SI/GDN 三类 variance 均按对应 Outliers for Sampling 绝对值之和计算。字段映射见 M2F2 数据项 #31-42。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 932.0444512050841,
+        "y": 834.1147951966119
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "Value&Quantity Variance按照Outliers for Sampling列绝对值求和"
+        }
+      ]
+    },
+    {
+      "uuid": "222594a81d41408c8ce46b827a75fd0d",
+      "pageNum": "08",
+      "classification": "uiux",
+      "title": "Create sub-group",
+      "detail": "\"create sub group?\" Add new sub-group 按钮的业务目的不清楚",
+      "reference": "SRS 6.5.1.2 p44 #4、p45 #5（M5F1）：Outlier 支持通过创建 Sub-group 筛选 Full Detail 子集，并为其指定统一的 Audit Response。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1629.2410853326996,
+        "y": 813.1591116519622
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "点击新建sub-group"
+        }
+      ]
+    },
+    {
+      "uuid": "4598fb4c3a9c419790d36037bdaf707b",
+      "pageNum": "08",
+      "classification": "wording",
+      "title": "Outlier超出阈值提醒逻辑",
+      "detail": "\"then?\" / 指向 Exceed threshold for outliers 提醒 — 询问出现警告后的处理",
+      "reference": "SRS 6.5.1.2 p45 #5(4)、p46 #6(1)（M5F1 数据项 #7）：variance 超 Threshold 时提示；三个均 > Threshold 则只能选 No。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 885.769779848571,
+        "y": 997.2165974627228
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "三个 Value & Quantity Variance 均大于 Threshold 时，Quantitatively clear inconsequential 不允许选择 Y"
+        }
+      ]
+    },
+    {
+      "uuid": "e9d0aa9f1f2741c495d08af2762dec2c",
+      "pageNum": "08",
+      "classification": "methodology",
+      "title": "Qualitatively clear inconsequential规则",
+      "detail": "\"???\" / 圈出 Qualitatively clear inconsequential — 询问出现警告后的处理",
+      "reference": "SRS 6.5.1.2 p46 #6(2)-(3)、6.5.1.3 p48 #8-#9（M5F1 数据项）：仅当 Quantitative=Y 时才可选 Qualitative；两者均为 Y 时才可选全部 4 类 Audit Response。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1387.341666516173,
+        "y": 857.1104054114753
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "只有 Quantitative=Y 时才可选 Qualitative，只有 Quantitative & Qualitative 都是 Y，Audit Response 才能选择 clear inconsequential"
+        }
+      ]
+    },
+    {
+      "uuid": "93706b49ffe940c691504f12889c08ac",
+      "pageNum": "08",
+      "classification": "methodology",
+      "title": "Remaining aggregation risk 计算和准出规则",
+      "detail": "\"how to come up?\" — 指向 Remaining aggregation risk 计算逻辑",
+      "reference": "SRS 6.5.1.2 p46 #7-#8（M5F1）：Remaining aggregation risk = a + b；仅当三个 variance 均 ≤ Threshold for outliers 时，当前 Entity/Group 的 Outlier Audit Response 指定完成。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 580.4458729768439,
+        "y": 1350.763020598187
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "按 transaction level 计算 unallocated without response + clearly inconsequential，三 variance 均 ≤ Threshold 才完成"
+        }
+      ]
+    },
+    {
+      "uuid": "dc2d7c94821349f99bf29714bc89c437",
+      "pageNum": "08",
+      "classification": "question",
+      "title": "Outlier页面wording需要提供",
+      "detail": "需要提供Outlier页面的guidance、术语，方便引导用户进行操作",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 126.53239573449935,
+        "y": 260.5797253050276
+      },
+      "replies": []
+    },
+    {
+      "uuid": "f2a53b4ca956482090e9b449b6573ffb",
+      "pageNum": "09",
+      "classification": "uiux",
+      "title": "More按钮功能",
+      "detail": "\"What's more?\" — More 按钮含义不清",
+      "reference": "SRS 6.5.1.2 p45 #5(3)（M5F1）：默认展示 2 行筛选字段，点击 More 展示 Full Detail 全量字段。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1733.032745111386,
+        "y": 636.7542410279135
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "Show all filter fields，支持用户基于 Full Detail 的所有字段进行筛选以创建 Sub-group"
+        }
+      ]
+    },
+    {
+      "uuid": "50fed18b51f44e2bace419432596d0e7",
+      "pageNum": "09",
+      "classification": "methodology",
+      "title": "Transactions in existing sub-group逻辑",
+      "detail": "\"not too understand this\" — 指向 Transactions in existing sub-group",
+      "reference": "SRS 6.5.1.2 p46 #6(5)（M5F1）：已覆盖同一 outlier 属于多个 Sub-group 且 Audit Response 不同时的冲突处理。\"Transactions in existing sub-group\" 字段本身未定义，需补充需求。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 695.6663378958389,
+        "y": 890.7328144310945
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "考虑新 Sub-group 筛选后的 transaction 可能已经存在别的 Sub-group，增加这个提示，以避免同一条 transaction 出现不同的 Audit Response"
+        }
+      ]
+    },
+    {
+      "uuid": "77bafcf7872b4ddfab34a94fa18b497c",
+      "pageNum": "10",
+      "classification": "methodology",
+      "title": "Audit Response determination for duplicate outliers",
+      "detail": "\"need to select for each transaction (not ideal)? can apply for all?\" — 是否支持批量操作：Apply to all selected transactions",
+      "reference": "SRS 6.5.1.2 p46 #6(5)（M5F1）：Various audit responses 需逐条确定，支持导出/导入批量处理。页面内 Apply to all 未覆盖，需补充需求。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1553.6650441131733,
+        "y": 609.6023729844844
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "仅对于同一条 transaction 同时存在于不同的 Audit Response 的多个 Sub-group 中的场景，待讨论具体的处理方案，如把这个分类归为 unallocated outliers"
+        }
+      ]
+    },
+    {
+      "uuid": "0cdbefa92b18484386afe50b587b596a",
+      "pageNum": "11",
+      "classification": "methodology",
+      "title": "Threshold是否要在not tested中展示",
+      "detail": "\"Don't exist\" — 指向 Threshold for outliers。认为 Not tested 页面不应展示 outlier threshold，若仅用于 materiality warning 应弱化",
+      "reference": "SRS 6.5.2.2 p48-49 #1-#2（M5F2）：4.2 展示对应 Entity/Group 的 Threshold；金额求和 > Threshold 时需提示。此处 Threshold 仅用于 materiality warning。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 92.11403508771929,
+        "y": 433.1322055137844
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "仅为展示，方便用户判断，或改为展示 AMPT？"
+        }
+      ]
+    },
+    {
+      "uuid": "da1031962c4a4d89818969dcd382a82c",
+      "pageNum": "11",
+      "classification": "question",
+      "title": "Not tested是否需要alert",
+      "detail": "Not tested汇总表格的金额列，是否需要和AMPT比较？（Other Not tested同）",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1084.8253968253969,
+        "y": 640.764619883041
+      },
+      "replies": []
+    },
+    {
+      "uuid": "678d1520fc5d4d1b9ca6e2b876f36be0",
+      "pageNum": "12",
+      "classification": "uiux",
+      "title": "Not tested category",
+      "detail": "\"How to select same out of this category? where are the filter?\" — 弹窗应显示当前 Not tested reason 作为筛选条件",
+      "reference": "SRS 6.5.2.2 p49 #2-#3（M5F2）：按 Full Detail 的 Not tested Reason 分组；点击 reason 弹窗展示该分组汇总信息和明细。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 840.1526733500418,
+        "y": 203.78529657477026
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "对于 Not tested，只需要根据 Not tested reason 列分组，不需要创建 Sub-group"
+        }
+      ]
+    },
+    {
+      "uuid": "43219454480d4831b308ba5f40f8f5f1",
+      "pageNum": "13",
+      "classification": "methodology",
+      "title": "Threshold是否要在other not tested中展示",
+      "detail": "\"Same comment as not tested for the next page\" — 4.3 与 4.2 同样需要显示筛选口径、弱化/解释 threshold",
+      "reference": "SRS 6.5.3.2 p51-52 #1-#3（M5F3）：4.3 展示 Threshold，按 Other Not tested Reason 分组。区别：M5F2 以 Invoice 为主对象；M5F3 以 Order/Shipping Document 为主对象。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 86.76597304885462,
+        "y": 442.1089246161496
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "仅为展示，方便用户判断，或改为展示 AMPT？"
+        }
+      ]
+    },
+    {
+      "uuid": "c2a95a39-719d-4415-8b6c-ebd529611b99",
+      "pageNum": "13",
+      "classification": "question",
+      "title": "Other not tested是否需要alert",
+      "detail": "同not tested，求和结果是否需要和AMPT比较",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-14T03:14:23.581Z",
+      "badge": {
+        "x": 1175.452056996198,
+        "y": 650.7041350872171
+      },
+      "replies": []
+    },
+    {
+      "uuid": "af6f1577cabf4afda509151f6d667ac1",
+      "pageNum": "15",
+      "classification": "wording",
+      "title": "Column Wording for sales 3wm & purchase 3wm",
+      "detail": "\"Total SI Value should be SO value / PO value\" — 对 Other Not tested 或 Sales Order/GDN 相关行，不应统一叫 SI Value；应按结果类型动态展示",
+      "reference": "SRS 6.6.1.2 p54-55（M6F1）：Audit Response Summary 按 routine/result type 使用不同 value 字段。Sales 3WM 的 Other Not tested 对应 Total SO Value；Purchase 3WM 对应 Total PO Value。",
+      "status": "saved",
+      "author": "RochelleYu",
+      "createdAt": "2026-05-08T00:00:00.000Z",
+      "badge": {
+        "x": 1516.1933811486513,
+        "y": 1120.4098545119627
+      },
+      "replies": [
+        {
+          "author": "SimonsWang",
+          "createdAt": "2026-05-12T00:00:00.000Z",
+          "text": "全局根据 Sales 3WM (SI, SO, GDN)、Purchase 3WM (PI, PO, GRN) 统一表头字段"
+        }
+      ]
+    },
+    {
+      "uuid": "af1d569b108648448eefcf0f9d0555e1",
+      "pageNum": "16",
+      "classification": "question",
+      "title": "Working paper模版需要提供",
+      "detail": "需要提供三种D&A routine的所有场景的最新W/P模板",
+      "reference": "",
+      "status": "saved",
+      "author": "SimonsWang",
+      "createdAt": "2026-05-12T00:00:00.000Z",
+      "badge": {
+        "x": 1022.856037890317,
+        "y": 634.3847645165017
+      },
+      "replies": []
+    }
+  ]
+}

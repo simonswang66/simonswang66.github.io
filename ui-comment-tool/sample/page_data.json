@@ -1,0 +1,146 @@
+[
+  {
+    "num": "01",
+    "module": "Step 1: KDC Delivery Confirmation (M2)",
+    "img": "01 1. KDC delivery confirmation.png",
+    "orig_size": [
+      1880,
+      1126
+    ]
+  },
+  {
+    "num": "02",
+    "module": "Step 2.1: Workbook Scaling (M3F1)",
+    "img": "02 2.1 Workbook Scaling & Information Test.png",
+    "orig_size": [
+      1880,
+      921
+    ]
+  },
+  {
+    "num": "03",
+    "module": "Step 2.1: Create New Workbook 弹窗 (M3F1)",
+    "img": "03 2.1 Workbook Scaling & Information Test - Select Job.png",
+    "orig_size": [
+      1880,
+      921
+    ]
+  },
+  {
+    "num": "04",
+    "module": "Step 2.2: Information Test / Accuracy (M3F2)",
+    "img": "04 2.2 Information Test.png",
+    "orig_size": [
+      1880,
+      1075
+    ]
+  },
+  {
+    "num": "05",
+    "module": "Step 2.2: Entity Selection Scenarios / Overview",
+    "img": "05 2.2 Entity selection scenarios.png",
+    "orig_size": [
+      1880,
+      1300
+    ]
+  },
+  {
+    "num": "06",
+    "module": "Step 3: D&A Results Summary (M4F2)",
+    "img": "06 3. D&A results summary .png",
+    "orig_size": [
+      1880,
+      1680
+    ]
+  },
+  {
+    "num": "07",
+    "module": "Step 3: Workbook Scaling Overview 弹窗 (M4F1)",
+    "img": "07 3. D&A results summary - scaling overview .png",
+    "orig_size": [
+      1880,
+      921
+    ]
+  },
+  {
+    "num": "08",
+    "module": "Step 4.1: Outlier / Audit Response (M5F1)",
+    "img": "08 4.1 Outlier.png",
+    "orig_size": [
+      1880,
+      1580
+    ]
+  },
+  {
+    "num": "09",
+    "module": "Step 4.1: Create Sub-group 弹窗 (M5F1)",
+    "img": "09 4.1 Outlier - create sub_group.png",
+    "orig_size": [
+      1880,
+      1580
+    ]
+  },
+  {
+    "num": "10",
+    "module": "Step 4.1: Various Audit Responses 冲突处理 (M5F1)",
+    "img": "10 4.1 Outlier - create sub_group.png",
+    "orig_size": [
+      1880,
+      1580
+    ]
+  },
+  {
+    "num": "11",
+    "module": "Step 4.2: Not Tested / Audit Response (M5F2)",
+    "img": "11 4.2 Not tested.png",
+    "orig_size": [
+      1880,
+      950
+    ]
+  },
+  {
+    "num": "12",
+    "module": "Step 4.2: Not Tested Full Detail 弹窗 (M5F2)",
+    "img": "12 4.2 Not tested - Full detail.png",
+    "orig_size": [
+      1880,
+      950
+    ]
+  },
+  {
+    "num": "13",
+    "module": "Step 4.3: Other Not Tested (M5F3)",
+    "img": "13 4.3 Other Not tested.png",
+    "orig_size": [
+      1880,
+      921
+    ]
+  },
+  {
+    "num": "14",
+    "module": "Step 4.3: Other Not Tested Full Detail 弹窗 (M5F3)",
+    "img": "14 4.3 Other Not tested - Full detail.png",
+    "orig_size": [
+      1880,
+      921
+    ]
+  },
+  {
+    "num": "15",
+    "module": "Step 5.1: Audit Response Summary & W/P Generation (M6F1)",
+    "img": "15 5.1 Audit Response Summary.png",
+    "orig_size": [
+      1880,
+      1380
+    ]
+  },
+  {
+    "num": "16",
+    "module": "Step 5.2: Working Paper Generation (M6F2)",
+    "img": "16 5.2 Working paper generation.png",
+    "orig_size": [
+      1880,
+      921
+    ]
+  }
+]

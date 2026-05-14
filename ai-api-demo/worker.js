@@ -62,13 +62,15 @@ async function callOpenAI(env, model, messages, temperature, max_tokens, stream,
   const apiKey = baseUrl.includes('deepseek') ? env.DEEPSEEK_API_KEY : env.OPENAI_API_KEY;
   if (!apiKey) return json({ error: 'API key not configured for this provider' }, 500);
 
+  const isOpenAI = !baseUrl.includes('deepseek');
   const reqBody = {
     model,
     messages,
-    temperature: temperature ?? 0.7,
-    max_tokens: max_tokens || 4096,
+    [isOpenAI ? 'max_completion_tokens' : 'max_tokens']: max_tokens || 4096,
     stream: stream || false
   };
+  // gpt-5.x models only accept temperature=1 (default), skip for OpenAI
+  if (!isOpenAI) reqBody.temperature = temperature ?? 0.7;
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 25000);

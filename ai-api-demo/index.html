@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI API Demo — Simons Work Suites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f9fb;
+      --surface: #fff;
+      --border: #e2e5ea;
+      --text: #1a1a2e;
+      --text-dim: #6b7280;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --radius: 10px;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+      --user-bubble: #e8f0fe;
+      --assistant-bubble: #fff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── top bar ── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .topbar .brand {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      white-space: nowrap;
+      margin-right: 8px;
+    }
+    .topbar .brand a { color: inherit; text-decoration: none; }
+    .topbar label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+    .topbar select, .topbar input[type=number] {
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+    }
+    .topbar select:focus, .topbar input:focus { border-color: var(--accent); }
+    .topbar .spacer { flex: 1; }
+
+    .provider-tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--bg);
+      border-radius: 7px;
+      padding: 2px;
+    }
+    .provider-tab {
+      padding: 5px 12px;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 6px;
+      color: var(--text-dim);
+      transition: all 0.2s;
+    }
+    .provider-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .provider-tab:hover:not(.active) { color: var(--text); }
+
+    .param-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .param-group input[type=range] { width: 70px; }
+    .param-val { font-size: 12px; color: var(--text-dim); min-width: 30px; }
+
+    .stream-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-dim);
+      cursor: pointer;
+      user-select: none;
+    }
+    .stream-toggle input { cursor: pointer; }
+
+    /* ── main area ── */
+    .main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── sidebar ── */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+    .sidebar h4 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      margin-bottom: 4px;
+    }
+    .sidebar textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      line-height: 1.5;
+    }
+    .sidebar textarea:focus { border-color: var(--accent); }
+    .sidebar .field { display: flex; flex-direction: column; gap: 4px; }
+    .sidebar .field label { font-size: 12px; color: var(--text-dim); }
+    .sidebar .hint {
+      font-size: 11px;
+      color: #aaa;
+      line-height: 1.5;
+    }
+    .sidebar .hint code {
+      background: var(--bg);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+
+    /* ── chat area ── */
+    .chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 720px;
+      width: 100%;
+    }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .message.assistant { align-self: flex-start; }
+
+    .msg-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .message.user .msg-avatar { background: var(--accent); color: #fff; }
+    .message.assistant .msg-avatar { background: #10b981; color: #fff; }
+
+    .msg-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: auto;
+      min-width: 0;
+    }
+    .message.user .msg-bubble { background: var(--user-bubble); border-color: #c7d9f7; }
+
+    .msg-bubble pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 12px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 8px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .msg-bubble code {
+      background: rgba(0,0,0,0.06);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .msg-bubble pre code {
+      background: none;
+      padding: 0;
+    }
+    .msg-bubble p { margin-bottom: 6px; }
+    .msg-bubble p:last-child { margin-bottom: 0; }
+    .msg-bubble ul, .msg-bubble ol { padding-left: 20px; margin: 6px 0; }
+
+    .msg-meta {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    /* streaming cursor */
+    .msg-bubble .stream-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 14px;
+      background: var(--accent);
+      animation: blink 0.8s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 1px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ccc;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 8px; }
+
+    /* ── input area ── */
+    .input-area {
+      border-top: 1px solid var(--border);
+      padding: 14px 20px;
+      background: var(--surface);
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .input-area textarea {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      line-height: 1.5;
+      max-height: 150px;
+      min-height: 42px;
+    }
+    .input-area textarea:focus { border-color: var(--accent); }
+    .btn-send {
+      padding: 10px 22px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-send:hover { background: var(--accent-hover); }
+    .btn-send:disabled { background: #a5b4fc; cursor: not-allowed; }
+    .btn-clear {
+      padding: 10px 14px;
+      background: transparent;
+      color: #999;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-clear:hover { color: #e53e3e; border-color: #e53e3e; }
+
+    .error-banner {
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 8px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid #fecaca;
+      display: none;
+    }
+    .error-banner.show { display: block; }
+
+    /* ── responsive ── */
+    @media (max-width: 768px) {
+      .main { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        flex-shrink: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 14px;
+      }
+      .sidebar textarea { height: 60px; }
+      .sidebar h4 { display: none; }
+      .sidebar .field { flex: 1; min-width: 100px; }
+      .topbar { gap: 6px; padding: 8px 12px; }
+      .topbar .brand { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── top bar ── -->
+<div class="topbar">
+  <span class="brand"><a href="../index.html">← Simons Work Suites</a></span>
+  <span style="color:#ddd;">|</span>
+  <label>Provider:</label>
+  <div class="provider-tabs" id="providerTabs">
+    <button class="provider-tab active" data-provider="openai">OpenAI</button>
+    <button class="provider-tab" data-provider="deepseek">DeepSeek</button>
+  </div>
+  <label>Model:</label>
+  <select id="modelSelect"></select>
+  <span class="spacer"></span>
+  <label>Temp:</label>
+  <div class="param-group">
+    <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7" />
+    <span class="param-val" id="tempVal">0.7</span>
+  </div>
+  <label>Max tokens:</label>
+  <input type="number" id="maxTokens" value="4096" min="1" max="200000" style="width:70px;" />
+  <label class="stream-toggle">
+    <input type="checkbox" id="streamToggle" checked /> Stream
+  </label>
+</div>
+
+<!-- ── error banner ── -->
+<div class="error-banner" id="errorBanner"></div>
+
+<!-- ── main ── -->
+<div class="main">
+  <div class="sidebar">
+    <div>
+      <h4>System Prompt</h4>
+      <textarea id="systemPrompt" placeholder="You are a helpful assistant.">You are a helpful assistant.</textarea>
+    </div>
+    <div class="field">
+      <label>API Endpoint</label>
+      <input type="text" id="apiEndpoint" value="https://ai-proxy.your-subdomain.workers.dev/api/chat" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:var(--bg);color:var(--text);" />
+    </div>
+    <div class="hint">
+      <strong>部署说明</strong><br>
+      将 <code>worker.js</code> 部署到 Cloudflare Workers，然后把 Worker 地址填到上方 <code>API Endpoint</code> 中。API Key 只存在 Worker 的环境变量里，前端不可见。
+    </div>
+  </div>
+
+  <div class="chat">
+    <div class="messages" id="messages">
+      <div class="empty-state" id="emptyState">
+        <div class="icon">🤖</div>
+        <div>选择一个 Provider，输入消息，测试 AI API 调用</div>
+      </div>
+    </div>
+    <div class="input-area">
+      <button class="btn-clear" id="btnClear" title="清空对话">清空</button>
+      <textarea id="userInput" rows="1" placeholder="输入消息，Enter 发送，Shift+Enter 换行..."></textarea>
+      <button class="btn-send" id="btnSend">发送</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── provider & model config ──
+var PROVIDERS = {
+  openai: {
+    name: 'OpenAI',
+    models: ['gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini'],
+    defaultModel: 'gpt-5.5',
+    defaultEndpoint: 'https://ai-proxy.your-subdomain.workers.dev/api/chat'
+  },
+  deepseek: {
+    name: 'DeepSeek',
+    models: ['deepseek-v4-pro', 'deepseek-v4-flash'],
+    defaultModel: 'deepseek-v4-pro',
+    defaultEndpoint: 'https://ai-proxy.your-subdomain.workers.dev/api/chat'
+  }
+};
+
+var currentProvider = 'openai';
+var conversation = []; // { role, content }
+
+// ── DOM refs ──
+var $providerTabs = document.getElementById('providerTabs');
+var $modelSelect = document.getElementById('modelSelect');
+var $temperature = document.getElementById('temperature');
+var $tempVal = document.getElementById('tempVal');
+var $maxTokens = document.getElementById('maxTokens');
+var $streamToggle = document.getElementById('streamToggle');
+var $systemPrompt = document.getElementById('systemPrompt');
+var $apiEndpoint = document.getElementById('apiEndpoint');
+var $messages = document.getElementById('messages');
+var $userInput = document.getElementById('userInput');
+var $btnSend = document.getElementById('btnSend');
+var $btnClear = document.getElementById('btnClear');
+var $emptyState = document.getElementById('emptyState');
+var $errorBanner = document.getElementById('errorBanner');
+
+// ── init model list ──
+function populateModels(provider) {
+  $modelSelect.innerHTML = '';
+  PROVIDERS[provider].models.forEach(function(m) {
+    var opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m;
+    if (m === PROVIDERS[provider].defaultModel) opt.selected = true;
+    $modelSelect.appendChild(opt);
+  });
+}
+
+// ── provider switching ──
+$providerTabs.addEventListener('click', function(e) {
+  var tab = e.target.closest('.provider-tab');
+  if (!tab) return;
+  var prov = tab.getAttribute('data-provider');
+  if (prov === currentProvider) return;
+  currentProvider = prov;
+  localStorage.setItem('ai-demo-provider', prov);
+  $providerTabs.querySelectorAll('.provider-tab').forEach(function(t) { t.classList.remove('active'); });
+  tab.classList.add('active');
+  populateModels(prov);
+});
+
+// ── temperature ──
+$temperature.addEventListener('input', function() {
+  $tempVal.textContent = parseFloat($temperature.value).toFixed(1);
+});
+
+// ── auto-resize input ──
+$userInput.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+});
+
+// ── render markdown-lite ──
+function renderContent(text) {
+  var escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  // code blocks ```
+  escaped = escaped.replace(/```(\w*)\n?([\s\S]*?)```/g, function(_, lang, code) {
+    return '<pre><code>' + code.replace(/\n$/, '') + '</code></pre>';
+  });
+  // inline code `
+  escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // bold
+  escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // paragraphs (double newline)
+  escaped = '<p>' + escaped.split(/\n\n+/).join('</p><p>') + '</p>';
+  // single newlines within paragraph
+  escaped = escaped.replace(/\n/g, '<br>');
+  return escaped;
+}
+
+// ── render messages ──
+function renderMessages() {
+  $messages.innerHTML = '';
+  $emptyState.style.display = conversation.length === 0 ? 'flex' : 'none';
+
+  conversation.forEach(function(msg, i) {
+    var div = document.createElement('div');
+    div.className = 'message ' + msg.role;
+    div.innerHTML =
+      '<div class="msg-avatar">' + (msg.role === 'user' ? '👤' : '🤖') + '</div>' +
+      '<div><div class="msg-bubble">' + renderContent(msg.content) + '</div>' +
+      (msg.role === 'assistant' && msg.usage ? '<div class="msg-meta">' + msg.usage + '</div>' : '') +
+      '</div>';
+    $messages.appendChild(div);
+  });
+  $messages.scrollTop = $messages.scrollHeight;
+}
+
+// ── show error ──
+function showError(msg) {
+  $errorBanner.textContent = msg;
+  $errorBanner.classList.add('show');
+  setTimeout(function() { $errorBanner.classList.remove('show'); }, 8000);
+}
+
+// ── send ──
+function sendMessage() {
+  var content = $userInput.value.trim();
+  if (!content || $btnSend.disabled) return;
+
+  $userInput.value = '';
+  $userInput.style.height = 'auto';
+  $btnSend.disabled = true;
+  $btnSend.textContent = '等待...';
+  conversation.push({ role: 'user', content: content });
+  renderMessages();
+
+  if ($streamToggle.checked) {
+    streamChat(content);
+  } else {
+    normalChat(content);
+  }
+}
+
+var TIMEOUT_MS = 90000;
+
+function doFetch(endpoint, body) {
+  var controller = new AbortController();
+  var timer = setTimeout(function() { controller.abort(); }, TIMEOUT_MS);
+  return fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: controller.signal
+  }).finally(function() { clearTimeout(timer); });
+}
+
+// ── non-stream ──
+function normalChat(userContent) {
+  var endpoint = $apiEndpoint.value.trim();
+  var body = {
+    provider: currentProvider,
+    model: $modelSelect.value,
+    temperature: parseFloat($temperature.value),
+    max_tokens: parseInt($maxTokens.value) || 4096,
+    stream: false,
+    messages: buildMessages()
+  };
+
+  doFetch(endpoint, body)
+  .then(function(res) {
+    if (!res.ok) return res.text().then(function(t) { throw new Error(t); });
+    return res.json();
+  })
+  .then(function(data) {
+    var usage = '';
+    if (data.usage) {
+      usage = 'input ' + data.usage.input_tokens + ' + output ' + data.usage.output_tokens + ' tokens';
+    }
+    conversation.push({ role: 'assistant', content: data.content, usage: usage });
+    renderMessages();
+    resetSend();
+  })
+  .catch(function(err) {
+    var msg = err.name === 'AbortError' ? '请求超时（90s），请检查 API Endpoint 和网络连接' : '请求失败: ' + err.message;
+    showError(msg);
+    conversation.pop();
+    renderMessages();
+    resetSend();
+  });
+}
+
+// ── stream ──
+function streamChat(userContent) {
+  var endpoint = $apiEndpoint.value.trim();
+  var body = {
+    provider: currentProvider,
+    model: $modelSelect.value,
+    temperature: parseFloat($temperature.value),
+    max_tokens: parseInt($maxTokens.value) || 4096,
+    stream: true,
+    messages: buildMessages()
+  };
+
+  conversation.push({ role: 'assistant', content: '' });
+  renderMessages();
+
+  doFetch(endpoint, body)
+  .then(function(res) {
+    if (!res.ok) return res.text().then(function(t) { throw new Error(t); });
+    var reader = res.body.getReader();
+    var decoder = new TextDecoder();
+    var assistantMsg = conversation[conversation.length - 1];
+    var buffer = '';
+
+    function pump() {
+      reader.read().then(function(result) {
+        if (result.done) {
+          resetSend();
+          renderMessages();
+          return;
+        }
+        buffer += decoder.decode(result.value, { stream: true });
+        var lines = buffer.split('\n');
+        buffer = lines.pop();
+        lines.forEach(function(line) {
+          if (!line.startsWith('data: ')) return;
+          var payload = line.slice(6);
+          if (payload === '[DONE]') return;
+          try {
+            var json = JSON.parse(payload);
+            if (json.content) {
+              assistantMsg.content += json.content;
+            }
+            if (json.usage) {
+              assistantMsg.usage = 'input ' + json.usage.input_tokens + ' + output ' + json.usage.output_tokens + ' tokens';
+            }
+          } catch(e) {}
+        });
+        var lastBubble = $messages.querySelector('.message.assistant:last-of-type .msg-bubble');
+        if (lastBubble) {
+          lastBubble.innerHTML = renderContent(assistantMsg.content) + '<span class="stream-cursor"></span>';
+        }
+        $messages.scrollTop = $messages.scrollHeight;
+        pump();
+      }).catch(function(err) {
+        showError('流读取失败: ' + err.message);
+        resetSend();
+      });
+    }
+    pump();
+  })
+  .catch(function(err) {
+    var msg = err.name === 'AbortError' ? '请求超时（90s），请检查 API Endpoint 和网络连接' : '请求失败: ' + err.message;
+    showError(msg);
+    conversation.pop();
+    conversation.pop();
+    renderMessages();
+    resetSend();
+  });
+}
+
+function buildMessages() {
+  var msgs = [];
+  var sysPrompt = $systemPrompt.value.trim();
+  if (sysPrompt) msgs.push({ role: 'system', content: sysPrompt });
+  // for Anthropic, system prompt is separate; worker handles conversion
+  conversation.forEach(function(m) {
+    msgs.push({ role: m.role, content: m.content });
+  });
+  return msgs;
+}
+
+function resetSend() {
+  $btnSend.disabled = false;
+  $btnSend.textContent = '发送';
+  $userInput.focus();
+}
+
+// ── clear ──
+$btnClear.addEventListener('click', function() {
+  conversation = [];
+  renderMessages();
+});
+
+// ── events ──
+$btnSend.addEventListener('click', sendMessage);
+$userInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// ── save endpoint to localStorage ──
+$apiEndpoint.addEventListener('change', function() {
+  localStorage.setItem('ai-demo-endpoint', $apiEndpoint.value.trim());
+});
+
+// ── init ──
+var savedProvider = localStorage.getItem('ai-demo-provider');
+if (savedProvider && PROVIDERS[savedProvider]) {
+  currentProvider = savedProvider;
+  $providerTabs.querySelectorAll('.provider-tab').forEach(function(t) { t.classList.remove('active'); });
+  var tab = $providerTabs.querySelector('[data-provider="' + savedProvider + '"]');
+  if (tab) tab.classList.add('active');
+}
+populateModels(currentProvider);
+
+var savedEndpoint = localStorage.getItem('ai-demo-endpoint');
+$apiEndpoint.value = savedEndpoint || PROVIDERS[currentProvider].defaultEndpoint;
+
+$temperature.value = 0.7;
+$tempVal.textContent = '0.7';
+</script>
+
+</body>
+</html>

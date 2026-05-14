@@ -83,6 +83,7 @@
     }
     .icon-comment { background: #e8f0fe; color: #2563eb; }
     .icon-table  { background: #fef3c7; color: #d97706; }
+    .icon-ai     { background: #f3e8ff; color: #7c3aed; }
 
     .tool-card h3 {
       font-size: 18px;
@@ -213,6 +214,15 @@
       <div class="tool-links">
         <a class="link-primary" href="ui-comment-tool/builder.html">&#9881; Builder</a>
         <a class="link-secondary" href="#" onclick="showSampleModal();return false;">&#128269; 示例</a>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-icon icon-ai">&#129302;</div>
+      <h3>AI API Demo</h3>
+      <p class="desc">AI API 调用演示工具。支持 OpenAI / DeepSeek，通过 Cloudflare Worker 安全代理转发 API Key，支持流式响应。</p>
+      <div class="tool-links">
+        <a class="link-primary" href="ai-api-demo/index.html">&#8594; 打开工具</a>
       </div>
     </div>
 

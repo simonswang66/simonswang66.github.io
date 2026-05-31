@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Design Samples — Simons Work Suites</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root { --header-h: 52px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #1a1a2e;
+      color: #1a1a2e;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      height: var(--header-h);
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 100;
+      position: relative;
+    }
+    .header .back {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .header .back:hover { color: #fff; }
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      flex: 1;
+    }
+    .header .current-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-drawer {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-drawer:hover { background: rgba(255,255,255,0.22); }
+
+    /* ── Preview (fullscreen) ── */
+    .preview {
+      flex: 1;
+      background: #e8ecf1;
+      overflow: hidden;
+    }
+    .preview iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .preview-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 15px;
+      gap: 10px;
+      height: 100%;
+      background: #f0f2f5;
+    }
+    .preview-empty .icon { font-size: 52px; opacity: 0.25; }
+    .preview-empty .hint { font-size: 13px; color: #bbb; }
+
+    /* ── Drawer overlay ── */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── Drawer sidebar ── */
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 280px;
+      max-width: 85vw;
+      background: #fff;
+      z-index: 300;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+    }
+    .drawer.open { transform: translateX(0); }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid #eee;
+      flex-shrink: 0;
+    }
+    .drawer-head span {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #999;
+      cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
+      border-radius: 4px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-close:hover { background: #f0f0f0; color: #333; }
+
+    .drawer-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+    .drawer-list::-webkit-scrollbar { width: 4px; }
+    .drawer-list::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 2px; }
+
+    .drawer .cat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #999;
+      padding: 14px 18px 4px;
+      font-weight: 600;
+    }
+    .drawer .cat-label:first-child { padding-top: 4px; }
+
+    .drawer .style-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 9px 18px;
+      font-size: 14px;
+      color: #444;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      font-family: inherit;
+      border-left: 3px solid transparent;
+      gap: 6px;
+    }
+    .drawer .style-item:hover { background: #f5f5f5; color: #1a1a2e; }
+    .drawer .style-item.active {
+      background: #e8f0fe;
+      color: #2563eb;
+      font-weight: 600;
+      border-left-color: #2563eb;
+    }
+    .drawer .style-item .tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .tag-light { background: #fef3c7; color: #b45309; }
+    .tag-dark  { background: #e2e8f0; color: #475569; }
+    .tag-extra { background: #f3e8ff; color: #7c3aed; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back" href="../index.html">&#8592; 首页</a>
+  <h1>UI Design Samples</h1>
+  <span class="current-label" id="currentLabel"></span>
+  <button class="btn-drawer" id="btnDrawer" title="风格列表">&#9776;</button>
+</div>
+
+<div class="preview" id="preview">
+  <div class="preview-empty">
+    <div class="icon">&#127912;</div>
+    <div>点击右上角 &#9776; 选择风格</div>
+    <div class="hint">22 个 UI 设计风格组件展示 | 选中后可用 ← → 方向键切换</div>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="overlay"></div>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span>UI 风格</span>
+    <button class="btn-close" id="btnClose">&times;</button>
+  </div>
+  <div class="drawer-list" id="drawerList"></div>
+</div>
+
+<script>
+var SAMPLES = [
+  { cat: "Glassmorphism 玻璃拟态", items: [
+    { file: "glassmorphism-components.html", label: "Glassmorphism", tag: "dark", tagClass: "tag-dark" },
+    { file: "glassmorphism-components-light.html", label: "Glassmorphism Light", tag: "light", tagClass: "tag-light" }
+  ]},
+  { cat: "Liquid Glass 液态玻璃", items: [
+    { file: "liquid-glass-components.html", label: "Liquid Glass", tag: "dark", tagClass: "tag-dark" },
+    { file: "liquid-glass-components-light.html", label: "Liquid Glass Light", tag: "light", tagClass: "tag-light" },
+    { file: "liquid-glass-drop-demo.html", label: "Liquid Drop Demo", tag: "extra", tagClass: "tag-extra" },
+    { file: "liquid-glass-realistic.html", label: "Liquid Glass Realistic", tag: "extra", tagClass: "tag-extra" }
+  ]},
+  { cat: "Neumorphism 新拟态", items: [
+    { file: "neumorphism-components.html", label: "Neumorphism" }
+  ]},
+  { cat: "Brutalism 粗野主义", items: [
+    { file: "brutalism-components.html", label: "Brutalism" },
+    { file: "neo-brutalism-components.html", label: "Neo-Brutalism" }
+  ]},
+  { cat: "Claymorphism 黏土拟态", items: [
+    { file: "claymorphism-components.html", label: "Claymorphism" }
+  ]},
+  { cat: "Material Design 材料设计", items: [
+    { file: "material-design-components.html", label: "Material Design" }
+  ]},
+  { cat: "Flat Design 扁平设计", items: [
+    { file: "flat-design-components.html", label: "Flat Design" }
+  ]},
+  { cat: "Minimalism 极简主义", items: [
+    { file: "minimalism-components.html", label: "Minimalism" }
+  ]},
+  { cat: "Bauhaus 包豪斯", items: [
+    { file: "bauhaus-components.html", label: "Bauhaus" }
+  ]},
+  { cat: "Skeuomorphism 拟物化", items: [
+    { file: "skeuomorphism-components.html", label: "Skeuomorphism" },
+    { file: "skeuomorphism-audio-deck.html", label: "Audio Deck", tag: "extra", tagClass: "tag-extra" }
+  ]},
+  { cat: "Acid Graphics 酸性图形", items: [
+    { file: "acid-graphics-components.html", label: "Acid Graphics", tag: "dark", tagClass: "tag-dark" },
+    { file: "acid-graphics-components-light.html", label: "Acid Graphics Light", tag: "light", tagClass: "tag-light" }
+  ]},
+  { cat: "Anti-Design 反设计", items: [
+    { file: "anti-design-components.html", label: "Anti-Design" },
+    { file: "anti-design-components-lite.html", label: "Anti-Design Lite", tag: "light", tagClass: "tag-light" }
+  ]},
+  { cat: "Retrofuturism 复古未来主义", items: [
+    { file: "retrofuturism-components.html", label: "Retrofuturism", tag: "dark", tagClass: "tag-dark" },
+    { file: "retrofuturism-components-light.html", label: "Retrofuturism Light", tag: "light", tagClass: "tag-light" }
+  ]}
+];
+
+var drawer = document.getElementById('drawer');
+var overlay = document.getElementById('overlay');
+var drawerList = document.getElementById('drawerList');
+var currentLabel = document.getElementById('currentLabel');
+var activeBtn = null;
+
+function openDrawer() {
+  drawer.classList.add('open');
+  overlay.classList.add('open');
+}
+function closeDrawer() {
+  drawer.classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+document.getElementById('btnDrawer').addEventListener('click', openDrawer);
+document.getElementById('btnClose').addEventListener('click', closeDrawer);
+overlay.addEventListener('click', closeDrawer);
+
+var flatList = [];
+var currentIndex = -1;
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeDrawer(); return; }
+  if (e.key === 'ArrowLeft' && currentIndex > 0) { navigateTo(currentIndex - 1); return; }
+  if (e.key === 'ArrowRight' && currentIndex < flatList.length - 1) { navigateTo(currentIndex + 1); return; }
+});
+
+function navigateTo(idx) {
+  var item = flatList[idx];
+  loadSample(item.file, item.label, item.btn);
+}
+
+function buildDrawer() {
+  SAMPLES.forEach(function(group) {
+    var catEl = document.createElement('div');
+    catEl.className = 'cat-label';
+    catEl.textContent = group.cat;
+    drawerList.appendChild(catEl);
+
+    group.items.forEach(function(item) {
+      var btn = document.createElement('button');
+      btn.className = 'style-item';
+      btn.textContent = item.label;
+      if (item.tag) {
+        var span = document.createElement('span');
+        span.className = 'tag ' + (item.tagClass || '');
+        span.textContent = item.tag;
+        btn.appendChild(span);
+      }
+      btn.addEventListener('click', function() { loadSample(item.file, item.label, btn); });
+      drawerList.appendChild(btn);
+      flatList.push({ file: item.file, label: item.label, btn: btn });
+    });
+  });
+}
+
+function loadSample(file, label, btn) {
+  if (activeBtn) activeBtn.classList.remove('active');
+  btn.classList.add('active');
+  activeBtn = btn;
+  currentLabel.textContent = label;
+
+  for (var i = 0; i < flatList.length; i++) {
+    if (flatList[i].btn === btn) { currentIndex = i; break; }
+  }
+
+  var preview = document.getElementById('preview');
+  preview.innerHTML = '<iframe src="' + file + '"></iframe>';
+  closeDrawer();
+}
+
+buildDrawer();
+if (flatList.length > 0) {
+  var first = flatList[0];
+  loadSample(first.file, first.label, first.btn);
+}
+</script>
+
+</body>
+</html>

@@ -94,7 +94,6 @@
             position: absolute;
             font-size: 3rem;
             filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.2));
-            animation: floatAway 1.2s ease-out forwards;
             z-index: 25;
         }
 
@@ -178,21 +177,6 @@
             pointer-events: none;
             z-index: 5;
             animation: gentleFlash 0.25s ease-out forwards;
-        }
-
-        /* 漂浮动画 */
-        @keyframes floatAway {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(0.6);
-            }
-            30% {
-                transform: translateY(-40px) scale(1.1) rotate(10deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-150px) scale(0.8) rotate(20deg);
-            }
         }
 
         @keyframes bubblePop {
@@ -288,6 +272,15 @@
             pointer-events: none;
         }
 
+        /* 尊重用户减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            .key-zoom { animation: none; opacity: 0; }
+            .bubble { animation: none; opacity: 0; }
+            .star-spark { animation: none; opacity: 0; }
+            .flash-overlay { animation: none; opacity: 0; }
+            .happy-element { animation: none; opacity: 0; }
+        }
+
         /* 针对移动设备确保触摸友好 */
         @media (max-width: 600px) {
             .welcome-message h1 { font-size: 2rem; }
@@ -336,20 +329,26 @@
             return true;
         }
         
+        // 预创建噪声 buffer，避免每次调用都重建
+        let noiseBuffer = null;
+
+        function ensureNoiseBuffer() {
+            if (noiseBuffer || !audioCtx) return;
+            const bufferSize = 4096;
+            noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        }
+
         // 播放可爱音乐 (短促轻快乐)
         function playHappySound() {
-            if (!AudioContextClass) return;
-            try {
-                if (!audioCtx) {
-                    audioCtx = new AudioContextClass();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume().then(() => actuallyPlay()).catch(() => {});
-                } else {
-                    actuallyPlay();
-                }
-            } catch(e) { console.log("audio error"); }
-            
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => actuallyPlay()).catch(() => {});
+            } else {
+                actuallyPlay();
+            }
+
             function actuallyPlay() {
                 if (!audioCtx) return;
                 const now = audioCtx.currentTime;
@@ -358,7 +357,7 @@
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
+
                 const baseFreq = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
                 let freqIndex = Math.floor(Math.random() * baseFreq.length);
                 let isDrumLike = Math.random() < 0.2;
@@ -366,12 +365,12 @@
                 if (isDrumLike) frequency = 220 + Math.random() * 150;
                 osc.type = isDrumLike ? 'sine' : (Math.random() > 0.6 ? 'triangle' : 'sine');
                 osc.frequency.value = frequency;
-                
+
                 gain.gain.setValueAtTime(0.28, now);
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
                 osc.start();
                 osc.stop(now + 0.35);
-                
+
                 // 和声小点缀
                 if (Math.random() > 0.5) {
                     const osc2 = audioCtx.createOscillator();
@@ -385,23 +384,22 @@
                     osc2.start();
                     osc2.stop(now + 0.3);
                 }
-                
-                // 小鼓点噪声
+
+                // 小鼓点噪声（复用预创建 buffer）
                 if (Math.random() < 0.4) {
-                    const noiseGain = audioCtx.createGain();
-                    const bufferSize = 4096;
-                    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                    const data = buffer.getChannelData(0);
-                    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-                    const noiseNode = audioCtx.createBufferSource();
-                    noiseNode.buffer = buffer;
-                    noiseNode.loop = true;
-                    noiseNode.connect(noiseGain);
-                    noiseGain.connect(audioCtx.destination);
-                    noiseGain.gain.setValueAtTime(0.08, now);
-                    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
-                    noiseNode.start();
-                    noiseNode.stop(now + 0.12);
+                    ensureNoiseBuffer();
+                    if (noiseBuffer) {
+                        const noiseGain = audioCtx.createGain();
+                        const noiseNode = audioCtx.createBufferSource();
+                        noiseNode.buffer = noiseBuffer;
+                        noiseNode.loop = true;
+                        noiseNode.connect(noiseGain);
+                        noiseGain.connect(audioCtx.destination);
+                        noiseGain.gain.setValueAtTime(0.08, now);
+                        noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+                        noiseNode.start();
+                        noiseNode.stop(now + 0.12);
+                    }
                 }
             }
         }
@@ -409,6 +407,8 @@
         // ------------------------------
         // 2. 视觉特效核心
         // ------------------------------
+
+        const animContainer = document.getElementById('animationContainer');
         
         // 放大显示的按键字符 (核心优化)
         function showZoomingKeyChar(keyChar, clickX, clickY) {
@@ -416,19 +416,13 @@
             // 限制长度，只显示第一个可打印字符或者特殊标记
             let displayChar = keyChar.length === 1 ? keyChar : (keyChar === ' ' ? '␣' : '🎵');
             // 如果字符是特殊功能键，显示可爱图标
-            if (keyChar === 'Enter') displayChar = '⏎';
-            if (keyChar === 'Shift') displayChar = '⬆️';
-            if (keyChar === 'Control') displayChar = '🎮';
-            if (keyChar === 'Alt') displayChar = '✨';
-            if (keyChar === 'Meta') displayChar = '🍎';
-            if (keyChar === 'Tab') displayChar = '⇥';
-            if (keyChar === 'Escape') displayChar = '🌀';
-            if (keyChar === 'ArrowUp') displayChar = '⬆️';
-            if (keyChar === 'ArrowDown') displayChar = '⬇️';
-            if (keyChar === 'ArrowLeft') displayChar = '⬅️';
-            if (keyChar === 'ArrowRight') displayChar = '➡️';
-            if (keyChar === 'Backspace') displayChar = '⌫';
-            if (keyChar === 'Delete') displayChar = '🗑️';
+            const KEY_DISPLAY = {
+                Enter: '⏎', Shift: '⬆️', Control: '🎮', Alt: '✨',
+                Meta: '🍎', Tab: '⇥', Escape: '🌀',
+                ArrowUp: '⬆️', ArrowDown: '⬇️', ArrowLeft: '⬅️', ArrowRight: '➡️',
+                Backspace: '⌫', Delete: '🗑️'
+            };
+            displayChar = KEY_DISPLAY[keyChar] || displayChar;
             
             // 位置: 使用事件坐标，否则屏幕中央附近+随机偏移，让字母出现在敲击点附近
             let posX = clickX;
@@ -450,7 +444,15 @@
             zoomDiv.style.left = posX - 45 + 'px';
             zoomDiv.style.top = posY - 40 + 'px';
             // 增加内嵌emoji趣味
-            zoomDiv.innerHTML = `<span style="display:inline-block; margin-right:6px;">🎈</span>${displayChar}<span style="display:inline-block; margin-left:6px;">✨</span>`;
+            const leftDeco = document.createElement('span');
+            leftDeco.style.cssText = 'display:inline-block;margin-right:6px';
+            leftDeco.textContent = '🎈';
+            zoomDiv.appendChild(leftDeco);
+            zoomDiv.appendChild(document.createTextNode(displayChar));
+            const rightDeco = document.createElement('span');
+            rightDeco.style.cssText = 'display:inline-block;margin-left:6px';
+            rightDeco.textContent = '✨';
+            zoomDiv.appendChild(rightDeco);
             document.body.appendChild(zoomDiv);
             
             // 动画结束移除
@@ -461,7 +463,7 @@
         
         // 创建多彩漂浮元素 (动物、水果等)
         function createJoyAnimation(eventX, eventY, triggeredByChar = null) {
-            const container = document.getElementById('animationContainer');
+            const container = animContainer;
             if (!container) return;
             
             let clientX = eventX;
@@ -476,7 +478,7 @@
             const funEmojis = [
                 '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐸', '🐒', '🐥', '🦄', 
                 '🐌', '🐞', '🌟', '⭐', '☀️', '🌈', '🍎', '🍉', '🍒', '🍭', '🎈', '🎉', '✨', 
-                '🎀', '🧸', '🐣', '🐝', '🌻', '🌸', '⭐', '💖', '😊', '🥳', '🎵', '🔔', '🪄', '🍬'
+                '🎀', '🧸', '🐣', '🐝', '🌻', '🌸', '💖', '😊', '🥳', '🎵', '🔔', '🪄', '🍬'
             ];
             let emoji = funEmojis[Math.floor(Math.random() * funEmojis.length)];
             // 如果有按下的有效字母并且随机融合，增加趣味
@@ -492,7 +494,7 @@
             else if (sizeRand < 0.3) element.classList.add('small');
             element.style.left = clientX - 35 + 'px';
             element.style.top = clientY - 35 + 'px';
-            element.innerHTML = showText;
+            element.textContent = showText;
             container.appendChild(element);
             
             const xMove = (Math.random() - 0.5) * 50;
@@ -522,7 +524,7 @@
         }
         
         function createBubbleAt(x, y) {
-            const container = document.getElementById('animationContainer');
+            const container = animContainer;
             if (!container) return;
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
@@ -537,11 +539,11 @@
         }
         
         function createStarSpark(x, y) {
-            const container = document.getElementById('animationContainer');
+            const container = animContainer;
             if (!container) return;
             const star = document.createElement('div');
             star.className = 'star-spark';
-            star.innerHTML = '⭐';
+            star.textContent = '⭐';
             star.style.left = (x - 15) + 'px';
             star.style.top = (y - 15) + 'px';
             star.style.fontSize = (Math.random() * 20 + 18) + 'px';
@@ -560,7 +562,7 @@
         
         // 随机飘落彩色小纸片
         function randomExtraConfetti() {
-            const container = document.getElementById('animationContainer');
+            const container = animContainer;
             if (!container) return;
             for(let i = 0; i < 3; i++) {
                 const conf = document.createElement('div');
@@ -585,23 +587,14 @@
         // ------------------------------
         // 3. 核心交互：键盘按下时  (字符放大动画为核心优化)
         // ------------------------------
-        function onKeyboardPress(event) {
-            // 阻止部分键的默认行为（避免宝宝误触导致页面滚动）
-            const preventKeys = [' ', 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-            if (preventKeys.includes(event.key)) {
-                event.preventDefault();
-            }
-            
-            // 1) 启用并播放音效
-            if (!audioEnabled) {
-                audioEnabled = true;
-                initAudio();
-                playHappySound();
-            } else {
-                playHappySound();
-            }
-            
-            // 2) 获取按键字符并决定显示内容
+
+        // 视觉特效节流：音效每次都放（宝宝喜欢长按听声音），
+        // 但 DOM 节点创建需要节流，防止长按时 DOM 爆炸
+        let lastVisualTime = 0;
+        const VISUAL_THROTTLE = 80; // ms，每秒约 12 组视觉特效
+
+        function onKeyboardPressVisual(event) {
+            // 获取按键字符并决定显示内容
             let pressedKey = event.key;
             if (pressedKey && pressedKey.length === 1 && !/^[a-zA-Z0-9]$/.test(pressedKey)) {
                 // 但保留一些符号显示, 不过大多特殊字符也可以显示，但是保留可读性
@@ -664,7 +657,25 @@
         // 监听键盘（保留 event.repeat，宝宝就喜欢一直按着听声音）
         window.addEventListener('keydown', function(e) {
             if (e.altKey || e.ctrlKey || e.metaKey) return;
-            onKeyboardPress(e);
+
+            // 阻止部分键的默认行为（每次都要阻止，防止页面滚动）
+            const preventKeys = [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            if (preventKeys.includes(e.key)) {
+                e.preventDefault();
+            }
+
+            // 音效：每次都放，宝宝喜欢长按听声音
+            if (!audioEnabled) {
+                audioEnabled = true;
+                initAudio();
+            }
+            playHappySound();
+
+            // 视觉特效：节流，防止长按时 DOM 爆炸
+            if (Date.now() - lastVisualTime < VISUAL_THROTTLE) return;
+            lastVisualTime = Date.now();
+
+            onKeyboardPressVisual(e);
         });
         
         // 防抖：避免 touchstart + click 在移动端双重触发

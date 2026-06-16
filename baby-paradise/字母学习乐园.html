@@ -72,7 +72,7 @@
 
     .title {
       font-size: 42px;
-      color: #ff7eb3;
+      color: #e8458a;
       margin: 0 0 12px;
       text-shadow: 2px 2px 0 #fff;
     }
@@ -413,6 +413,15 @@
       display: none;
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .target { animation: none; }
+      .animal { animation: none; }
+      .cloud { animation: none; }
+      .star { animation: none; }
+      .pop { animation: none; }
+      .shake { animation: none; }
+    }
+
     @media (orientation: portrait) {
       .landscape-page {
         filter: blur(4px);
@@ -436,7 +445,7 @@
         border-radius: 36px;
         padding: 34px 28px;
         box-shadow: 0 15px 35px rgba(255, 126, 179, 0.24);
-        color: #ff7eb3;
+        color: #e8458a;
         font-size: 28px;
         font-weight: bold;
         line-height: 1.6;
@@ -546,6 +555,7 @@
   </main>
 
   <script>
+    (function() {
     // 只展示大写字母和数字
     const chars = [
       ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -609,6 +619,7 @@
       if (!soundEnabled) return;
 
       initAudio();
+      if (!audioCtx) return;
 
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
@@ -758,8 +769,9 @@
       const star = document.createElement("div");
       star.textContent = randomFrom(["⭐", "🌟", "✨", "💖"]);
       star.style.position = "fixed";
-      star.style.left = `${window.innerWidth * 0.24 + Math.random() * 240}px`;
-      star.style.top = `${window.innerHeight * 0.48 + Math.random() * 80 - 40}px`;
+      const rect = cardEl.getBoundingClientRect();
+      star.style.left = `${rect.left + rect.width / 2 + (Math.random() - 0.5) * rect.width * 0.6}px`;
+      star.style.top = `${rect.top + rect.height / 2 + (Math.random() - 0.5) * rect.height * 0.4}px`;
       star.style.fontSize = `${26 + Math.random() * 24}px`;
       star.style.pointerEvents = "none";
       star.style.zIndex = "999";
@@ -820,6 +832,7 @@
 
     // 初始显示
     targetEl.textContent = "A";
+    })();
   </script>
 
   <a class="home-btn" href="index.html" title="回乐园">🏠</a>

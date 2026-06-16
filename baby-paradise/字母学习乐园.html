@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>宝宝键盘小乐园</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Comic Sans MS", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #fff1f8 0%, #e7f8ff 100%);
+      color: #555;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .landscape-page {
+      width: 100vw;
+      height: 100vh;
+      padding: 28px 42px;
+      display: flex;
+      gap: 36px;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel {
+      width: 48%;
+      height: 88vh;
+      background: rgba(255, 255, 255, 0.9);
+      border: 7px solid #ffe2ef;
+      border-radius: 48px;
+      box-shadow: 0 16px 36px rgba(255, 126, 179, 0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .right-panel {
+      width: 42%;
+      height: 88vh;
+      background: rgba(255, 255, 255, 0.72);
+      border: 6px solid #d9f0ff;
+      border-radius: 44px;
+      box-shadow: 0 16px 36px rgba(124, 200, 255, 0.18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 42px;
+      color: #ff7eb3;
+      margin: 0 0 12px;
+      text-shadow: 2px 2px 0 #fff;
+    }
+
+    .subtitle {
+      font-size: 24px;
+      color: #70aaff;
+      margin-bottom: 26px;
+      font-weight: bold;
+    }
+
+    .question-text {
+      font-size: 28px;
+      color: #999;
+      margin-bottom: 24px;
+      font-weight: bold;
+    }
+
+    .target {
+      width: min(42vh, 310px);
+      height: min(42vh, 310px);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffb6d5, #8fd6ff);
+      color: white;
+      font-size: min(25vh, 180px);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        inset 0 -12px 0 rgba(255,255,255,0.32),
+        0 14px 26px rgba(0,0,0,0.13);
+      user-select: none;
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .animal {
+      position: absolute;
+      top: -42px;
+      right: 36px;
+      font-size: 66px;
+      animation: wiggle 2s infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% {
+        transform: rotate(0deg);
+      }
+
+      25% {
+        transform: rotate(8deg);
+      }
+
+      75% {
+        transform: rotate(-8deg);
+      }
+    }
+
+    .keyboard-tip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: #f2fbff;
+      border: 5px dashed #b8e6ff;
+      border-radius: 30px;
+      padding: 18px 26px;
+      color: #55a9df;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 28px;
+    }
+
+    .keyboard-icon {
+      font-size: 42px;
+    }
+
+    .message {
+      min-height: 58px;
+      font-size: 32px;
+      font-weight: 900;
+      color: #ff8a3d;
+      margin: 16px 0;
+    }
+
+    .hint {
+      min-height: 34px;
+      font-size: 21px;
+      color: #999;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .score-board {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .score-item {
+      background: #fff8c9;
+      border-radius: 28px;
+      padding: 12px 24px;
+      font-size: 22px;
+      color: #f5a623;
+      font-weight: bold;
+      box-shadow: 0 5px 0 #ffe48c;
+    }
+
+    .button-area {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #ff9ac8, #7cc8ff);
+      font-size: 24px;
+      padding: 15px 38px;
+      box-shadow: 0 8px 0 #d98fce;
+    }
+
+    .sound-btn {
+      background: linear-gradient(135deg, #ffd86f, #ff9a9e);
+      font-size: 20px;
+      padding: 14px 28px;
+      box-shadow: 0 8px 0 #e6b95c;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(5px);
+      box-shadow: 0 3px 0 #d98fce;
+    }
+
+    .sound-btn:active {
+      box-shadow: 0 3px 0 #e6b95c;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255,255,255,0.72);
+      border-radius: 999px;
+      z-index: 1;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.72);
+      border-radius: 50%;
+    }
+
+    .cloud.one {
+      width: 160px;
+      height: 54px;
+      left: 5%;
+      top: 8%;
+      animation: float 8s infinite ease-in-out;
+    }
+
+    .cloud.one::before {
+      width: 74px;
+      height: 74px;
+      left: 20px;
+      top: -32px;
+    }
+
+    .cloud.one::after {
+      width: 92px;
+      height: 92px;
+      right: 10px;
+      top: -46px;
+    }
+
+    .cloud.two {
+      width: 140px;
+      height: 50px;
+      right: 6%;
+      bottom: 8%;
+      animation: float 9s infinite ease-in-out reverse;
+    }
+
+    .cloud.two::before {
+      width: 68px;
+      height: 68px;
+      left: 18px;
+      top: -30px;
+    }
+
+    .cloud.two::after {
+      width: 82px;
+      height: 82px;
+      right: 8px;
+      top: -38px;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(18px);
+      }
+    }
+
+    /* 返回乐园按钮 */
+    .home-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border: 3px solid #ffe2ef;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255,126,179,0.2);
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .home-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 18px rgba(255,126,179,0.3);
+    }
+    .home-btn:active {
+      transform: scale(0.95);
+    }
+
+    .star {
+      position: absolute;
+      font-size: 32px;
+      z-index: 1;
+      animation: twinkle 1.5s infinite alternate;
+    }
+
+    .s1 {
+      left: 18%;
+      bottom: 12%;
+    }
+
+    .s2 {
+      right: 20%;
+      top: 12%;
+      animation-delay: 0.3s;
+    }
+
+    .s3 {
+      left: 48%;
+      top: 6%;
+      animation-delay: 0.7s;
+    }
+
+    @keyframes twinkle {
+      from {
+        transform: scale(0.85);
+        opacity: 0.55;
+      }
+
+      to {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    .pop {
+      animation: pop 0.35s ease;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.18);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .shake {
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-8px);
+      }
+
+      75% {
+        transform: translateX(8px);
+      }
+    }
+
+    .rotate-mask {
+      display: none;
+    }
+
+    @media (orientation: portrait) {
+      .landscape-page {
+        filter: blur(4px);
+      }
+
+      .rotate-mask {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #fff1f8, #e6f7ff);
+        text-align: center;
+        padding: 30px;
+      }
+
+      .rotate-box {
+        background: white;
+        border: 6px solid #ffe2ef;
+        border-radius: 36px;
+        padding: 34px 28px;
+        box-shadow: 0 15px 35px rgba(255, 126, 179, 0.24);
+        color: #ff7eb3;
+        font-size: 28px;
+        font-weight: bold;
+        line-height: 1.6;
+      }
+
+      .rotate-icon {
+        font-size: 70px;
+        display: block;
+        margin-bottom: 12px;
+      }
+    }
+
+    @media (max-width: 900px) and (orientation: landscape) {
+      .landscape-page {
+        padding: 18px 24px;
+        gap: 20px;
+      }
+
+      .title {
+        font-size: 32px;
+      }
+
+      .subtitle {
+        font-size: 19px;
+      }
+
+      .question-text {
+        font-size: 22px;
+      }
+
+      .message {
+        font-size: 25px;
+      }
+
+      .hint {
+        font-size: 17px;
+      }
+
+      .keyboard-tip {
+        font-size: 18px;
+        padding: 12px 18px;
+      }
+
+      .score-item {
+        font-size: 18px;
+        padding: 9px 18px;
+      }
+
+      .start-btn {
+        font-size: 20px;
+        padding: 12px 30px;
+      }
+
+      .sound-btn {
+        font-size: 17px;
+        padding: 11px 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 背景装饰 -->
+  <div class="cloud one"></div>
+  <div class="cloud two"></div>
+  <div class="star s1">⭐</div>
+  <div class="star s2">🌟</div>
+  <div class="star s3">✨</div>
+
+  <!-- 竖屏提示 -->
+  <div class="rotate-mask">
+    <div class="rotate-box">
+      <span class="rotate-icon">📱↔️</span>
+      请把设备横过来玩哦
+    </div>
+  </div>
+
+  <main class="landscape-page">
+    <section class="left-panel" id="card">
+      <div class="animal" id="animal">🐰</div>
+      <div class="question-text">请按电脑键盘上的这个键：</div>
+      <div class="target" id="target">A</div>
+    </section>
+
+    <section class="right-panel">
+      <h1 class="title">宝宝键盘小乐园</h1>
+      <div class="subtitle">大写字母和数字练习</div>
+
+      <div class="keyboard-tip">
+        <span class="keyboard-icon">⌨️</span>
+        <span>不用点屏幕，直接按键盘</span>
+      </div>
+
+      <div class="message" id="message">准备好了吗？</div>
+      <div class="hint" id="hint">点击“开始玩”，然后按键盘</div>
+
+      <div class="score-board">
+        <div class="score-item">答对：<span id="rightCount">0</span></div>
+        <div class="score-item">尝试：<span id="tryCount">0</span></div>
+      </div>
+
+      <div class="button-area">
+        <button class="start-btn" id="startBtn">开始玩</button>
+        <button class="sound-btn" id="soundBtn">🔊 音效开</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 只展示大写字母和数字
+    const chars = [
+      ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      ..."0123456789"
+    ];
+
+    const wrongMessages = [
+      "差一点点，再试试！",
+      "宝宝很棒，再找找看！",
+      "没关系，继续加油！",
+      "快成功啦，再按一次！",
+      "勇敢宝宝，再试试看！"
+    ];
+
+    const rightMessages = [
+      "太棒啦！答对了！",
+      "哇，宝宝真厉害！",
+      "正确！送你一颗小星星！",
+      "好聪明呀！",
+      "答对啦，拍拍手！"
+    ];
+
+    const animals = ["🐰", "🐻", "🐼", "🐱", "🐶", "🦊", "🐥", "🐸"];
+
+    const targetEl = document.getElementById("target");
+    const messageEl = document.getElementById("message");
+    const hintEl = document.getElementById("hint");
+    const rightCountEl = document.getElementById("rightCount");
+    const tryCountEl = document.getElementById("tryCount");
+    const startBtn = document.getElementById("startBtn");
+    const soundBtn = document.getElementById("soundBtn");
+    const cardEl = document.getElementById("card");
+    const animalEl = document.getElementById("animal");
+
+    let currentChar = "A";
+    let lastChar = null;
+    let rightCount = 0;
+    let tryCount = 0;
+    let playing = false;
+    let answered = false;
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    // 答对后自动下一题延迟
+    const AUTO_NEXT_DELAY = 1000;
+    let autoNextTimer = null;
+
+    // 初始化音频
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume().catch(() => {});
+      }
+    }
+
+    // 播放单个音调
+    function playTone(frequency, startTime, duration, type = "sine", volume = 0.16) {
+      if (!soundEnabled) return;
+
+      initAudio();
+
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, startTime);
+
+      // 淡入淡出，避免爆音
+      gainNode.gain.setValueAtTime(0.001, startTime);
+      gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.02);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration + 0.03);
+    }
+
+    // 正确音效
+    function playSuccessSound() {
+      if (!soundEnabled) return;
+
+      initAudio();
+
+      const now = audioCtx.currentTime;
+      playTone(523.25, now, 0.12, "sine", 0.15);
+      playTone(659.25, now + 0.12, 0.12, "sine", 0.16);
+      playTone(783.99, now + 0.24, 0.2, "sine", 0.18);
+    }
+
+    // 错误音效
+    function playWrongSound() {
+      if (!soundEnabled) return;
+
+      initAudio();
+
+      const now = audioCtx.currentTime;
+      playTone(330, now, 0.13, "triangle", 0.11);
+      playTone(260, now + 0.12, 0.18, "triangle", 0.1);
+    }
+
+    function randomFrom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function getRandomChar() {
+      let char;
+      do {
+        char = randomFrom(chars);
+      } while (char === lastChar && chars.length > 1);
+      lastChar = char;
+      return char;
+    }
+
+    // 新题目
+    function newQuestion() {
+      if (autoNextTimer) {
+        clearTimeout(autoNextTimer);
+        autoNextTimer = null;
+      }
+
+      currentChar = getRandomChar();
+      targetEl.textContent = currentChar;
+
+      answered = false;
+      playing = true;
+
+      messageEl.textContent = "宝宝，请按电脑键盘！";
+      messageEl.style.color = "#ff8a3d";
+
+      hintEl.textContent = "屏幕显示什么，就按键盘上对应的键";
+
+      startBtn.style.display = "none";
+
+      animalEl.textContent = randomFrom(animals);
+
+      targetEl.classList.remove("pop");
+      void targetEl.offsetWidth;
+      targetEl.classList.add("pop");
+    }
+
+    // 判断是否答对
+    function isCorrectKey(inputChar, targetChar) {
+      // 数字必须一致
+      if (/^[0-9]$/.test(targetChar)) {
+        return inputChar === targetChar;
+      }
+
+      // 展示大写字母，但按小写也算同一个键
+      return inputChar.toUpperCase() === targetChar;
+    }
+
+    // 处理键盘输入
+    function handleInput(inputChar) {
+      if (!playing || answered) return;
+
+      tryCount++;
+      tryCountEl.textContent = tryCount;
+
+      if (isCorrectKey(inputChar, currentChar)) {
+        answered = true;
+        rightCount++;
+        rightCountEl.textContent = rightCount;
+
+        messageEl.textContent = randomFrom(rightMessages);
+        messageEl.style.color = "#33c481";
+        hintEl.textContent = "真棒！马上进入下一个";
+
+        playSuccessSound();
+        playCorrectEffect();
+
+        // 自动下一题
+        autoNextTimer = setTimeout(() => {
+          newQuestion();
+        }, AUTO_NEXT_DELAY);
+      } else {
+        messageEl.textContent = randomFrom(wrongMessages);
+        messageEl.style.color = "#ff8a3d";
+        hintEl.textContent = "再看看中间的大圆圈，按键盘上对应的键";
+
+        playWrongSound();
+        playWrongEffect();
+      }
+    }
+
+    // 正确动画
+    function playCorrectEffect() {
+      targetEl.classList.remove("pop");
+      void targetEl.offsetWidth;
+      targetEl.classList.add("pop");
+
+      for (let i = 0; i < 9; i++) {
+        createFloatingStar();
+      }
+    }
+
+    // 错误动画
+    function playWrongEffect() {
+      cardEl.classList.remove("shake");
+      void cardEl.offsetWidth;
+      cardEl.classList.add("shake");
+    }
+
+    // 星星动画
+    function createFloatingStar() {
+      const star = document.createElement("div");
+      star.textContent = randomFrom(["⭐", "🌟", "✨", "💖"]);
+      star.style.position = "fixed";
+      star.style.left = `${window.innerWidth * 0.24 + Math.random() * 240}px`;
+      star.style.top = `${window.innerHeight * 0.48 + Math.random() * 80 - 40}px`;
+      star.style.fontSize = `${26 + Math.random() * 24}px`;
+      star.style.pointerEvents = "none";
+      star.style.zIndex = "999";
+      star.style.transition = "all 1s ease-out";
+      star.style.opacity = "1";
+
+      document.body.appendChild(star);
+
+      requestAnimationFrame(() => {
+        star.style.transform = `translate(${Math.random() * 180 - 90}px, -170px) rotate(${Math.random() * 180}deg)`;
+        star.style.opacity = "0";
+      });
+
+      setTimeout(() => {
+        star.remove();
+      }, 1000);
+    }
+
+    // 监听真实电脑键盘
+    document.addEventListener("keydown", (event) => {
+      // 关键修复：宝宝长按键时，浏览器会连续触发 keydown
+      // event.repeat 为 true 时表示这是长按产生的重复事件，直接忽略
+      if (event.repeat) {
+        return;
+      }
+
+      initAudio();
+
+      // 只处理单字符输入：字母、数字
+      if (event.key.length === 1) {
+        handleInput(event.key);
+      }
+    });
+
+    // 开始按钮
+    startBtn.addEventListener("click", () => {
+      initAudio();
+
+      rightCount = 0;
+      tryCount = 0;
+      rightCountEl.textContent = rightCount;
+      tryCountEl.textContent = tryCount;
+
+      newQuestion();
+    });
+
+    // 音效开关
+    soundBtn.addEventListener("click", () => {
+      initAudio();
+
+      soundEnabled = !soundEnabled;
+      soundBtn.textContent = soundEnabled ? "🔊 音效开" : "🔇 音效关";
+
+      if (soundEnabled) {
+        playSuccessSound();
+      }
+    });
+
+    // 初始显示
+    targetEl.textContent = "A";
+  </script>
+
+  <a class="home-btn" href="index.html" title="回乐园">🏠</a>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>宝宝键盘魔法乐园 - 快乐敲击 字母蹦蹦跳</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* 避免选中文字，更适合宝宝随意点击 */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f9e5b3 0%, #f4c9a0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI Emoji', 'Apple Color Emoji', cursive, sans-serif;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* 主画布容器 */
+        .magic-world {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* 可爱的中央提示区 */
+        .welcome-message {
+            background: rgba(255, 248, 225, 0.85);
+            backdrop-filter: blur(6px);
+            border-radius: 80px;
+            padding: 20px 35px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1), inset 0 1px 4px rgba(255,255,200,0.8);
+            border: 2px solid #fff8e7;
+            z-index: 10;
+            transition: transform 0.2s ease;
+            pointer-events: none; /* 让点击穿透到键盘事件，文字只用于展示 */
+        }
+
+        .welcome-message h1 {
+            font-size: 2.8rem;
+            color: #e65c1e;
+            text-shadow: 3px 3px 0 #ffd966;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-message p {
+            font-size: 1.5rem;
+            color: #b45f2b;
+            font-weight: bold;
+        }
+
+        .key-hint {
+            margin-top: 12px;
+            font-size: 1.2rem;
+            background: #ffecb3;
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #c25d1a;
+            font-weight: bold;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 动态动画物品存放容器 */
+        .animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+            overflow: hidden;
+        }
+
+        /* 小动物/星星/快乐元素通用样式 */
+        .happy-element {
+            position: absolute;
+            font-size: 3rem;
+            filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.2));
+            animation: floatAway 1.2s ease-out forwards;
+            z-index: 25;
+        }
+
+        .happy-element.big {
+            font-size: 5rem;
+        }
+
+        .happy-element.small {
+            font-size: 2rem;
+        }
+
+        /* 按键字符放大动画 —— 全新优化核心 */
+        .key-zoom {
+            position: fixed;
+            font-weight: bold;
+            font-family: 'Comic Neue', 'Comic Sans MS', 'Segoe UI Emoji', cursive;
+            color: #ff6f3c;
+            text-shadow: 4px 4px 0 #ffd966, 0 0 10px #ffbb77;
+            background: rgba(255, 245, 200, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 60px;
+            padding: 12px 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2), inset 0 1px 3px rgba(255,255,200,0.9);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: zoomPop 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+            transform-origin: center center;
+        }
+        
+        /* 特别版大字爆炸效果 */
+        @keyframes zoomPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.2) translateY(20px);
+            }
+            30% {
+                opacity: 1;
+                transform: scale(1.3) translateY(-10px);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1) translateY(-20px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-60px);
+            }
+        }
+
+        /* 彩色纸屑/泡泡样式 */
+        .bubble {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,200,0.9), rgba(255,180,100,0.7));
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(255,215,0,0.6);
+            pointer-events: none;
+            animation: bubblePop 1s ease-out forwards;
+        }
+
+        /* 跳动星星 */
+        .star-spark {
+            position: absolute;
+            color: gold;
+            text-shadow: 0 0 5px orange;
+            font-size: 2rem;
+            animation: twinkleFly 0.9s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+
+        /* 键盘按下的瞬间闪烁背景光效 */
+        .flash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,245,170,0.7) 0%, rgba(255,200,100,0) 80%);
+            pointer-events: none;
+            z-index: 5;
+            animation: gentleFlash 0.25s ease-out forwards;
+        }
+
+        /* 漂浮动画 */
+        @keyframes floatAway {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.6);
+            }
+            30% {
+                transform: translateY(-40px) scale(1.1) rotate(10deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-150px) scale(0.8) rotate(20deg);
+            }
+        }
+
+        @keyframes bubblePop {
+            0% {
+                opacity: 0.9;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.8) translateY(-60px);
+            }
+        }
+
+        @keyframes twinkleFly {
+            0% {
+                opacity: 0;
+                transform: scale(0.2) rotate(0deg);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.1) rotate(15deg);
+            }
+            80% {
+                opacity: 1;
+                transform: translateY(-70px) rotate(30deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-130px) rotate(60deg) scale(0.5);
+            }
+        }
+
+        @keyframes gentleFlash {
+            0% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* 返回乐园按钮 */
+        .home-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            border: 3px solid #f9e5b3;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(180,120,40,0.2);
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .home-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 18px rgba(180,120,40,0.3);
+        }
+        .home-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 底部简单提示 */
+        .footer-tip {
+            position: fixed;
+            bottom: 18px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1rem;
+            background: rgba(255,245,200,0.7);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            width: fit-content;
+            margin: 0 auto;
+            border-radius: 30px;
+            color: #a75823;
+            font-weight: bold;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        /* 针对移动设备确保触摸友好 */
+        @media (max-width: 600px) {
+            .welcome-message h1 { font-size: 2rem; }
+            .welcome-message p { font-size: 1.1rem; }
+            .key-hint { font-size: 0.9rem; }
+            .happy-element { font-size: 2.5rem; }
+            .key-zoom { padding: 8px 18px; font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="magic-world">
+    <div class="welcome-message">
+        <h1>🎈 键盘魔法乐园 🎈</h1>
+        <p>✨ 按按键盘 → 字母蹦蹦跳 ✨</p>
+        <div class="key-hint">⭐ 任意键 → 超大字符动画 + 音乐 + 小惊喜 ⭐</div>
+    </div>
+    <div class="footer-tip">
+        🐣 宝宝快敲键盘，看字母变大变漂亮！ 🐣
+    </div>
+</div>
+
+<!-- 动态元素插入区域 -->
+<div class="animation-container" id="animationContainer"></div>
+
+<script>
+    (function() {
+        // ------------------------------
+        // 1. 音效系统 (Web Audio 轻量)
+        // ------------------------------
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+        let audioEnabled = false;
+        
+        function initAudio() {
+            if (!AudioContextClass) return false;
+            if (!audioCtx) {
+                try {
+                    audioCtx = new AudioContextClass();
+                } catch(e) { return false; }
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+            return true;
+        }
+        
+        // 播放可爱音乐 (短促轻快乐)
+        function playHappySound() {
+            if (!AudioContextClass) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new AudioContextClass();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(() => actuallyPlay()).catch(() => {});
+                } else {
+                    actuallyPlay();
+                }
+            } catch(e) { console.log("audio error"); }
+            
+            function actuallyPlay() {
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+                // 主音调
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const baseFreq = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
+                let freqIndex = Math.floor(Math.random() * baseFreq.length);
+                let isDrumLike = Math.random() < 0.2;
+                let frequency = baseFreq[freqIndex];
+                if (isDrumLike) frequency = 220 + Math.random() * 150;
+                osc.type = isDrumLike ? 'sine' : (Math.random() > 0.6 ? 'triangle' : 'sine');
+                osc.frequency.value = frequency;
+                
+                gain.gain.setValueAtTime(0.28, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+                osc.start();
+                osc.stop(now + 0.35);
+                
+                // 和声小点缀
+                if (Math.random() > 0.5) {
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.type = 'sine';
+                    osc2.frequency.value = frequency * 1.2;
+                    gain2.gain.setValueAtTime(0.12, now);
+                    gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+                    osc2.start();
+                    osc2.stop(now + 0.3);
+                }
+                
+                // 小鼓点噪声
+                if (Math.random() < 0.4) {
+                    const noiseGain = audioCtx.createGain();
+                    const bufferSize = 4096;
+                    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                    const noiseNode = audioCtx.createBufferSource();
+                    noiseNode.buffer = buffer;
+                    noiseNode.loop = true;
+                    noiseNode.connect(noiseGain);
+                    noiseGain.connect(audioCtx.destination);
+                    noiseGain.gain.setValueAtTime(0.08, now);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+                    noiseNode.start();
+                    noiseNode.stop(now + 0.12);
+                }
+            }
+        }
+        
+        // ------------------------------
+        // 2. 视觉特效核心
+        // ------------------------------
+        
+        // 放大显示的按键字符 (核心优化)
+        function showZoomingKeyChar(keyChar, clickX, clickY) {
+            if (!keyChar) keyChar = "✨";
+            // 限制长度，只显示第一个可打印字符或者特殊标记
+            let displayChar = keyChar.length === 1 ? keyChar : (keyChar === ' ' ? '␣' : '🎵');
+            // 如果字符是特殊功能键，显示可爱图标
+            if (keyChar === 'Enter') displayChar = '⏎';
+            if (keyChar === 'Shift') displayChar = '⬆️';
+            if (keyChar === 'Control') displayChar = '🎮';
+            if (keyChar === 'Alt') displayChar = '✨';
+            if (keyChar === 'Meta') displayChar = '🍎';
+            if (keyChar === 'Tab') displayChar = '⇥';
+            if (keyChar === 'Escape') displayChar = '🌀';
+            if (keyChar === 'ArrowUp') displayChar = '⬆️';
+            if (keyChar === 'ArrowDown') displayChar = '⬇️';
+            if (keyChar === 'ArrowLeft') displayChar = '⬅️';
+            if (keyChar === 'ArrowRight') displayChar = '➡️';
+            if (keyChar === 'Backspace') displayChar = '⌫';
+            if (keyChar === 'Delete') displayChar = '🗑️';
+            
+            // 位置: 使用事件坐标，否则屏幕中央附近+随机偏移，让字母出现在敲击点附近
+            let posX = clickX;
+            let posY = clickY;
+            if (!posX || !posY || posX <= 0 || posY <= 0) {
+                posX = window.innerWidth / 2 + (Math.random() - 0.5) * 150;
+                posY = window.innerHeight * 0.6 + Math.random() * 100;
+            }
+            // 边界修正确保完整可见
+            posX = Math.min(window.innerWidth - 70, Math.max(40, posX));
+            posY = Math.min(window.innerHeight - 80, Math.max(50, posY));
+            
+            const zoomDiv = document.createElement('div');
+            zoomDiv.className = 'key-zoom';
+            // 根据字符长度和类型设置字体大小
+            let fontSize = '3.2rem';
+            if (displayChar.length > 1) fontSize = '2.4rem';
+            zoomDiv.style.fontSize = fontSize;
+            zoomDiv.style.left = posX - 45 + 'px';
+            zoomDiv.style.top = posY - 40 + 'px';
+            // 增加内嵌emoji趣味
+            zoomDiv.innerHTML = `<span style="display:inline-block; margin-right:6px;">🎈</span>${displayChar}<span style="display:inline-block; margin-left:6px;">✨</span>`;
+            document.body.appendChild(zoomDiv);
+            
+            // 动画结束移除
+            setTimeout(() => {
+                if (zoomDiv && zoomDiv.parentNode) zoomDiv.remove();
+            }, 600);
+        }
+        
+        // 创建多彩漂浮元素 (动物、水果等)
+        function createJoyAnimation(eventX, eventY, triggeredByChar = null) {
+            const container = document.getElementById('animationContainer');
+            if (!container) return;
+            
+            let clientX = eventX;
+            let clientY = eventY;
+            if (!clientX || !clientY) {
+                clientX = Math.random() * window.innerWidth;
+                clientY = Math.random() * (window.innerHeight * 0.7) + window.innerHeight * 0.2;
+            }
+            clientX = Math.min(window.innerWidth - 30, Math.max(30, clientX));
+            clientY = Math.min(window.innerHeight - 50, Math.max(40, clientY));
+            
+            const funEmojis = [
+                '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐸', '🐒', '🐥', '🦄', 
+                '🐌', '🐞', '🌟', '⭐', '☀️', '🌈', '🍎', '🍉', '🍒', '🍭', '🎈', '🎉', '✨', 
+                '🎀', '🧸', '🐣', '🐝', '🌻', '🌸', '⭐', '💖', '😊', '🥳', '🎵', '🔔', '🪄', '🍬'
+            ];
+            let emoji = funEmojis[Math.floor(Math.random() * funEmojis.length)];
+            // 如果有按下的有效字母并且随机融合，增加趣味
+            let showText = emoji;
+            if (triggeredByChar && /[a-zA-Z0-9]/i.test(triggeredByChar) && Math.random() > 0.6) {
+                showText = triggeredByChar.toUpperCase() + emoji;
+            }
+            
+            const element = document.createElement('div');
+            element.className = 'happy-element';
+            const sizeRand = Math.random();
+            if (sizeRand > 0.7) element.classList.add('big');
+            else if (sizeRand < 0.3) element.classList.add('small');
+            element.style.left = clientX - 35 + 'px';
+            element.style.top = clientY - 35 + 'px';
+            element.innerHTML = showText;
+            container.appendChild(element);
+            
+            const xMove = (Math.random() - 0.5) * 50;
+            const yMove = -60 - Math.random() * 60;
+            element.animate([
+                { transform: `translate(0px, 0px) scale(0.6)`, opacity: 0.9 },
+                { transform: `translate(${xMove}px, ${yMove}px) scale(1.1)`, opacity: 1, offset: 0.4 },
+                { transform: `translate(${xMove * 1.5}px, ${yMove * 1.3}px) scale(0.7)`, opacity: 0, offset: 1 }
+            ], {
+                duration: 1000,
+                easing: 'cubic-bezier(0.2, 0.9, 0.3, 1.1)',
+                fill: 'forwards'
+            });
+            
+            setTimeout(() => {
+                if (element && element.parentNode) element.remove();
+            }, 1100);
+            
+            // 额外增加泡泡和星星
+            const bubbleCount = Math.floor(Math.random() * 3) + 2;
+            for (let i = 0; i < bubbleCount; i++) {
+                createBubbleAt(clientX + (Math.random() - 0.5) * 70, clientY + (Math.random() - 0.5) * 60);
+            }
+            for (let s = 0; s < 2; s++) {
+                createStarSpark(clientX + (Math.random() - 0.5) * 90, clientY + (Math.random() - 0.5) * 80);
+            }
+        }
+        
+        function createBubbleAt(x, y) {
+            const container = document.getElementById('animationContainer');
+            if (!container) return;
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = 12 + Math.random() * 24;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = (x - size/2) + 'px';
+            bubble.style.top = (y - size/2) + 'px';
+            bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255, ${150 + Math.random() * 105}, 100, 0.9), rgba(255, 200, 100, 0.6))`;
+            container.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 950);
+        }
+        
+        function createStarSpark(x, y) {
+            const container = document.getElementById('animationContainer');
+            if (!container) return;
+            const star = document.createElement('div');
+            star.className = 'star-spark';
+            star.innerHTML = '⭐';
+            star.style.left = (x - 15) + 'px';
+            star.style.top = (y - 15) + 'px';
+            star.style.fontSize = (Math.random() * 20 + 18) + 'px';
+            container.appendChild(star);
+            setTimeout(() => star.remove(), 900);
+        }
+        
+        function addFlashEffect() {
+            const flashDiv = document.createElement('div');
+            flashDiv.className = 'flash-overlay';
+            document.body.appendChild(flashDiv);
+            setTimeout(() => {
+                if (flashDiv && flashDiv.parentNode) flashDiv.remove();
+            }, 250);
+        }
+        
+        // 随机飘落彩色小纸片
+        function randomExtraConfetti() {
+            const container = document.getElementById('animationContainer');
+            if (!container) return;
+            for(let i = 0; i < 3; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'absolute';
+                conf.style.width = '10px';
+                conf.style.height = '10px';
+                conf.style.backgroundColor = `hsl(${Math.random() * 360}, 85%, 65%)`;
+                conf.style.borderRadius = '4px';
+                conf.style.left = Math.random() * window.innerWidth + 'px';
+                conf.style.top = window.innerHeight - 15 + 'px';
+                conf.style.opacity = '0.9';
+                conf.style.pointerEvents = 'none';
+                container.appendChild(conf);
+                conf.animate([
+                    { transform: 'translateY(0px) rotate(0deg)', opacity: 0.9 },
+                    { transform: `translateY(-${70 + Math.random() * 130}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], { duration: 800, easing: 'ease-out' });
+                setTimeout(() => conf.remove(), 850);
+            }
+        }
+        
+        // ------------------------------
+        // 3. 核心交互：键盘按下时  (字符放大动画为核心优化)
+        // ------------------------------
+        function onKeyboardPress(event) {
+            // 阻止部分键的默认行为（避免宝宝误触导致页面滚动）
+            const preventKeys = [' ', 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            if (preventKeys.includes(event.key)) {
+                event.preventDefault();
+            }
+            
+            // 1) 启用并播放音效
+            if (!audioEnabled) {
+                audioEnabled = true;
+                initAudio();
+                playHappySound();
+            } else {
+                playHappySound();
+            }
+            
+            // 2) 获取按键字符并决定显示内容
+            let pressedKey = event.key;
+            if (pressedKey && pressedKey.length === 1 && !/^[a-zA-Z0-9]$/.test(pressedKey)) {
+                // 但保留一些符号显示, 不过大多特殊字符也可以显示，但是保留可读性
+                if (pressedKey === ' ') pressedKey = '␣';
+            }
+            
+            // 提取理想坐标：键盘事件没有鼠标坐标，但是为了放大字符动画活泼，我们基于屏幕随机区域 + 偏向宝宝视觉中央
+            // 为了让宝宝感觉字符从指尖蹦出，随机位置偏下中部，非常有趣
+            const baseX = window.innerWidth / 2 + (Math.random() - 0.5) * 180;
+            const baseY = window.innerHeight * 0.65 + Math.random() * 80;
+            
+            // 重要优化：调用放大字符动画！！
+            showZoomingKeyChar(pressedKey, baseX, baseY);
+            
+            // 同时产生普通漂浮小动物与泡泡 (增加氛围)
+            createJoyAnimation(baseX + (Math.random() - 0.5) * 60, baseY + (Math.random() - 0.5) * 50, pressedKey);
+            
+            // 闪光特效
+            addFlashEffect();
+            
+            // 额外小彩蛋
+            randomExtraConfetti();
+            
+            // 再额外附加一个飘动小元素，让画面更丰富
+            setTimeout(() => {
+                if (Math.random() > 0.3) {
+                    createJoyAnimation(baseX + (Math.random() - 0.5) * 100, baseY - 20, null);
+                }
+            }, 50);
+        }
+        
+        // 针对触摸屏和鼠标点击也增加反馈（方便触屏宝宝点按，同样展示字符放大提升趣味，但是移动端无键盘点击，我们模拟一个触摸字符）
+        function onScreenTap(event) {
+            if (!audioEnabled) {
+                audioEnabled = true;
+                initAudio();
+                playHappySound();
+            } else {
+                playHappySound();
+            }
+            let x = event.clientX;
+            let y = event.clientY;
+            if (!x || !y) {
+                if (event.touches && event.touches[0]) {
+                    x = event.touches[0].clientX;
+                    y = event.touches[0].clientY;
+                } else {
+                    x = window.innerWidth / 2;
+                    y = window.innerHeight / 2;
+                }
+            }
+            // 触摸时显示一个可爱的“点一点”特效
+            const tapEmoji = ['👆', '✨', '🎈', '🐣'][Math.floor(Math.random() * 4)];
+            showZoomingKeyChar(tapEmoji, x, y);
+            createJoyAnimation(x, y, '❤️');
+            addFlashEffect();
+            randomExtraConfetti();
+        }
+        
+        // 监听键盘（保留 event.repeat，宝宝就喜欢一直按着听声音）
+        window.addEventListener('keydown', function(e) {
+            if (e.altKey || e.ctrlKey || e.metaKey) return;
+            onKeyboardPress(e);
+        });
+        
+        // 防抖：避免 touchstart + click 在移动端双重触发
+        let lastInteractionTime = 0;
+        const INTERACTION_DEBOUNCE = 180;
+
+        // 触摸/鼠标点击给反馈 (让不使用键盘的宝宝也能享受)
+        window.addEventListener('click', function(e) {
+            if (Date.now() - lastInteractionTime < INTERACTION_DEBOUNCE) return;
+            lastInteractionTime = Date.now();
+            onScreenTap(e);
+        });
+
+        window.addEventListener('touchstart', function(e) {
+            if (e.touches && e.touches[0]) {
+                if (Date.now() - lastInteractionTime < INTERACTION_DEBOUNCE) return;
+                lastInteractionTime = Date.now();
+                onScreenTap(e.touches[0]);
+            }
+        });
+        
+        // 启动欢迎小彩蛋: 页面打开时飘几个欢迎字母
+        setTimeout(() => {
+            for (let i=0; i<5; i++) {
+                const randX = Math.random() * window.innerWidth;
+                const randY = window.innerHeight * 0.5 + Math.random() * 100;
+                showZoomingKeyChar('🎈', randX, randY);
+                createJoyAnimation(randX, randY, null);
+            }
+        }, 300);
+        
+        console.log("魔法键盘乐园升级版——按键字符放大动画已开启！");
+    })();
+</script>
+
+<a class="home-btn" href="index.html" title="回乐园">🏠</a>
+</body>
+</html>

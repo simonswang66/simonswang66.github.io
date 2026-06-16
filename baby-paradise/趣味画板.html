@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>趣味画板</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Comic Sans MS", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f5f0e8;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: none;
+    }
+
+    /* ========== 顶部导航栏 ========== */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid #e8dcc8;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: #f5f0e8;
+      color: #8b7355;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border: 2px solid #e0d5c0;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .back-link:hover { background: #ebe4d6; }
+
+    .mode-tabs {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      justify-content: center;
+    }
+    .mode-tab {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 2px solid #e0d5c0;
+      background: #fff;
+      color: #8b7355;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .mode-tab:hover { background: #faf6f0; }
+    .mode-tab.active {
+      background: #ff6b35;
+      color: #fff;
+      border-color: #ff6b35;
+    }
+    .mode-tab.placeholder {
+      opacity: 0.6;
+      border-style: dashed;
+    }
+
+    /* ========== 画布区域 ========== */
+    .canvas-wrap {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      bottom: 80px;
+      background: #fffef9;
+      cursor: crosshair;
+    }
+    .canvas-wrap.draw-mode {
+      cursor: none;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 模式1：英文数字书写引导 */
+    .writing-guide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .guide-char {
+      font-size: min(65vh, 65vw, 500px);
+      color: rgba(0,0,0,0.07);
+      font-weight: 900;
+      line-height: 1;
+      font-family: "Comic Sans MS", "PingFang SC", sans-serif;
+      pointer-events: none;
+      user-select: none;
+    }
+    .guide-nav {
+      position: absolute;
+      bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+      z-index: 20;
+    }
+    .guide-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #e0d5c0;
+      background: rgba(255,255,255,0.85);
+      font-size: 18px;
+      cursor: pointer;
+      color: #8b7355;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .guide-btn:hover { background: #f5f0e8; border-color: #c0b090; }
+    .guide-label {
+      font-size: 14px;
+      color: #b8a890;
+      font-weight: 600;
+      min-width: 60px;
+      text-align: center;
+    }
+    .writing-sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 200;
+      animation: sparkleFloat 0.8s ease-out forwards;
+      font-size: 20px;
+    }
+    @keyframes sparkleFloat {
+      0% { opacity: 1; transform: translate(0,0) scale(0.5); }
+      50% { opacity: 1; transform: translate(0,-30px) scale(1.2); }
+      100% { opacity: 0; transform: translate(0,-60px) scale(0.3); }
+    }
+
+    /* 画布遮罩（非自由涂鸦模式显示占位） */
+    .canvas-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,254,249,0.75);
+      backdrop-filter: blur(3px);
+      z-index: 10;
+      pointer-events: none;
+    }
+    .overlay-card {
+      background: #fff;
+      border: 3px dashed #e0d5c0;
+      border-radius: 24px;
+      padding: 40px 48px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .overlay-card .icon { font-size: 56px; margin-bottom: 12px; }
+    .overlay-card h2 { font-size: 24px; color: #8b7355; margin-bottom: 8px; }
+    .overlay-card p { font-size: 15px; color: #b8a890; }
+
+    /* 悬浮笔指示器 */
+    .floating-pen {
+      display: none;
+      position: fixed;
+      left: -100px;
+      top: -100px;
+      pointer-events: none;
+      z-index: 200;
+      font-size: 32px;
+      transform: translate(-30%, -90%);
+      transition: transform 0.08s ease;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+    }
+    .floating-pen.hovering {
+      display: block;
+      opacity: 0.7;
+    }
+    .floating-pen.drawing {
+      display: block;
+      opacity: 1;
+      transform: translate(-30%, -95%) rotate(-15deg);
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25));
+    }
+
+    /* ========== 底部工具栏 ========== */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(12px);
+      border-top: 2px solid #e8dcc8;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .color-palette {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .color-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.15s;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+    .color-dot:hover { transform: scale(1.15); }
+    .color-dot.active {
+      border-color: #333;
+      transform: scale(1.2);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+    }
+    .color-dot .key-hint {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: #999;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .tool-divider {
+      width: 1px;
+      height: 28px;
+      background: #e0d5c0;
+      margin: 0 4px;
+    }
+
+    .tool-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 2px solid #e0d5c0;
+      background: #fff;
+      color: #8b7355;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .tool-btn:hover { background: #f5f0e8; }
+    .tool-btn.danger { color: #e05555; border-color: #f0c0c0; }
+    .tool-btn.danger:hover { background: #fff5f5; }
+
+    .brush-size-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #8b7355;
+      font-weight: 600;
+    }
+    .brush-size-indicator input[type="range"] {
+      width: 80px;
+      accent-color: #ff6b35;
+    }
+
+    /* 状态提示 */
+    .status-tip {
+      position: fixed;
+      top: 66px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 150;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      pointer-events: none;
+      transition: all 0.3s;
+      opacity: 0;
+    }
+    .status-tip.draw-on {
+      opacity: 1;
+      background: #ff6b35;
+      color: #fff;
+    }
+    .status-tip.draw-off {
+      opacity: 1;
+      background: #e0d5c0;
+      color: #8b7355;
+    }
+
+    /* 颜色键位提示浮层 */
+    .key-legend {
+      position: fixed;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: none;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+    .draw-mode .key-legend { opacity: 0; }
+    .key-legend span {
+      font-size: 11px;
+      color: #b8a890;
+      text-align: right;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="top-bar">
+  <a class="back-link" href="index.html">&#8592; 回乐园</a>
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="0">🖍️ 自由涂鸦</button>
+    <button class="mode-tab" data-mode="1">✏️ 英文数字书写</button>
+    <button class="mode-tab placeholder" data-mode="2">🎨 你画我猜</button>
+  </div>
+</div>
+
+<!-- 状态提示 -->
+<div class="status-tip draw-off" id="statusTip">按 i 悬浮笔 · 再按 i 连续画 · 再按 i 退出 · C 清空 · U 撤销</div>
+
+<!-- 画布 -->
+<div class="canvas-wrap" id="canvasWrap">
+  <canvas id="canvas"></canvas>
+
+  <!-- 模式2占位 -->
+  <div class="canvas-overlay" id="overlayWriting" style="display:none">
+    <div class="overlay-card">
+      <div class="icon">✏️</div>
+      <h2>英文数字书写</h2>
+      <p>即将上线，敬请期待～</p>
+    </div>
+  </div>
+
+  <!-- 模式3占位 -->
+  <div class="writing-guide" id="writingGuide" style="display:none">
+    <div class="guide-char" id="guideChar">A</div>
+    <div class="guide-nav">
+      <button class="guide-btn" id="guidePrev">&#9664;</button>
+      <span class="guide-label" id="guideLabel">1 / 36</span>
+      <button class="guide-btn" id="guideNext">&#9654;</button>
+    </div>
+  </div>
+
+  <div class="canvas-overlay" id="overlayGuess" style="display:none">
+    <div class="overlay-card">
+      <div class="icon">🎨</div>
+      <h2>你画我猜</h2>
+      <p>即将上线，敬请期待～</p>
+    </div>
+  </div>
+</div>
+
+<!-- 悬浮笔 -->
+<div class="floating-pen" id="floatingPen">🖍️</div>
+
+<!-- 底部工具栏 -->
+<div class="bottom-bar" id="bottomBar">
+  <div class="color-palette" id="colorPalette">
+    <!-- JS 动态生成 -->
+  </div>
+  <span class="tool-divider"></span>
+  <div class="brush-size-indicator">
+    粗细 <input type="range" id="brushSize" min="2" max="20" value="5" />
+  </div>
+  <span class="tool-divider"></span>
+  <button class="tool-btn danger" id="clearBtn">🗑️ 清空</button>
+  <button class="tool-btn" id="undoBtn">↩️ 撤销</button>
+</div>
+
+<!-- 色键提示 -->
+<div class="key-legend" id="keyLegend">
+  <!-- JS 动态生成 -->
+</div>
+
+<script>
+(function() {
+  // ======================== 常量 ========================
+  const WRITING_CHARS = [
+    'A','B','C','D','E','F','G','H','I','J','K','L','M',
+    'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+    '0','1','2','3','4','5','6','7','8','9'
+  ];
+
+  const COLORS = [
+    { name: '红', code: '#e74c3c', key: '1' },
+    { name: '橙', code: '#f39c12', key: '2' },
+    { name: '黄', code: '#f1c40f', key: '3' },
+    { name: '绿', code: '#27ae60', key: '4' },
+    { name: '蓝', code: '#2980b9', key: '5' },
+    { name: '紫', code: '#8e44ad', key: '6' },
+    { name: '粉', code: '#e91e63', key: '7' },
+    { name: '棕', code: '#8b5e3c', key: '8' },
+    { name: '黑', code: '#2c3e50', key: '9' },
+    { name: '灰', code: '#7f8c8d', key: '0' },
+  ];
+
+  // ======================== DOM ========================
+  const canvasWrap = document.getElementById('canvasWrap');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // 隐藏画布：渲染字符形状用于填充检测
+  const maskCanvas = document.createElement('canvas');
+  const maskCtx = maskCanvas.getContext('2d');
+  let charMask = null; // { data, width, height, charPixels: [] } — 字符像素坐标数组
+  const statusTip = document.getElementById('statusTip');
+  const floatingPen = document.getElementById('floatingPen');
+  const colorPalette = document.getElementById('colorPalette');
+  const keyLegend = document.getElementById('keyLegend');
+  const brushSizeInput = document.getElementById('brushSize');
+  const clearBtn = document.getElementById('clearBtn');
+  const undoBtn = document.getElementById('undoBtn');
+  const overlayWriting = document.getElementById('overlayWriting');
+  const overlayGuess = document.getElementById('overlayGuess');
+
+  // ======================== 状态 ========================
+  let drawMode = false;           // false | 'float' | 'continuous'
+  let currentColor = COLORS[0].code;
+  let brushSize = 5;
+  let currentMode = 0;            // 0=涂鸦, 1=书写, 2=你画我猜
+  let lastX = null, lastY = null;
+  let writingIdx = 0;             // 当前书写字符索引
+  let lastSparkleTime = 0;        // 书写模式闪光节流
+  let isDrawing = false;
+
+  // 撤销历史
+  let history = [];
+  const MAX_HISTORY = 30;
+
+  // ======================== 初始化画布 ========================
+  function resizeCanvas() {
+    const rect = canvasWrap.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const w = rect.width;
+    const h = rect.height;
+
+    if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+      // 保存到临时 canvas
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(canvas, 0, 0);
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // 恢复内容
+      ctx.drawImage(tempCanvas, 0, 0, w, h);
+    }
+  }
+
+  function initCanvas() {
+    resizeCanvas();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    saveHistory();
+  }
+
+  // ======================== 撤销历史 ========================
+  function saveHistory() {
+    history.push(canvas.toDataURL());
+    if (history.length > MAX_HISTORY) {
+      history.shift();
+    }
+  }
+
+  function undo() {
+    if (history.length <= 1) {
+      // 至少保留一张（初始空白）
+      ctx.clearRect(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
+      history = [];
+      saveHistory();
+      return;
+    }
+    history.pop(); // 丢弃当前
+    const prev = history[history.length - 1];
+    const img = new Image();
+    img.onload = function() {
+      const dpr = window.devicePixelRatio || 1;
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      ctx.drawImage(img, 0, 0, canvas.width / dpr, canvas.height / dpr);
+    };
+    img.src = prev;
+  }
+
+  // ======================== 蜡笔笔刷 ========================
+  function crayonBrush(x1, y1, x2, y2, color, size) {
+    const dist = Math.hypot(x2 - x1, y2 - y1);
+    const steps = Math.max(1, Math.floor(dist / 1.5)); // 每 1.5px 一个点
+    const alphaBase = 0.75;
+    const alphaVar = 0.15;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = steps === 0 ? 1 : i / steps;
+      const bx = x1 + (x2 - x1) * t + (Math.random() - 0.5) * size * 0.5;
+      const by = y1 + (y2 - y1) * t + (Math.random() - 0.5) * size * 0.5;
+      const r = size * (0.5 + Math.random() * 0.5);
+      const alpha = alphaBase + (Math.random() - 0.5) * alphaVar;
+
+      ctx.beginPath();
+      ctx.arc(bx, by, r, 0, Math.PI * 2);
+      ctx.fillStyle = colorWithAlpha(color, alpha);
+      ctx.fill();
+    }
+  }
+
+  function colorWithAlpha(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  // ======================== 绘制逻辑 ========================
+  // 两种绘画模式：
+  //   'float'      —— 悬浮笔：按下一段/二段才出墨，松手即停
+  //   'continuous' —— 连续画：触控板滑动即画（不分按压与否）
+  // 英文数字书写仅支持 float 模式
+  const GAP_FRAMES = 4;
+  const LIFT_TIMEOUT = 300; // 连续画模式：抬指超时断笔换色
+  let gapCounter = 0;
+  let liftTimer = null;
+
+  function getCanvasPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  function updatePenPosition(e) {
+    floatingPen.style.left = e.clientX + 'px';
+    floatingPen.style.top = e.clientY + 'px';
+  }
+
+  function setPenState(state) {
+    floatingPen.className = 'floating-pen ' + state;
+  }
+
+  // 连续画模式：抬指超时断笔 + 换色
+  function breakContinuousStroke() {
+    if (liftTimer) { clearTimeout(liftTimer); liftTimer = null; }
+    if (!isDrawing) return;
+    saveHistory();
+    lastX = null;
+    lastY = null;
+    isDrawing = false;
+    gapCounter = GAP_FRAMES;
+    const nextIdx = (COLORS.findIndex(c => c.code === currentColor) + 1) % COLORS.length;
+    currentColor = COLORS[nextIdx].code;
+    document.querySelectorAll('.color-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === nextIdx);
+    });
+  }
+
+  function resetLiftTimer() {
+    if (liftTimer) clearTimeout(liftTimer);
+    liftTimer = setTimeout(breakContinuousStroke, LIFT_TIMEOUT);
+  }
+
+  function startDraw(e) {
+    if (!drawMode) return;
+    if (currentMode !== 0 && currentMode !== 1) return;
+
+    // 悬浮笔模式：按下开始新笔迹（防漂移：不画点，等 mousemove 再起笔）
+    if (drawMode === 'float') {
+      setPenState('drawing');
+      lastX = null;
+      lastY = null;
+      isDrawing = true;
+      gapCounter = 0;
+      return;
+    }
+
+    // 连续模式：按压 → 断笔 + 起新笔迹
+    if (drawMode === 'continuous') {
+      // 先触发断笔（换色由 breakContinuousStroke 统一处理）
+      breakContinuousStroke();
+      const pos = getCanvasPos(e);
+      lastX = pos.x;
+      lastY = pos.y;
+      isDrawing = true;
+      crayonBrush(pos.x, pos.y, pos.x, pos.y, currentColor, brushSize);
+      return;
+    }
+  }
+
+  function moveDraw(e) {
+    if (!drawMode) return;
+    if (currentMode !== 0 && currentMode !== 1) return;
+
+    updatePenPosition(e);
+
+    // 悬浮笔模式：只有按下才画
+    if (drawMode === 'float' && !(e.buttons & 1)) return;
+
+    const pos = getCanvasPos(e);
+
+    // 间隙期（连续模式换色用）
+    if (gapCounter > 0) {
+      gapCounter--;
+      lastX = pos.x;
+      lastY = pos.y;
+      return;
+    }
+
+    if (lastX !== null && lastY !== null) {
+      crayonBrush(lastX, lastY, pos.x, pos.y, currentColor, brushSize);
+    } else {
+      // 起笔：画起始点
+      crayonBrush(pos.x, pos.y, pos.x, pos.y, currentColor, brushSize);
+    }
+    lastX = pos.x;
+    lastY = pos.y;
+    isDrawing = true;
+
+    // 连续画模式：每次滑动重置抬指计时器
+    if (drawMode === 'continuous') resetLiftTimer();
+
+    // 书写模式：检测填充率，填满自动换随机字符
+    if (currentMode === 1) {
+      createWritingSparkle(e.clientX, e.clientY);
+      checkFillRatio();
+    }
+  }
+
+  function endDraw(e) {
+    if (!isDrawing) return;
+    isDrawing = false;
+    lastX = null;
+    lastY = null;
+    saveHistory();
+
+    if (drawMode === 'float') setPenState('hovering');
+  }
+
+  // ======================== 绘图模式切换 ========================
+  function enterDrawMode() {
+    if (currentMode !== 0 && currentMode !== 1) return;
+
+    if (currentMode === 0) {
+      if (!drawMode) { drawMode = 'float'; }
+      else if (drawMode === 'float') { drawMode = 'continuous'; }
+      else { exitDrawMode(); return; }
+    } else {
+      if (!drawMode) { drawMode = 'float'; }
+      else { drawMode = 'float'; }
+    }
+
+    canvasWrap.classList.add('draw-mode');
+
+    if (drawMode === 'float') {
+      setPenState('hovering');
+      statusTip.textContent = currentMode === 1
+        ? '悬浮笔 · 按下描字母 · 空格换字 · 左右箭头调粗细 · i 退出'
+        : '悬浮笔 · 按下触控板画画 · C 清空 · U 撤销 · i 切连续画 · E 退出';
+    } else {
+      floatingPen.style.display = 'none';
+      statusTip.textContent = '连续画 · 滑动即画 · 按压断笔换色 · C 清空 · U 撤销 · i 切悬浮笔 · E 退出';
+    }
+    statusTip.className = 'status-tip draw-on';
+  }
+
+  function exitDrawMode() {
+    drawMode = false;
+    isDrawing = false;
+    lastX = null;
+    lastY = null;
+    if (liftTimer) { clearTimeout(liftTimer); liftTimer = null; }
+    setPenState('');
+    floatingPen.style.display = '';
+    saveHistory();
+    statusTip.textContent = currentMode === 1
+      ? '按 i 开始描字母 · 空格换字 · 左右箭头调粗细'
+      : '按 i 悬浮笔 · 再按 i 连续画 · 再按 i 退出 · C 清空 · U 撤销';
+    statusTip.className = 'status-tip draw-off';
+  }
+
+  // ======================== 模式切换 ========================
+  function switchMode(modeIndex) {
+    currentMode = modeIndex;
+    exitDrawMode();
+
+    // 更新 tab 样式
+    document.querySelectorAll('.mode-tab').forEach((tab, i) => {
+      tab.classList.toggle('active', i === modeIndex);
+    });
+
+    // 模式1：英文数字书写
+    const writingGuide = document.getElementById('writingGuide');
+    const overlayWritingEl = document.getElementById('overlayWriting');
+    if (modeIndex === 1) {
+      // 显示书写引导，隐藏占位
+      writingGuide.style.display = 'flex';
+      overlayWritingEl.style.display = 'none';
+      overlayGuess.style.display = 'none';
+      // 透明画布背景，露出底层字符
+      canvas.style.background = 'transparent';
+      canvasWrap.style.background = '#fffef9';
+      // 书写模式默认粗笔触
+      brushSize = 20;
+      brushSizeInput.value = brushSize;
+      updateWritingChar();
+      // 自动进入绘画模式
+      enterDrawMode();
+      // 底部栏保持显示
+      document.getElementById('bottomBar').style.display = 'flex';
+      statusTip.style.display = 'block';
+    } else {
+      writingGuide.style.display = 'none';
+      overlayWritingEl.style.display = modeIndex === 1 ? 'flex' : 'none';
+      overlayGuess.style.display = modeIndex === 2 ? 'flex' : 'none';
+      canvas.style.background = '';
+      canvasWrap.style.background = '';
+
+      const bottomBar = document.getElementById('bottomBar');
+      if (modeIndex === 0) {
+        // 从书写模式切回自由涂鸦：清空画布
+        const dpr = window.devicePixelRatio || 1;
+        ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+        saveHistory();
+        bottomBar.style.display = 'flex';
+        statusTip.style.display = 'block';
+      } else {
+        bottomBar.style.display = 'none';
+        statusTip.style.display = 'none';
+        setPenState('');
+        floatingPen.style.display = '';
+      }
+    }
+  }
+
+  // ======================== 书写模式 ========================
+  function updateWritingChar() {
+    const ch = WRITING_CHARS[writingIdx];
+    document.getElementById('guideChar').textContent = ch;
+    document.getElementById('guideLabel').textContent = (writingIdx + 1) + ' / ' + WRITING_CHARS.length;
+    // 清空画布
+    const dpr = window.devicePixelRatio || 1;
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    saveHistory();
+    lastFillCheck = Date.now();
+
+    // 构建字符形状遮罩（匹配 guide-char 的 CSS 渲染）
+    buildCharMask(ch, dpr);
+  }
+
+  function buildCharMask(ch, dpr) {
+    const rect = canvasWrap.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    maskCanvas.width = w * dpr;
+    maskCanvas.height = h * dpr;
+    maskCtx.setTransform(1, 0, 0, 1, 0, 0);
+    maskCtx.scale(dpr, dpr);
+    maskCtx.clearRect(0, 0, w, h);
+
+    // 匹配 guide-char 的 CSS
+    const fontSize = Math.min(h * 0.65, w * 0.65, 500);
+    maskCtx.font = '900 ' + fontSize + 'px "Comic Sans MS", "PingFang SC", sans-serif';
+    maskCtx.textAlign = 'center';
+    maskCtx.textBaseline = 'middle';
+    maskCtx.fillStyle = '#000';
+    maskCtx.fillText(ch, w / 2, h / 2);
+
+    // 提取字符像素坐标
+    const imageData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+    const data = imageData.data;
+    const pixels = [];
+    const step = 2; // 每 2px 采样，平衡精度和性能
+    for (let y = 0; y < maskCanvas.height; y += step) {
+      for (let x = 0; x < maskCanvas.width; x += step) {
+        const idx = (y * maskCanvas.width + x) * 4;
+        if (data[idx + 3] > 128) {
+          pixels.push({ x, y });
+        }
+      }
+    }
+    charMask = { pixels, width: maskCanvas.width, height: maskCanvas.height };
+  }
+
+  function nextChar() {
+    writingIdx = (writingIdx + 1) % WRITING_CHARS.length;
+    updateWritingChar();
+  }
+
+  function randomChar() {
+    let newIdx;
+    do {
+      newIdx = Math.floor(Math.random() * WRITING_CHARS.length);
+    } while (newIdx === writingIdx && WRITING_CHARS.length > 1);
+    writingIdx = newIdx;
+    updateWritingChar();
+  }
+
+  function prevChar() {
+    writingIdx = (writingIdx - 1 + WRITING_CHARS.length) % WRITING_CHARS.length;
+    updateWritingChar();
+  }
+
+  // 检测画布填充率，超过阈值自动切下一个字符
+  let lastFillCheck = 0;
+  const FILL_CHECK_INTERVAL = 500; // ms
+  const FILL_THRESHOLD = 0.8;       // 80%
+
+  function checkFillRatio() {
+    const now = Date.now();
+    if (now - lastFillCheck < FILL_CHECK_INTERVAL) return;
+    lastFillCheck = now;
+
+    if (!charMask || charMask.pixels.length === 0) return;
+
+    // 获取画布像素，对照字符遮罩检测填充率
+    const imageData = ctx.getImageData(0, 0, charMask.width, charMask.height);
+    const data = imageData.data;
+    let filled = 0;
+    const total = charMask.pixels.length;
+    const stride = charMask.width * 4;
+
+    for (let i = 0; i < charMask.pixels.length; i++) {
+      const { x, y } = charMask.pixels[i];
+      const idx = y * stride + x * 4;
+      if (data[idx + 3] > 20) filled++;
+    }
+
+    if (filled / total > FILL_THRESHOLD) {
+      celebrateSuccess();
+      setTimeout(() => randomChar(), 400);
+      lastFillCheck = Date.now();
+    }
+  }
+
+  // 成功音效
+  let audioCtx = null;
+  function playSuccessSound() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      [523, 659, 784, 1047].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.15, now + i * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.1);
+        osc.stop(now + i * 0.1 + 0.3);
+      });
+    } catch(e) {}
+  }
+
+  // 成功视觉特效
+  function celebrateSuccess() {
+    playSuccessSound();
+    const emojis = ['🎉','🌟','✨','💖','🎀','🏆','👏','🥳','💫','🎈'];
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    for (let i = 0; i < 20; i++) {
+      const el = document.createElement('div');
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.cssText = `
+        position:fixed; pointer-events:none; z-index:300;
+        left:${cx + (Math.random()-0.5)*300}px; top:${cy + (Math.random()-0.5)*200}px;
+        font-size:${24+Math.random()*40}px;
+        transition: all 0.8s cubic-bezier(0,0.5,0.5,1);
+        opacity:1;
+      `;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => {
+        el.style.transform = `translate(${(Math.random()-0.5)*200}px, ${-100-Math.random()*150}px) scale(0.3)`;
+        el.style.opacity = '0';
+      });
+      setTimeout(() => el.remove(), 800);
+    }
+  }
+
+  function createWritingSparkle(x, y) {
+    const now = Date.now();
+    if (now - lastSparkleTime < 60) return; // 节流
+    lastSparkleTime = now;
+
+    const emojis = ['⭐','🌟','✨','💖','🎀','🌈','💫','🪄'];
+    const el = document.createElement('div');
+    el.className = 'writing-sparkle';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = (x + (Math.random() - 0.5) * 60) + 'px';
+    el.style.top = (y + (Math.random() - 0.5) * 40) + 'px';
+    el.style.fontSize = (16 + Math.random() * 18) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 800);
+  }
+
+  // ======================== 颜色切换 ========================
+  function buildColorPalette() {
+    COLORS.forEach((c, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'color-dot' + (i === 0 ? ' active' : '');
+      dot.style.backgroundColor = c.code;
+      dot.dataset.index = i;
+      dot.title = c.name + ' (' + c.key + ')';
+      dot.innerHTML = `<span class="key-hint">${c.key}</span>`;
+      dot.addEventListener('click', () => selectColor(i));
+      colorPalette.appendChild(dot);
+    });
+
+    // 键位提示
+    COLORS.forEach(c => {
+      const span = document.createElement('span');
+      span.textContent = `${c.key} · ${c.name}`;
+      keyLegend.appendChild(span);
+    });
+  }
+
+  function selectColor(index) {
+    currentColor = COLORS[index].code;
+    document.querySelectorAll('.color-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === index);
+    });
+  }
+
+  // ======================== 事件绑定 ========================
+  // 键盘
+  document.addEventListener('keydown', function(e) {
+    // 全局快捷键（不区分大小写）
+    const key = e.key.toLowerCase();
+
+    // i / e：进入/退出绘画模式
+    if (key === 'i') {
+      e.preventDefault();
+      if (currentMode === 0) enterDrawMode();
+      return;
+    }
+    if (key === 'e') {
+      e.preventDefault();
+      exitDrawMode();
+      return;
+    }
+
+    // 画笔粗细（减号/左箭头变细，等号/右箭头变粗，全局统一）
+    if (key === '-' || key === '_' || key === 'arrowleft') {
+      e.preventDefault();
+      brushSize = Math.max(2, brushSize - 1);
+      brushSizeInput.value = brushSize;
+      flashTip('画笔粗细 ' + brushSize);
+      return;
+    }
+    if (key === '=' || key === '+' || key === 'arrowright') {
+      e.preventDefault();
+      brushSize = Math.min(20, brushSize + 1);
+      brushSizeInput.value = brushSize;
+      flashTip('画笔粗细 ' + brushSize);
+      return;
+    }
+
+    // 书写模式：空格换字符
+    if (currentMode === 1 && key === ' ') {
+      e.preventDefault();
+      nextChar();
+      flashTip(WRITING_CHARS[writingIdx]);
+      return;
+    }
+
+    // 清空画布
+    if (key === 'c') {
+      e.preventDefault();
+      const dpr = window.devicePixelRatio || 1;
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      saveHistory();
+      flashTip('画布已清空');
+      return;
+    }
+
+    // 撤销
+    if (key === 'u' || (e.metaKey && e.key === 'z')) {
+      e.preventDefault();
+      undo();
+      flashTip('已撤销');
+      return;
+    }
+
+    // 颜色快捷键
+    if (currentMode === 0 || currentMode === 1) {
+      const colorIdx = COLORS.findIndex(c => c.key === e.key);
+      if (colorIdx >= 0) {
+        e.preventDefault();
+        selectColor(colorIdx);
+        flashTip(COLORS[colorIdx].name + '色');
+        return;
+      }
+    }
+  });
+
+  // 快捷键切换模式：ctrl+1/2/3
+  document.addEventListener('keydown', function(e) {
+    if (e.metaKey || e.ctrlKey) {
+      if (e.key === '1') { e.preventDefault(); switchMode(0); }
+      if (e.key === '2') { e.preventDefault(); switchMode(1); }
+      if (e.key === '3') { e.preventDefault(); switchMode(2); }
+    }
+  });
+
+  // 短暂显示提示
+  let tipTimer = null;
+  function flashTip(msg) {
+    if (tipTimer) clearTimeout(tipTimer);
+    statusTip.textContent = msg;
+    statusTip.className = 'status-tip ' + (drawMode ? 'draw-on' : 'draw-off');
+    tipTimer = setTimeout(() => {
+      if (currentMode === 1) {
+        statusTip.textContent = drawMode
+          ? '悬浮笔 · 按下描字母 · 空格换字 · 左右箭头调粗细 · E 退出'
+          : '按 i 开始描字母 · 空格换字 · 左右箭头调粗细';
+      } else {
+        statusTip.textContent = drawMode
+          ? (drawMode === 'float'
+              ? '悬浮笔 · 按下触控板画画 · C 清空 · U 撤销 · i 切连续画 · E 退出'
+              : '连续画 · 滑动即画 · 按压断笔换色 · C 清空 · U 撤销 · i 切悬浮笔 · E 退出')
+          : '按 i 悬浮笔 · 再按 i 连续画 · 再按 i 退出 · C 清空 · U 撤销';
+      }
+      statusTip.className = 'status-tip ' + (drawMode ? 'draw-on' : 'draw-off');
+    }, 1200);
+  }
+
+  // 鼠标/触控板 — 绘画
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', moveDraw);
+  // document 级别：笔位置追踪 + 全局松手检测
+  document.addEventListener('mousemove', function(e) {
+    if (!drawMode) return;
+    updatePenPosition(e);
+    // 悬浮笔模式：首次移动时显示
+    if (drawMode === 'float' && floatingPen.style.display === 'none' && !isDrawing) {
+      setPenState('hovering');
+    }
+  });
+  document.addEventListener('mouseup', function(e) {
+    // 仅悬浮笔模式下松手才停笔
+    if (isDrawing && drawMode === 'float') endDraw(e);
+  });
+  canvas.addEventListener('mouseleave', function(e) {
+    if (isDrawing && drawMode === 'float') endDraw(e);
+  });
+
+  // 触摸（iPad 等）
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    if (!drawMode) return;
+    if (currentMode !== 0 && currentMode !== 1) return;
+    isDrawing = true;
+    setPenState('drawing');
+    const touch = e.touches[0];
+    const pos = getCanvasPos(touch);
+    lastX = pos.x;
+    lastY = pos.y;
+    crayonBrush(pos.x, pos.y, pos.x, pos.y, currentColor, brushSize);
+  });
+  canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (!drawMode || !isDrawing) return;
+    if (currentMode !== 0 && currentMode !== 1) return;
+    const touch = e.touches[0];
+    const pos = getCanvasPos(touch);
+    if (lastX !== null && lastY !== null) {
+      crayonBrush(lastX, lastY, pos.x, pos.y, currentColor, brushSize);
+    } else {
+      crayonBrush(pos.x, pos.y, pos.x, pos.y, currentColor, brushSize);
+    }
+    lastX = pos.x;
+    lastY = pos.y;
+  });
+  canvas.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    if (isDrawing) endDraw(e);
+  });
+
+  // 画笔大小
+  brushSizeInput.addEventListener('input', function() {
+    brushSize = parseInt(this.value);
+  });
+
+  // 清空
+  clearBtn.addEventListener('click', function() {
+    const dpr = window.devicePixelRatio || 1;
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    saveHistory();
+  });
+
+  // 撤销
+  undoBtn.addEventListener('click', undo);
+
+  // 书写模式：前后翻字符
+  document.getElementById('guidePrev').addEventListener('click', prevChar);
+  document.getElementById('guideNext').addEventListener('click', nextChar);
+
+  // 模式切换
+  document.querySelectorAll('.mode-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      switchMode(parseInt(this.dataset.mode));
+    });
+  });
+
+  // 窗口大小变化
+  window.addEventListener('resize', function() {
+    resizeCanvas();
+    if (currentMode === 1) buildCharMask(WRITING_CHARS[writingIdx], window.devicePixelRatio || 1);
+  });
+
+  // 防止意外滚动
+  document.addEventListener('wheel', function(e) {
+    if (drawMode) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // ======================== 初始化 ========================
+  buildColorPalette();
+  initCanvas();
+  switchMode(0);
+
+  console.log('🖍️ 趣味画板就绪 — i 开始画画 · e 退出 · 数字键切换颜色');
+})();
+</script>
+</body>
+</html>

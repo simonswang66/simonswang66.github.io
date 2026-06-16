@@ -24,6 +24,60 @@
       padding: 24px;
     }
 
+    /* 手机端：允许上下滚动，卡片堆叠 */
+    @media (max-width: 600px) {
+      html, body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: auto;
+        min-height: 100%;
+      }
+      body {
+        justify-content: flex-start;
+        padding: 16px;
+        padding-top: 60px;
+      }
+      .page-title {
+        font-size: 26px;
+      }
+      .page-subtitle {
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+      .games-grid {
+        flex-direction: column;
+        gap: 16px;
+        max-width: 100%;
+      }
+      .game-card {
+        flex: none;
+        max-width: 100%;
+        min-width: 0;
+        padding: 24px 20px 20px;
+        gap: 10px;
+      }
+      .game-icon {
+        font-size: 48px;
+      }
+      .game-name {
+        font-size: 18px;
+      }
+      .game-desc {
+        font-size: 13px;
+      }
+      .top-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(254,249,231,0.9);
+        backdrop-filter: blur(8px);
+        padding: 8px 12px;
+        justify-content: flex-start;
+      }
+    }
+
     /* 背景装饰 */
     .bg-decor {
       position: fixed;

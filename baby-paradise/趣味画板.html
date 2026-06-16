@@ -349,6 +349,58 @@
       text-align: right;
       font-weight: 600;
     }
+
+    /* 颜色调色板：窄屏横向滚动 */
+    .color-palette {
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      max-width: 100%;
+    }
+    .color-palette::-webkit-scrollbar { height: 0; }
+
+    /* 手机端适配 */
+    @media (max-width: 600px) {
+      .top-bar {
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 6px 8px;
+      }
+      .back-link {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+      .mode-tab {
+        padding: 5px 8px;
+        font-size: 11px;
+      }
+      .bottom-bar {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 10px;
+      }
+      .tool-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .tool-divider { display: none; }
+      .guide-char {
+        font-size: min(40vh, 40vw, 300px);
+      }
+      .guide-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+      }
+      .status-tip {
+        font-size: 11px;
+        padding: 4px 12px;
+        top: auto;
+        bottom: 8px;
+        transform: translateX(-50%);
+      }
+    }
   </style>
 </head>
 <body>
@@ -469,6 +521,8 @@
   let lastX = null, lastY = null;
   let writingIdx = 0;             // 当前书写字符索引
   let lastSparkleTime = 0;        // 书写模式闪光节流
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  let isTouchActive = false;      // 触摸绘画进行中（替代 e.buttons 判断）
   let isDrawing = false;
 
   // 撤销历史
@@ -647,8 +701,8 @@
 
     updatePenPosition(e);
 
-    // 悬浮笔模式：只有按下才画
-    if (drawMode === 'float' && !(e.buttons & 1)) return;
+    // 悬浮笔模式：只有按下（或触摸中）才画
+    if (drawMode === 'float' && !(e.buttons & 1) && !isTouchActive) return;
 
     const pos = getCanvasPos(e);
 
@@ -673,10 +727,9 @@
     // 连续画模式：每次滑动重置抬指计时器
     if (drawMode === 'continuous') resetLiftTimer();
 
-    // 书写模式：检测填充率，填满自动换随机字符
+    // 书写模式：撒闪光
     if (currentMode === 1) {
       createWritingSparkle(e.clientX, e.clientY);
-      checkFillRatio();
     }
   }
 
@@ -688,6 +741,9 @@
     saveHistory();
 
     if (drawMode === 'float') setPenState('hovering');
+
+    // 书写模式：手指离开时检测填充率
+    if (currentMode === 1) checkFillRatio();
   }
 
   // ======================== 绘图模式切换 ========================
@@ -708,11 +764,13 @@
     if (drawMode === 'float') {
       setPenState('hovering');
       statusTip.textContent = currentMode === 1
-        ? '悬浮笔 · 按下描字母 · 空格换字 · 左右箭头调粗细 · i 退出'
-        : '悬浮笔 · 按下触控板画画 · C 清空 · U 撤销 · i 切连续画 · E 退出';
+        ? (isTouchDevice ? '手指按下描字母 · 点按钮换字' : '悬浮笔 · 按下描字母 · 空格换字 · 左右箭头调粗细 · i 退出')
+        : (isTouchDevice ? '手指按下画画 · 点按钮清空/撤销' : '悬浮笔 · 按下触控板画画 · C 清空 · U 撤销 · i 切连续画 · E 退出');
     } else {
       floatingPen.style.display = 'none';
-      statusTip.textContent = '连续画 · 滑动即画 · 按压断笔换色 · C 清空 · U 撤销 · i 切悬浮笔 · E 退出';
+      statusTip.textContent = isTouchDevice
+        ? '连续画 · 手指滑动即画'
+        : '连续画 · 滑动即画 · 按压断笔换色 · C 清空 · U 撤销 · i 切悬浮笔 · E 退出';
     }
     statusTip.className = 'status-tip draw-on';
   }
@@ -727,8 +785,8 @@
     floatingPen.style.display = '';
     saveHistory();
     statusTip.textContent = currentMode === 1
-      ? '按 i 开始描字母 · 空格换字 · 左右箭头调粗细'
-      : '按 i 悬浮笔 · 再按 i 连续画 · 再按 i 退出 · C 清空 · U 撤销';
+      ? (isTouchDevice ? '点按钮换字 · 手指按下描字母' : '按 i 开始描字母 · 空格换字 · 左右箭头调粗细')
+      : (isTouchDevice ? '切换模式自动开始绘画' : '按 i 悬浮笔 · 再按 i 连续画 · 再按 i 退出 · C 清空 · U 撤销');
     statusTip.className = 'status-tip draw-off';
   }
 
@@ -753,15 +811,18 @@
       // 透明画布背景，露出底层字符
       canvas.style.background = 'transparent';
       canvasWrap.style.background = '#fffef9';
-      // 书写模式默认粗笔触
+      // 书写模式默认粗笔触，随机起始字符
       brushSize = 20;
       brushSizeInput.value = brushSize;
+      writingIdx = Math.floor(Math.random() * WRITING_CHARS.length);
       updateWritingChar();
       // 自动进入绘画模式
       enterDrawMode();
       // 底部栏保持显示
       document.getElementById('bottomBar').style.display = 'flex';
       statusTip.style.display = 'block';
+      // 触屏设备自动进入绘画模式
+      if (isTouchDevice && !drawMode) enterDrawMode();
     } else {
       writingGuide.style.display = 'none';
       overlayWritingEl.style.display = modeIndex === 1 ? 'flex' : 'none';
@@ -777,6 +838,7 @@
         saveHistory();
         bottomBar.style.display = 'flex';
         statusTip.style.display = 'block';
+        if (isTouchDevice && !drawMode) enterDrawMode();
       } else {
         bottomBar.style.display = 'none';
         statusTip.style.display = 'none';
@@ -784,6 +846,7 @@
         floatingPen.style.display = '';
       }
     }
+    updateCanvasBounds();
   }
 
   // ======================== 书写模式 ========================
@@ -1067,14 +1130,14 @@
     tipTimer = setTimeout(() => {
       if (currentMode === 1) {
         statusTip.textContent = drawMode
-          ? '悬浮笔 · 按下描字母 · 空格换字 · 左右箭头调粗细 · E 退出'
-          : '按 i 开始描字母 · 空格换字 · 左右箭头调粗细';
+          ? (isTouchDevice ? '手指按下描字母' : '悬浮笔 · 按下描字母 · 空格换字 · 左右箭头调粗细 · E 退出')
+          : (isTouchDevice ? '点按钮换字' : '按 i 开始描字母 · 空格换字 · 左右箭头调粗细');
       } else {
         statusTip.textContent = drawMode
           ? (drawMode === 'float'
-              ? '悬浮笔 · 按下触控板画画 · C 清空 · U 撤销 · i 切连续画 · E 退出'
-              : '连续画 · 滑动即画 · 按压断笔换色 · C 清空 · U 撤销 · i 切悬浮笔 · E 退出')
-          : '按 i 悬浮笔 · 再按 i 连续画 · 再按 i 退出 · C 清空 · U 撤销';
+              ? (isTouchDevice ? '手指按下画画' : '悬浮笔 · 按下触控板画画 · C 清空 · U 撤销 · i 切连续画 · E 退出')
+              : (isTouchDevice ? '连续画 · 手指滑动即画' : '连续画 · 滑动即画 · 按压断笔换色 · C 清空 · U 撤销 · i 切悬浮笔 · E 退出'))
+          : (isTouchDevice ? '切换模式自动开始绘画' : '按 i 悬浮笔 · 再按 i 连续画 · 再按 i 退出 · C 清空 · U 撤销');
       }
       statusTip.className = 'status-tip ' + (drawMode ? 'draw-on' : 'draw-off');
     }, 1200);
@@ -1100,36 +1163,25 @@
     if (isDrawing && drawMode === 'float') endDraw(e);
   });
 
-  // 触摸（iPad 等）
+  // 触摸（复用鼠标绘制逻辑，保证功能一致）
   canvas.addEventListener('touchstart', function(e) {
     e.preventDefault();
-    if (!drawMode) return;
-    if (currentMode !== 0 && currentMode !== 1) return;
-    isDrawing = true;
-    setPenState('drawing');
-    const touch = e.touches[0];
-    const pos = getCanvasPos(touch);
-    lastX = pos.x;
-    lastY = pos.y;
-    crayonBrush(pos.x, pos.y, pos.x, pos.y, currentColor, brushSize);
+    isTouchActive = true;
+    startDraw(e.touches[0]);
   });
   canvas.addEventListener('touchmove', function(e) {
     e.preventDefault();
-    if (!drawMode || !isDrawing) return;
-    if (currentMode !== 0 && currentMode !== 1) return;
-    const touch = e.touches[0];
-    const pos = getCanvasPos(touch);
-    if (lastX !== null && lastY !== null) {
-      crayonBrush(lastX, lastY, pos.x, pos.y, currentColor, brushSize);
-    } else {
-      crayonBrush(pos.x, pos.y, pos.x, pos.y, currentColor, brushSize);
-    }
-    lastX = pos.x;
-    lastY = pos.y;
+    moveDraw(e.touches[0]);
   });
   canvas.addEventListener('touchend', function(e) {
     e.preventDefault();
-    if (isDrawing) endDraw(e);
+    isTouchActive = false;
+    endDraw(e);
+  });
+  canvas.addEventListener('touchcancel', function(e) {
+    e.preventDefault();
+    isTouchActive = false;
+    endDraw(e);
   });
 
   // 画笔大小
@@ -1158,9 +1210,20 @@
     });
   });
 
+  // 动态调整画布区域（适配不同高度的顶栏/底栏）
+  function updateCanvasBounds() {
+    const topBar = document.querySelector('.top-bar');
+    const bottomBar = document.getElementById('bottomBar');
+    const topH = topBar ? topBar.offsetHeight : 56;
+    const bottomH = (bottomBar && bottomBar.style.display !== 'none') ? bottomBar.offsetHeight : 0;
+    canvasWrap.style.top = topH + 'px';
+    canvasWrap.style.bottom = bottomH + 'px';
+  }
+
   // 窗口大小变化
   window.addEventListener('resize', function() {
     resizeCanvas();
+    updateCanvasBounds();
     if (currentMode === 1) buildCharMask(WRITING_CHARS[writingIdx], window.devicePixelRatio || 1);
   });
 
@@ -1174,6 +1237,7 @@
   // ======================== 初始化 ========================
   buildColorPalette();
   initCanvas();
+  updateCanvasBounds();
   switchMode(0);
 
   console.log('🖍️ 趣味画板就绪 — i 开始画画 · e 退出 · 数字键切换颜色');

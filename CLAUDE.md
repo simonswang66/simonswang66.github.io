@@ -13,6 +13,8 @@ Simons Work Suites — personal tools suite hosted on GitHub Pages. Pure static 
 - `ai-api-demo/` — AI API 调用演示
 - `ui-comment-tool/` — UI 原型图评审协作工具
 - `ui-design-samples/` — UI 设计风格组件预览
+- `knowledge-base/` — 知识库，日常学习与知识总结
+  - `index.html` — 文档列表页
 - `baby-paradise/` — 宝宝乐园，给女儿玩的互动页面
   - `index.html` — 乐园入口，三个游戏卡片
   - `字母学习乐园.html` — 键盘字母/数字答题（看字母按对应键）

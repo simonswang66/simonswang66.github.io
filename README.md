@@ -10,6 +10,7 @@
 - **[AI API Demo](ai-api-demo/index.html)** — AI API 调用演示，支持 OpenAI / DeepSeek，Cloudflare Worker 安全代理
 - **[交易对手方打标工具](counterparty-tool/index.html)** — 交易对手方列表批量打标与浮动面板管理
 - **[UI Design Samples](ui-design-samples/index.html)** — 13 种 UI 设计风格组件预览
+- **[知识库](knowledge-base/index.html)** — 日常学习与知识总结，审计业务、产品设计等领域学习笔记
 
 ### 宝宝乐园
 

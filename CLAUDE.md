@@ -15,6 +15,12 @@ Simons Work Suites — personal tools suite hosted on GitHub Pages. Pure static 
 - `ui-design-samples/` — UI 设计风格组件预览
 - `knowledge-base/` — 知识库，日常学习与知识总结
   - `index.html` — 文档列表页
+- `clawd-theme/` — Claude Code 自定义动画主题（Clawd-on-desk 桌面宠物）
+  - `index.html` — 工作流介绍 + GIF 动画预览页（6 阶段流程：角色设定图 → 参考图生视频 → 视频转 GIF → 集成）
+  - `clawd-prompt.md` — 即梦全流程 Prompt（图片生成 图片5.0 Pro + 视频生成 Seedance 2.0mini）
+  - `video2gif.py` — MP4 → GIF 转换脚本（rembg AI 抠图 + 缩放）
+  - `*.gif` — 11 个动画状态的原始 GIF 文件
+  - `compressed/` — 微信表情包用压缩版 GIF
 - `baby-paradise/` — 宝宝乐园，给女儿玩的互动页面
   - `index.html` — 乐园入口，三个游戏卡片
   - `字母学习乐园.html` — 键盘字母/数字答题（看字母按对应键）

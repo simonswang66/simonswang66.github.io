@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Clawd-on-desk 主题 — 工作流与预览</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .header .back {
+      display: inline-block;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 13px;
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+    .header .back:hover { color: #fff; }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .header p {
+      font-size: 14px;
+      opacity: 0.7;
+      font-weight: 400;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Content */
+    .content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1a1a2e;
+    }
+    .section-desc {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* Workflow */
+    .workflow-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .wf-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: box-shadow 0.25s;
+    }
+    .wf-step:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .wf-step-num {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .num-1 { background: #6366f1; }
+    .num-2 { background: #8b5cf6; }
+    .num-3 { background: #a855f7; }
+    .num-4 { background: #d946ef; }
+    .num-5 { background: #ec4899; }
+    .num-6 { background: #f43f5e; }
+
+    .wf-step-body { flex: 1; min-width: 0; }
+    .wf-step-body h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .wf-step-body .wf-time {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .wf-step-body p {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+    .wf-step-body ul {
+      margin-top: 8px;
+      padding-left: 18px;
+    }
+    .wf-step-body li {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    /* State Gallery */
+    .stage-group {
+      margin-bottom: 32px;
+    }
+    .stage-label {
+      display: inline-block;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    .state-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .state-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    .state-card .thumb {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #e8e8e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .state-card .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .state-card .thumb .placeholder {
+      font-size: 13px;
+      color: #bbb;
+    }
+    .state-card .info {
+      padding: 14px 16px;
+    }
+    .state-card .info .name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .state-card .info .trigger {
+      font-size: 12px;
+      color: #999;
+      line-height: 1.5;
+    }
+    .stage-core { background: #ede9fe; color: #7c3aed; }
+    .stage-enhanced { background: #fce7f3; color: #db2777; }
+    .stage-optional { background: #fef3c7; color: #d97706; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-overlay.active { display: flex; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 520px;
+      width: calc(100% - 32px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+    .modal .modal-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .modal .modal-trigger {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+    .modal .modal-gif-wrap {
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e8e8e8;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .modal .modal-gif-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .modal .modal-prompt {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: #f9fafb;
+      border-radius: 8px;
+      text-align: left;
+    }
+    .modal .modal-prompt::before {
+      content: '🎬 视频 Prompt：';
+      font-weight: 600;
+      color: #666;
+    }
+    .modal .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .modal .modal-actions button {
+      padding: 8px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+    .btn-prev, .btn-next {
+      background: #f5f5f5;
+      color: #444;
+    }
+    .btn-prev:hover, .btn-next:hover { background: #e5e5e5; }
+    .btn-close {
+      background: #1a1a2e;
+      color: #fff;
+    }
+    .btn-close:hover { background: #0f3460; }
+
+    /* Overview cards */
+    .overview-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .overview-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .overview-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .overview-card h3 .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .overview-card p {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    /* Tools used */
+    .tools-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .tool-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .tool-tag .icon { font-size: 18px; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .header {
+        padding: 24px 16px;
+      }
+      .header h1 { font-size: 22px; }
+      .header p { font-size: 13px; }
+      .content { padding: 24px 12px 40px; }
+      .section { margin-bottom: 36px; }
+      .section-title { font-size: 18px; }
+      .wf-step {
+        padding: 18px 16px;
+        gap: 14px;
+      }
+      .wf-step-num {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+      }
+      .wf-step-body h3 { font-size: 15px; }
+      .state-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .stage-group {
+        margin-bottom: 24px;
+      }
+      .state-card .info { padding: 10px 12px; }
+      .state-card .info .name { font-size: 13px; }
+      .modal {
+        padding: 20px 16px;
+      }
+      .modal .modal-name { font-size: 18px; }
+      .modal .modal-prompt { font-size: 12px; padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back" href="../index.html">← 返回 Simons Work Suites</a>
+  <h1>🎨 Clawd-on-desk 主题工作流</h1>
+  <p>以女儿照片为原型，通过即梦 AI 生成大头小身体角色形象，制作 Claude Code 桌面宠物动画主题</p>
+</div>
+
+<div class="content">
+
+  <!-- Overview -->
+  <div class="section">
+    <div class="section-title">项目概览</div>
+    <div class="section-desc">这是一个 Claude Code 自定义动画主题的制作项目。核心思路：用一张女儿的真人照片作为面部参考，通过即梦 AI 的角色特征参考功能，生成一系列"大头小身体"比例的动画素材，最终集成为 Clawd-on-desk 桌面宠物主题。</div>
+    <div class="overview-cards">
+      <div class="overview-card">
+        <h3><span class="dot" style="background:#6366f1"></span> 核心工具</h3>
+        <p>即梦图片生成 图片5.0 Pro（生参考图）→ 即梦视频生成 Seedance 2.0mini（参考图生视频）→ video2gif.py（转 GIF）→ Clawd-on-desk 集成</p>
+      </div>
+      <div class="overview-card">
+        <h3><span class="dot" style="background:#8b5cf6"></span> 动画状态</h3>
+        <p>共 11 个动画状态，覆盖 idle / thinking / working / attention / sleeping 等 Claude Code 运行场景</p>
+      </div>
+      <div class="overview-card">
+        <h3><span class="dot" style="background:#a855f7"></span> 制作耗时</h3>
+        <p>约半天：角色设定 30-60min + 核心状态 1-2h + 增强状态 30-60min + 后期处理 ~1h</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Clawd-on-desk -->
+  <div class="section">
+    <div class="section-title">关于 Clawd-on-desk</div>
+    <div class="section-desc">
+      <a href="https://github.com/rullerzhou-afk/clawd-on-desk" target="_blank" rel="noopener">Clawd-on-desk</a> 是一个开源的桌面宠物框架，通过 Hook 实时监听 Claude Code、Codex、Cursor 等 AI 编程助手的生命周期事件，自动切换桌面宠物的动画状态。支持 Windows / macOS / Linux，提供 12 种动画状态、权限气泡弹窗、多会话仪表盘、睡眠序列等特性，内置 3 套官方主题并支持自定义主题。
+    </div>
+    <div class="overview-cards">
+      <div class="overview-card">
+        <h3 style="font-family:monospace;font-size:14px;">🔗 GitHub</h3>
+        <p><a href="https://github.com/rullerzhou-afk/clawd-on-desk" target="_blank" rel="noopener">github.com/rullerzhou-afk/clawd-on-desk</a></p>
+      </div>
+      <div class="overview-card">
+        <h3>🖥️ 平台</h3>
+        <p>Windows 11 (x64/ARM64) / macOS / Ubuntu Linux，提供预编译安装包</p>
+      </div>
+      <div class="overview-card">
+        <h3>🎨 自定义主题</h3>
+        <p>支持自定义 APNG/GIF 动画素材，通过 <code>theme.json</code> 配置状态映射，即本文档的制作目标</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workflow -->
+  <div class="section">
+    <div class="section-title">工作流（6 个阶段）</div>
+    <div class="section-desc">从原始照片到最终主题的完整制作流程。核心原则：<strong>脸 = 真实保留照片面部特征，身体/比例 = 头大身小</strong>。Prompt 中绝不出现"Q版""卡通""插画"等词汇，以防即梦生成卡通脸破坏面部真实感。</div>
+
+    <div class="workflow-grid">
+
+      <div class="wf-step">
+        <div class="wf-step-num num-1">1</div>
+        <div class="wf-step-body">
+          <h3>生成角色设定图</h3>
+          <div class="wf-time">⏱ 30-60 min · 即梦图片生成 图片5.0 Pro · 1:1 方形 · 仅此一次</div>
+          <p>将女儿大头照上传即梦，勾选「角色特征」参考，面部参考强度 90-95。生成一张大头小身体比例（头身比约 1:1.5）的角色设定图。这是<strong>最关键的步骤</strong>——后续所有视频都以这张为唯一角色参考基准，必须反复生成直到满意。</p>
+          <p style="margin-top:6px;font-size:13px;color:#999;">💡 核心原则：脸 = 真实保留照片面部特征，身体/比例 = 头大身小。Prompt 中绝不出现"Q版""卡通""插画"等词汇。</p>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-step-num num-2">2</div>
+        <div class="wf-step-body">
+          <h3>逐个状态：参考图 → 视频 → GIF</h3>
+          <div class="wf-time">⏱ 每状态 ~10-15 min · 即梦视频生成 Seedance 2.0mini · 1:1 720P 4s</div>
+          <p>每个动画状态都走同一条流水线：<strong>角色设定图作为角色参考 → Seedance 2.0mini 生成视频 → video2gif.py 转 GIF</strong>。Seedance 2.0mini 是即梦目前唯一支持真人人脸的视频生成模型。</p>
+          <p style="margin-top:8px;font-size:14px;color:#1a1a2e;"><strong>每状态操作步骤：</strong></p>
+          <ol style="margin-top:4px;padding-left:18px;font-size:13px;color:#666;line-height:2;">
+            <li>即梦视频生成模式，上传角色设定图，勾选「角色特征」参考</li>
+            <li>输入视频 Prompt（描述动作），Seedance 2.0mini 输出 720P 4s MP4</li>
+            <li>运行 <code>python3 video2gif.py input.mp4</code>，自动 AI 抠图 → 缩放 512×512 → 合成循环 GIF</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-step-num num-3">3</div>
+        <div class="wf-step-body">
+          <h3>核心 5 状态（最小可用方案）</h3>
+          <div class="wf-time">⏱ 1-2 h · 按阶段 2 流水线逐个生成</div>
+          <p>生成顺序：idle → thinking → working → attention → sleeping。这 5 个状态生成完就能让主题跑起来，其余状态先用 fallback 指向这 5 个。</p>
+          <ul>
+            <li><strong>idle</strong> — 待机，眼睛左右转动</li>
+            <li><strong>thinking</strong> — 思考中，歪头 → 托下巴沉思</li>
+            <li><strong>working</strong> — 工作中，正面敲键盘，正对镜头</li>
+            <li><strong>attention</strong> — 任务完成，开心笑 → 举手欢呼</li>
+            <li><strong>sleeping</strong> — 60s 无操作，站立打瞌睡前后摇晃</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-step-num num-4">4</div>
+        <div class="wf-step-body">
+          <h3>增强 4 状态（第二轮制作）</h3>
+          <div class="wf-time">⏱ 30-60 min · 同上流水线</div>
+          <p>核心状态跑通后制作，丰富主题表现力：</p>
+          <ul>
+            <li><strong>error</strong> — 工具调用失败，捂脸惊慌 + 感叹号</li>
+            <li><strong>notification</strong> — 权限请求弹窗，举手示意"嘿，看这里"</li>
+            <li><strong>waking</strong> — 鼠标移动唤醒，揉眼睛慢慢清醒</li>
+            <li><strong>juggling</strong> — 多子代理并发，双手同时在两个键盘上打字</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-step-num num-5">5</div>
+        <div class="wf-step-body">
+          <h3>可选状态（锦上添花）</h3>
+          <div class="wf-time">⏱ 按需 · 同上流水线</div>
+          <ul>
+            <li><strong>sweeping</strong> — 上下文压缩时，手持小扫帚扫地</li>
+            <li><strong>carrying</strong> — 创建 worktree 时，双手抱纸箱搬运</li>
+            <li><strong>yawning / dozing / collapsing</strong> — 入睡序列（打哈欠 → 打瞌睡 → 倒下蜷缩）</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-step-num num-6">6</div>
+        <div class="wf-step-body">
+          <h3>Clawd-on-desk 集成</h3>
+          <div class="wf-time">⏱ 15 min · theme.json 配置 + 验证</div>
+          <ul>
+            <li>用脚手架创建主题目录：<code>node scripts/create-theme.js my-daughter</code></li>
+            <li>将 GIF 文件放入 <code>assets/</code> 目录，编辑 <code>theme.json</code> 映射各状态到对应动画文件</li>
+            <li>未完成的状态通过 <code>fallbackTo</code> 指向已有状态（如 error → attention）</li>
+            <li>关闭眼球追踪和 Mini Mode（非 SVG 素材不支持）</li>
+            <li>运行验证脚本确认配置正确：<code>node scripts/validate-theme.js</code></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- theme.json -->
+  <div class="section">
+    <div class="section-title">theme.json 结构</div>
+    <div class="section-desc">主题目录下的核心配置文件，定义角色布局、动画映射、行为开关。</div>
+
+    <div class="overview-cards">
+      <div class="overview-card">
+        <h3 style="font-family:monospace;font-size:15px;">viewBox & layout</h3>
+        <p>定义角色坐标空间和内容区域。<code>viewBox</code> 设定画布尺寸（100×100），<code>contentBox</code> 限制角色绘制范围，<code>centerX</code>/<code>baselineY</code> 控制居中与脚底对齐。</p>
+      </div>
+      <div class="overview-card">
+        <h3 style="font-family:monospace;font-size:15px;">states</h3>
+        <p>核心配置。将逻辑状态映射到 <code>assets/</code> 下的动画文件。格式为 <code>"状态名": ["文件名.gif"]</code>。未完成的状态用 <code>"fallbackTo": "已有状态"</code> 回退。</p>
+      </div>
+      <div class="overview-card">
+        <h3 style="font-family:monospace;font-size:15px;">sleepSequence</h3>
+        <p>控制入睡行为。<code>"mode": "direct"</code> 直接切到 sleeping 状态；做出完整的 yawning → dozing → collapsing 序列后可改为 <code>"sequence"</code> 模式。</p>
+      </div>
+      <div class="overview-card">
+        <h3 style="font-family:monospace;font-size:15px;">eyeTracking</h3>
+        <p>眼球追踪开关。设为 <code>false</code>（当前项目非 SVG 素材不支持）。</p>
+      </div>
+      <div class="overview-card">
+        <h3 style="font-family:monospace;font-size:15px;">miniMode</h3>
+        <p>Mini Mode 精简布局。设为 <code>false</code>（素材量不够时关闭）。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="section">
+    <div class="section-title">动画预览</div>
+    <div class="section-desc">点击卡片查看 GIF 动画预览。使用左右箭头或键盘 ← → 切换状态。</div>
+
+    <div class="stage-group" id="stageCore">
+      <div class="stage-label stage-core">核心状态</div>
+      <div class="state-grid"></div>
+    </div>
+    <div class="stage-group" id="stageEnhanced">
+      <div class="stage-label stage-enhanced">增强状态</div>
+      <div class="state-grid"></div>
+    </div>
+    <div class="stage-group" id="stageOptional">
+      <div class="stage-label stage-optional">可选状态</div>
+      <div class="state-grid"></div>
+    </div>
+  </div>
+
+  <!-- Tools -->
+  <div class="section">
+    <div class="section-title">工具链</div>
+    <div class="tools-list">
+      <div class="tool-tag"><span class="icon">🖼️</span> 即梦 AI（图片生成 图片5.0 Pro）</div>
+      <div class="tool-tag"><span class="icon">🎬</span> 即梦 AI（视频生成 Seedance 2.0mini）</div>
+      <div class="tool-tag"><span class="icon">✂️</span> macOS 移除背景</div>
+      <div class="tool-tag"><span class="icon">🤖</span> rembg AI 抠图</div>
+      <div class="tool-tag"><span class="icon">🐍</span> Python (OpenCV/Pillow)</div>
+      <div class="tool-tag"><span class="icon">🎨</span> Clawd-on-desk 框架</div>
+      <div class="tool-tag"><span class="icon">💻</span> Claude Code</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-trigger" id="modalTrigger"></div>
+    <div class="modal-gif-wrap">
+      <img id="modalGif" src="" alt="" />
+    </div>
+    <div class="modal-prompt" id="modalPrompt"></div>
+    <div class="modal-actions">
+      <button class="btn-prev" onclick="navGif(-1)">← 上一个</button>
+      <button class="btn-close" onclick="closeModal()">关闭</button>
+      <button class="btn-next" onclick="navGif(1)">下一个 →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// State data
+var states = [
+  { file: '2.1_idle.gif',        name: 'idle',        cn: '待机',       stage: 'core',     trigger: 'Claude Code 空闲，无任务运行',         prompt: '角色站立，头部从正前方缓慢转向左侧，眼睛跟随头部移动，再缓慢转回正前方。过程中自然眨眼一次。动作轻柔缓慢，循环播放。' },
+  { file: '2.2_thinking.gif',    name: 'thinking',    cn: '思考中',     stage: 'core',     trigger: '用户发送问题，开始处理',                 prompt: '角色站立，头部微微歪向右侧，右手食指轻点下巴或脸颊。眼睛向上看，手指轻轻敲击脸颊，身体微微左右晃动，像是在认真思考。循环播放。' },
+  { file: '2.3_working.gif',     name: 'working',     cn: '工作中',     stage: 'core',     trigger: '执行工具、读写文件',                     prompt: '角色正面面对镜头坐在桌前，面前桌上有一个小键盘，双手放在键盘上快速打字，手指轻快连续敲击。表情专注，眼睛看向镜头。身体保持稳定，只有手指在动。循环播放。' },
+  { file: '2.4_attention.gif',   name: 'attention',   cn: '任务完成',   stage: 'core',     trigger: '工具调用成功、任务完成',                 prompt: '角色双臂向上高举，身体轻轻跳起再落下，脸上开心大笑，眼睛弯成月牙。动作活泼欢快，循环播放。' },
+  { file: '2.5_sleeping.gif',    name: 'sleeping',    cn: '睡觉',       stage: 'core',     trigger: '鼠标 60s 无操作',                        prompt: '角色站立，双眼微闭，头微微下垂，身体微微前后摇晃，像在打瞌睡点头。表情迷迷糊糊。动作缓慢柔和，循环播放。' },
+  { file: '3.1_error.gif',       name: 'error',       cn: '出错',       stage: 'enhanced', trigger: '工具调用失败、报错',                     prompt: '角色双手捂住脸颊两侧，眼睛睁大，嘴巴呈O形，身体微微后仰再回正，头顶感叹号轻轻晃动。循环播放。' },
+  { file: '3.2_notification.gif',name: 'notification',cn: '通知/权限',  stage: 'enhanced', trigger: '弹出权限请求',                           prompt: '角色一只手高高举起，手掌展开，左右轻轻挥动，像在说"嘿，看这里"。表情认真，嘴巴微张。身体挺直。循环播放。' },
+  { file: '3.3_waking.gif',      name: 'waking',      cn: '睡醒',       stage: 'enhanced', trigger: '鼠标移动，唤醒睡眠',                       prompt: '角色站立，一只手在揉眼睛，另一只手自然垂在身侧。眼睛从半闭慢慢睁开，头从微垂姿势缓缓抬起，表情从迷迷糊糊变得清醒。动作缓慢自然。' },
+  { file: '3.4_juggling.gif',    name: 'juggling',    cn: '多任务',     stage: 'enhanced', trigger: '2+ 子代理并发处理',                      prompt: '角色正面面对镜头坐在桌前，面前桌上左右并排两个小键盘。左手在左边键盘上打字，右手在右边键盘上打字，双手同时快速敲击。表情专注带一点得意。循环播放。' },
+  { file: '4.1_sweeping.gif',    name: 'sweeping',    cn: '上下文压缩', stage: 'optional', trigger: '上下文压缩时',                             prompt: '角色双手持小扫帚，身体微弯前倾，扫帚在地面上左右来回扫动。动作轻快有节奏，循环播放。' },
+  { file: '4.2_carrying.gif',    name: 'carrying',    cn: '搬运',       stage: 'optional', trigger: '创建 worktree 时',                        prompt: '角色双手抱着小纸箱放在胸前，身体微蹲再站直，循环做出"用力搬起来又放下"的重复动作。表情认真，嘴巴微抿。循环播放。' }
+];
+
+var currentIdx = -1;
+
+function buildGallery() {
+  var groups = {
+    core:     document.querySelector('#stageCore .state-grid'),
+    enhanced: document.querySelector('#stageEnhanced .state-grid'),
+    optional: document.querySelector('#stageOptional .state-grid')
+  };
+
+  states.forEach(function(s, i) {
+    var card = document.createElement('div');
+    card.className = 'state-card';
+    card.onclick = function() { openModal(i); };
+
+    card.innerHTML =
+      '<div class="thumb">' +
+        '<img src="' + s.file + '" alt="' + s.name + '" loading="lazy" />' +
+      '</div>' +
+      '<div class="info">' +
+        '<div class="name">' + s.cn + ' <span style="font-weight:400;color:#aaa;font-size:12px">' + s.name + '</span></div>' +
+        '<div class="trigger">' + s.trigger + '</div>' +
+      '</div>';
+
+    groups[s.stage].appendChild(card);
+  });
+}
+
+function openModal(idx) {
+  currentIdx = idx;
+  var s = states[idx];
+  document.getElementById('modalName').textContent = s.cn + ' (' + s.name + ')';
+  document.getElementById('modalTrigger').textContent = '触发场景：' + s.trigger;
+  document.getElementById('modalPrompt').textContent = s.prompt;
+  document.getElementById('modalGif').src = s.file;
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+  currentIdx = -1;
+}
+
+function navGif(dir) {
+  var next = currentIdx + dir;
+  if (next < 0) next = states.length - 1;
+  if (next >= states.length) next = 0;
+  openModal(next);
+}
+
+// Keyboard
+document.addEventListener('keydown', function(e) {
+  if (currentIdx < 0) return;
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); navGif(-1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); navGif(1); }
+  if (e.key === 'Escape')     { e.preventDefault(); closeModal(); }
+});
+
+// Close on overlay click
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+buildGallery();
+</script>
+
+</body>
+</html>

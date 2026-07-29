@@ -9,6 +9,7 @@ Simons Work Suites — personal tools suite hosted on GitHub Pages. Pure static 
 ## Structure
 
 - `index.html` — tools suite landing page
+- `terms.html` — Terms & Conditions 条款页面
 - `counterparty-tool/index.html` — 交易对手方打标工具 (Ant Design + React via CDN)
 - `ai-api-demo/` — AI API 调用演示
 - `ui-comment-tool/` — UI 原型图评审协作工具
@@ -36,6 +37,12 @@ Simons Work Suites — personal tools suite hosted on GitHub Pages. Pure static 
 | 你画我猜 | 🔜 | 占位 |
 
 键盘快捷键：`i` 切换绘画模式，`e` 退出，`-`/`=`/`←`/`→` 调粗细，`C` 清空，`U` 撤销，`0`-`9` 换色，空格书写模式换字。
+
+## Conventions
+
+- 所有页面底部有 Terms & Conditions footer，链接到 `terms.html`（按目录深度自动适配相对路径）
+- 宝宝乐园二级游戏页面不显示 footer
+- `.gitignore` 排除 clawd-theme 的 mp4 / 截图 / compressed / 参考图等大文件，仅跟踪 GIF
 
 ## Development
 

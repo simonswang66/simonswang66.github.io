@@ -1,3 +1,10 @@
 .DS_Store
 .dev.vars
 .wrangler
+
+# clawd-theme: 仅保留 GIF，排除视频/截图/压缩包/参考图
+clawd-theme/*.mp4
+clawd-theme/SS/
+clawd-theme/compressed/
+clawd-theme/video2gif.py
+clawd-theme/参考图片.png

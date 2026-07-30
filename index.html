@@ -13,7 +13,7 @@
       background: #f0f2f5;
       color: #1a1a2e;
       height: 100vh;
-      overflow: hidden;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
@@ -42,17 +42,6 @@
       padding: 32px 20px 32px;
       flex: 1;
       min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .section-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #888;
-      margin-bottom: 16px;
-      padding-left: 4px;
     }
 
     .tools-grid {
@@ -285,7 +274,6 @@
 </div>
 
 <div class="container">
-  <div class="section-title">工具</div>
   <div class="tools-grid">
 
     <div class="tool-card">
@@ -308,11 +296,11 @@
     </div>
 
     <div class="tool-card">
-      <div class="tool-icon icon-table">&#128202;</div>
-      <h3>交易对手方打标工具</h3>
-      <p class="desc">交易对手方列表的批量打标与浮动面板管理。支持搜索、行业筛选、多选打标，已标记记录在浮动面板中集中查看与管理。</p>
+      <div class="tool-icon icon-design">&#128444;</div>
+      <h3>UI 设计规范</h3>
+      <p class="desc">Audit Compass UI Design System V1.0。基于平台设计语言的设计规范文档，涵盖品牌色、交互色、状态色、排版、组件等设计令牌与样式指南。</p>
       <div class="tool-links">
-        <a class="link-primary" href="counterparty-tool/index.html">&#8594; 打开工具</a>
+        <a class="link-primary" href="UI设计规范_AuditCompass.html">&#8594; 查看规范</a>
       </div>
     </div>
 
@@ -420,8 +408,8 @@ document.getElementById('sampleModal').addEventListener('click', function(e) {
 });
 </script>
 
-<footer style="text-align:center;padding:6px 0;font-size:11px;color:#bbb;flex-shrink:0;">
-  <a href="terms.html" style="color:#bbb;text-decoration:none;">Terms &amp; Conditions</a>
+<footer style="text-align:center;padding:16px;font-size:12px;color:#999;border-top:1px solid #eee;margin-top:40px;flex-shrink:0;">
+  <a href="terms.html" style="color:#999;text-decoration:none;">Terms &amp; Conditions</a>
 </footer>
 </body>
 </html>

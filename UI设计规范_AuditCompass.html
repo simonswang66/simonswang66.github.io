@@ -1,0 +1,3170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Compass UI 设计规范 V1.0</title>
+<style>
+/* ============================================================
+   Audit Compass — UI Design System
+   Industry Standard Token Naming
+   ============================================================ */
+
+:root {
+  /* === 品牌与交互色：来自当前平台 base.css / 银行流水分析 / 数据综合分析 === */
+  --color-primary:        #1e49e2;
+  --color-primary-hover:  #1d4ed8;
+  --color-primary-active: #00338d;
+  --color-primary-soft:   #eef4ff;
+  --color-primary-muted:  #9eb8dc;
+
+  --color-deep-blue:      #00338d;
+  --color-accent:         #2f6fed;
+  --color-accent-hover:   #235fd3;
+  --color-accent-soft:    #eff6ff;
+
+  /* === 状态色 === */
+  --color-success:        #2aa99a;
+  --color-success-soft:   #eefaf8;
+  --color-warning:        #dd8b22;
+  --color-warning-soft:   #fff7ed;
+  --color-danger:         #d95785;
+  --color-danger-soft:    #fff1f5;
+  --color-info:           #1d4ed8;
+  --color-info-soft:      #eff6ff;
+
+  /* === 资金与税票语义色：全平台统一 === */
+  --color-inflow:         #4f8df7;
+  --color-sales-vat:      #2aa99a;
+  --color-outflow:        #d95785;
+  --color-purchase-vat:   #dd8b22;
+  --color-diff-positive:  #334155;
+  --color-diff-negative:  #d95785;
+
+  /* === 风险等级 === */
+  --color-risk-high:      #d95785;
+  --color-risk-medium:    #dd8b22;
+  --color-risk-low:       #2aa99a;
+
+  /* === 图表分类色板 === */
+  --color-chart-1:        #4f8df7;
+  --color-chart-2:        #2aa99a;
+  --color-chart-3:        #d95785;
+  --color-chart-4:        #dd8b22;
+  --color-chart-5:        #7c8ca3;
+
+  /* === 中性色（当前平台灰阶） === */
+  --color-gray-50:        #f8fafc;
+  --color-gray-100:       #f5f7fa;
+  --color-gray-200:       #e7eef7;
+  --color-gray-300:       #dbe5f0;
+  --color-gray-400:       #94a3b8;
+  --color-gray-500:       #64748b;
+  --color-gray-600:       #475569;
+  --color-gray-700:       #334155;
+  --color-gray-900:       #0f172a;
+
+  /* === 文字 === */
+  --text-primary:         #1e293b;
+  --text-secondary:       #64748b;
+  --text-hint:            #94a3b8;
+  --text-inverse:         #ffffff;
+  --text-link:            #1d4ed8;
+  --text-link-hover:      #00338d;
+
+  /* === 背景 === */
+  --bg-page:              #f5f7fa;
+  --bg-card:              #ffffff;
+  --bg-head:              #f8fafc;
+  --bg-hover:             #f8fbff;
+  --bg-disabled:          #f1f5f9;
+
+  /* === 边框 === */
+  --border-default:       #dfe7f1;
+  --border-light:         #e7eef7;
+  --border-strong:        #b9cbe3;
+
+  /* === 间距 === */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* === 圆角 === */
+  --radius-sm:  4px;
+  --radius-md:  6px;
+  --radius-lg:  8px;
+  --radius-xl:  10px;
+  --radius-pill: 999px;
+  --radius-tag:  20px;
+
+  /* === 字体：以银行流水分析当前平台字体为准 === */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-family-mono: "SF Mono", "Monaco", "Consolas", "Courier New", monospace;
+
+  --font-size-xs:   10px;
+  --font-size-sm:   11px;
+  --font-size-base: 12px;
+  --font-size-md:   12px;
+  --font-size-lg:   13px;
+  --font-size-xl:   14px;
+  --font-size-2xl:  16px;
+  --font-size-3xl:  20px;
+  --font-size-4xl:  24px;
+
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  --line-height-tight:   1.25;
+  --line-height-normal:  1.45;
+  --line-height-relaxed: 1.6;
+
+  /* === 阴影 === */
+  --shadow-sm: 0 1px 3px rgba(15,23,42,.04);
+  --shadow-md: 0 6px 18px rgba(17,24,39,.08);
+  --shadow-lg: -12px 0 28px rgba(15,23,42,.16);
+
+  /* === Z-index === */
+  --z-sticky:   100;
+  --z-dropdown: 1000;
+  --z-modal:    2000;
+  --z-toast:    3000;
+}
+
+/* === Reset === */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--line-height-normal);
+}
+
+/* === Layout Wrapper === */
+.spec-layout {
+  display: flex;
+  align-items: flex-start;
+}
+.spec-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* === Side Nav === */
+.spec-side-nav {
+  position: sticky;
+  top: var(--space-3);
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  margin: var(--space-3);
+  z-index: var(--z-sticky);
+  font-size: var(--font-size-base);
+  max-height: calc(100vh - var(--space-6));
+  overflow-y: auto;
+}
+.spec-side-nav-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-2);
+  padding: 0 var(--space-2);
+}
+.spec-side-nav a {
+  display: block;
+  padding: 6px var(--space-2);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2px;
+  transition: background 0.15s, color 0.15s;
+}
+.spec-side-nav a:hover {
+  background: var(--bg-hover);
+  color: var(--color-primary);
+}
+
+/* === Cover === */
+.spec-cover {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #001f5c 100%);
+  color: white;
+  padding: var(--space-16) var(--space-8) var(--space-12);
+  margin-bottom: var(--space-8);
+  position: relative;
+  overflow: hidden;
+}
+.spec-cover-brand {
+  display: inline-block;
+  margin-bottom: var(--space-4);
+  height: 28px;
+  line-height: 0;
+}
+.spec-cover-brand img {
+  height: 28px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+.spec-cover::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.spec-cover::after {
+  content: "";
+  position: absolute;
+  bottom: -150px;
+  left: -100px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+}
+.spec-cover-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.spec-cover-title {
+  font-size: 56px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.5px;
+}
+.spec-cover-subtitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  opacity: 0.95;
+  margin-bottom: var(--space-6);
+}
+.spec-cover-meta {
+  display: flex;
+  gap: var(--space-6);
+  font-size: var(--font-size-md);
+  opacity: 0.85;
+  padding-top: var(--space-5);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  flex-wrap: wrap;
+}
+.spec-cover-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.spec-cover-meta-label { font-size: var(--font-size-sm); opacity: 0.7; }
+.spec-cover-meta-value { font-weight: var(--font-weight-semibold); }
+.spec-cover-toc {
+  margin-top: var(--space-6);
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  font-size: var(--font-size-sm);
+}
+.spec-cover-toc span {
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.10);
+  border-radius: var(--radius-sm);
+  opacity: 0.9;
+}
+
+/* === Section === */
+.spec-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-8);
+  margin: 0 var(--space-5) var(--space-6) 0;
+  scroll-margin-top: var(--space-4);
+}
+.spec-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 2px solid var(--color-primary);
+  margin-bottom: var(--space-5);
+}
+.spec-section-num {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1;
+}
+.spec-section-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+.spec-section-desc {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-head);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.spec-subhead {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: var(--space-5) 0 var(--space-3);
+  padding-left: var(--space-2);
+  border-left: 3px solid var(--color-accent);
+}
+
+/* === Color Cards === */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+.color-card {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-card);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.color-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.color-swatch {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-mono);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.color-info {
+  padding: var(--space-3);
+}
+.color-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 2px;
+  color: var(--text-primary);
+  font-family: var(--font-family-mono);
+}
+.color-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-family-mono);
+  margin-bottom: var(--space-2);
+}
+.color-usage {
+  font-size: var(--font-size-sm);
+  color: var(--text-hint);
+  line-height: var(--line-height-relaxed);
+}
+
+/* === Principles === */
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+.principle-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+.principle-num {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  letter-spacing: 1px;
+  margin-bottom: var(--space-2);
+}
+.principle-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+.principle-desc {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* === Typography === */
+.type-stack-demo {
+  padding: var(--space-4);
+  background: var(--bg-head);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+  word-break: break-all;
+}
+.type-scale-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-md);
+}
+.type-scale-table th,
+.type-scale-table td {
+  padding: var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+}
+.type-scale-table th {
+  background: var(--bg-head);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.type-scale-table td:first-child {
+  font-family: var(--font-family-mono);
+  color: var(--text-hint);
+  width: 100px;
+  font-size: var(--font-size-sm);
+}
+.type-scale-table td:nth-child(2) {
+  width: 80px;
+  font-family: var(--font-family-mono);
+  color: var(--text-secondary);
+}
+.type-demo-text {
+  color: var(--text-primary);
+}
+
+/* === Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+.btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.btn-primary { background: var(--color-primary); color: white; }
+.btn-primary:hover:not(:disabled) { background: var(--color-primary-hover); }
+.btn-primary:active:not(:disabled) { background: var(--color-primary-active); }
+
+.btn-outline {
+  background: white;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-outline:hover:not(:disabled) {
+  background: var(--color-primary-soft);
+}
+.btn-outline:active:not(:disabled) {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary-hover);
+}
+
+.btn-text {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: transparent;
+}
+.btn-text:hover:not(:disabled) { background: var(--color-primary-soft); }
+.btn-text:active:not(:disabled) { background: var(--color-primary-soft); }
+
+.btn-danger {
+  background: var(--color-danger);
+  color: white;
+}
+.btn-danger:hover:not(:disabled) { background: #b91c1c; }
+.btn-danger:active:not(:disabled) { background: #991b1b; }
+
+.btn-disabled {
+  background: var(--bg-disabled);
+  color: var(--text-hint);
+  border-color: var(--border-default);
+}
+
+.btn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-md);
+}
+.btn-table th,
+.btn-table td {
+  padding: var(--space-3);
+  text-align: center;
+  border: 1px solid var(--border-light);
+}
+.btn-table th {
+  background: var(--bg-head);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+.btn-table th:first-child {
+  text-align: left;
+  width: 140px;
+}
+
+/* === Forms === */
+.form-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.form-label-required::after {
+  content: "*";
+  color: var(--color-danger);
+}
+.form-label-optional::after {
+  content: "（选填）";
+  color: var(--text-hint);
+  font-weight: normal;
+  font-size: var(--font-size-sm);
+  margin-left: 4px;
+}
+.form-input,
+.form-select,
+.form-textarea {
+  height: 32px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family-base);
+  color: var(--text-primary);
+  background: white;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.form-input::placeholder { color: var(--text-hint); }
+.form-input:hover { border-color: var(--color-primary-muted); }
+.form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+.form-input.is-filled { border-color: var(--border-strong); }
+.form-input.is-disabled {
+  background: var(--bg-disabled);
+  color: var(--text-hint);
+  cursor: not-allowed;
+}
+.form-input.is-error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+.form-help {
+  font-size: var(--font-size-sm);
+  color: var(--text-hint);
+}
+.form-help-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* === Basic Components === */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-tag);
+  line-height: var(--line-height-tight);
+}
+.tag-primary { background: var(--color-primary-soft); color: var(--color-primary); }
+.tag-success { background: var(--color-success-soft); color: var(--color-success); }
+.tag-warning { background: var(--color-warning-soft); color: var(--color-warning); }
+.tag-danger { background: var(--color-danger-soft); color: var(--color-danger); }
+.tag-info { background: var(--color-info-soft); color: var(--color-info); }
+.tag-neutral { background: var(--color-gray-100); color: var(--color-gray-700); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-pill);
+  color: white;
+}
+.badge-primary { background: var(--color-primary); }
+.badge-danger { background: var(--color-danger); }
+.badge-success { background: var(--color-success); }
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border-default);
+  margin-bottom: var(--space-4);
+}
+.tab-item {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+  background: transparent;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  font-family: inherit;
+}
+.tab-item:hover { color: var(--color-primary); }
+.tab-item.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  padding: var(--space-2);
+  background: var(--bg-head);
+  border-radius: var(--radius-sm);
+}
+.breadcrumb-sep { color: var(--text-hint); }
+.breadcrumb a {
+  color: var(--text-link);
+  text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.card:hover { box-shadow: var(--shadow-sm); }
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  background: #f9fbff;
+  border-bottom: 1px solid var(--border-default);
+  position: relative;
+}
+.card-head::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--color-primary);
+}
+.card-title {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  margin-left: var(--space-2);
+}
+.card-body { padding: var(--space-4); }
+
+.checkbox-row,
+.radio-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+.checkbox-row input,
+.radio-row input {
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--color-gray-300);
+  border-radius: var(--radius-pill);
+  transition: 0.2s;
+}
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.switch input:checked + .switch-slider { background: var(--color-primary); }
+.switch input:checked + .switch-slider::before { transform: translateX(16px); }
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 var(--space-2);
+  background: white;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  width: 240px;
+}
+.search-box:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+.search-box input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  font-size: var(--font-size-md);
+  font-family: inherit;
+  background: transparent;
+  color: var(--text-primary);
+}
+.search-box-icon { color: var(--text-hint); font-size: var(--font-size-md); }
+
+/* === Modal === */
+.modal-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+.modal-box {
+  background: white;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.modal-head {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.modal-body {
+  padding: var(--space-4);
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  flex: 1;
+}
+.modal-foot {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-default);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  background: var(--bg-head);
+}
+.modal-size-400 { width: 400px; height: 240px; }
+.modal-size-500 { width: 500px; height: 280px; }
+.modal-size-800 { width: 800px; height: 360px; }
+.modal-size-1000 { width: 1000px; height: 400px; }
+.modal-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-hint);
+  margin-bottom: 4px;
+}
+
+/* === Layout === */
+.layout-svg {
+  width: 100%;
+  max-width: 900px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  padding: var(--space-3);
+}
+.layout-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-md);
+  margin-top: var(--space-3);
+}
+.layout-table th, .layout-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+}
+.layout-table th {
+  background: var(--bg-head);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+}
+.layout-table td:first-child {
+  font-family: var(--font-family-mono);
+  color: var(--text-hint);
+  width: 200px;
+  font-size: var(--font-size-sm);
+}
+
+/* === States === */
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+.state-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.state-card-head {
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-head);
+  border-bottom: 1px solid var(--border-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.state-card-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 200px;
+  justify-content: center;
+  text-align: center;
+}
+.state-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+.state-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.state-desc {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  max-width: 220px;
+}
+
+/* Loading spinner */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-primary-soft);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, var(--color-gray-100) 0%, var(--color-gray-200) 50%, var(--color-gray-100) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+  height: 12px;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* Toast */
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  min-width: 240px;
+  box-shadow: var(--shadow-md);
+  border-left: 4px solid;
+}
+.toast-success { background: var(--color-success-soft); color: var(--color-success); border-color: var(--color-success); }
+.toast-info { background: var(--color-info-soft); color: var(--color-info); border-color: var(--color-info); }
+.toast-warning { background: var(--color-warning-soft); color: var(--color-warning); border-color: var(--color-warning); }
+.toast-error { background: var(--color-danger-soft); color: var(--color-danger); border-color: var(--color-danger); }
+.toast-icon { font-size: var(--font-size-lg); }
+
+/* === Audit & Data Components === */
+.audit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+}
+.audit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.audit-card-head {
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-head);
+  border-bottom: 1px solid var(--border-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.audit-card-head-source {
+  font-size: var(--font-size-xs);
+  color: var(--text-hint);
+  font-weight: var(--font-weight-normal);
+  font-family: var(--font-family-mono);
+}
+.audit-card-body {
+  padding: var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+/* Multi-select dropdown demo */
+.ms-select {
+  position: relative;
+  display: inline-block;
+  width: 240px;
+}
+.ms-trigger {
+  height: 32px;
+  padding: 0 var(--space-2);
+  background: white;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  width: 100%;
+}
+.ms-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background: white;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-1) 0;
+  z-index: var(--z-dropdown);
+  max-height: 220px;
+  overflow-y: auto;
+}
+.ms-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px var(--space-2);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+}
+.ms-item:hover { background: var(--bg-hover); }
+.ms-item input { accent-color: var(--color-primary); }
+.ms-item-all {
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+
+/* Heatmap cells */
+.heat-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.heat-cell {
+  width: 16px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--color-gray-200);
+}
+.heat-cell.heat-blue { background: #60a5fa; }
+.heat-cell.heat-red { background: #f87171; }
+.heat-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  width: 100px;
+}
+
+/* Mini bar chart */
+.mini-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  height: 28px;
+  max-width: 180px;
+}
+.mini-bar-bar {
+  flex: 1;
+  background: var(--color-accent);
+  border-radius: 1px;
+  min-height: 2px;
+}
+.mini-bar-bar.outflow { background: var(--color-outflow); }
+
+/* Editable field */
+.editable-num {
+  display: inline-block;
+  border: 1px solid var(--color-primary-soft);
+  border-radius: var(--radius-sm);
+  padding: 0 4px;
+  cursor: text;
+  min-width: 20px;
+  text-align: center;
+  font-size: var(--font-size-md);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  position: relative;
+}
+.editable-num::after {
+  content: "可修改";
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--text-hint);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Counterparty tag */
+.cp-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-tag);
+  margin-left: 4px;
+}
+.cp-tag-customer { background: var(--color-danger-soft); color: var(--color-danger); }
+.cp-tag-supplier { background: var(--color-info-soft); color: var(--color-info); }
+.cp-tag-employee { background: var(--color-warning-soft); color: var(--color-warning); }
+.cp-tag-other { background: var(--color-gray-100); color: var(--color-gray-700); }
+.cp-tag-personal { background: var(--color-gray-100); color: var(--color-gray-600); }
+
+/* Audit table */
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+.audit-table th,
+.audit-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+}
+.audit-table th {
+  background: var(--bg-head);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+.audit-table tr:hover td { background: var(--color-primary-soft); }
+.audit-table .text-right { text-align: right; font-variant-numeric: tabular-nums; }
+.audit-table .inflow { color: var(--color-inflow); font-weight: var(--font-weight-semibold); }
+.audit-table .outflow { color: var(--color-outflow); font-weight: var(--font-weight-semibold); }
+.audit-table .diff-zero { color: var(--color-diff-positive); font-weight: var(--font-weight-semibold); }
+.audit-table .diff-red { color: var(--color-diff-negative); font-weight: var(--font-weight-semibold); }
+.audit-table .group-row td {
+  background: #eef2fb;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+}
+.audit-table .group-row td::before {
+  content: "▸ ";
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+}
+.audit-table .group-row.open td::before { content: "▾ "; }
+.audit-table .detail-row td { padding-left: 28px; font-size: var(--font-size-sm); }
+
+/* PBC badge */
+.pbc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-tag);
+}
+.pbc-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.pbc-received { background: var(--color-success-soft); color: var(--color-success); }
+.pbc-pending { background: var(--color-warning-soft); color: var(--color-warning); }
+.pbc-overdue { background: var(--color-danger-soft); color: var(--color-danger); }
+.pbc-partial { background: var(--color-info-soft); color: var(--color-info); }
+
+/* Working paper card */
+.wp-card {
+  background: white;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  border-left: 3px solid var(--color-primary);
+}
+.wp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+.wp-id {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--text-hint);
+  font-weight: var(--font-weight-semibold);
+}
+.wp-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+.wp-trail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--border-default);
+}
+.wp-trail-step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.wp-trail-step.completed { color: var(--color-success); }
+.wp-trail-step.current { color: var(--color-primary); font-weight: var(--font-weight-semibold); }
+.wp-trail-step.pending { color: var(--text-hint); }
+.wp-trail-arrow { color: var(--text-hint); }
+
+/* Risk level */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-sm);
+}
+.risk-high { background: var(--color-danger-soft); color: var(--color-risk-high); }
+.risk-medium { background: var(--color-warning-soft); color: var(--color-risk-medium); }
+.risk-low { background: var(--color-success-soft); color: var(--color-risk-low); }
+
+/* Materiality indicator */
+.mat-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--bg-head);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--color-accent);
+}
+.mat-amount {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.mat-ratio {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Reconciliation status */
+.recon-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-tag);
+}
+.recon-balanced { background: var(--color-success-soft); color: var(--color-success); }
+.recon-unbalanced { background: var(--color-danger-soft); color: var(--color-danger); }
+.recon-progress { background: var(--color-warning-soft); color: var(--color-warning); }
+
+/* Review trail timeline */
+.timeline {
+  position: relative;
+  padding-left: var(--space-4);
+  margin: 0;
+  list-style: none;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--border-default);
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: var(--space-3);
+}
+.timeline-dot {
+  position: absolute;
+  left: -19px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid var(--color-primary);
+}
+.timeline-dot.success { border-color: var(--color-success); }
+.timeline-time {
+  font-size: var(--font-size-sm);
+  color: var(--text-hint);
+}
+.timeline-action {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+.timeline-meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* === Appendix === */
+.spec-appendix {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-8);
+  margin: 0 var(--space-5) var(--space-8) 0;
+}
+.bloodline-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-md);
+  margin-top: var(--space-3);
+}
+.bloodline-table th,
+.bloodline-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+}
+.bloodline-table th {
+  background: var(--bg-head);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+.bloodline-table td:first-child {
+  width: 50px;
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  font-family: var(--font-family-mono);
+}
+.bloodline-table .source-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-medium);
+}
+.source-tag-v1-data { background: var(--color-success-soft); color: var(--color-success); }
+.source-tag-v1-audit { background: var(--color-warning-soft); color: var(--color-warning); }
+.source-tag-new { background: var(--color-warning-soft); color: var(--color-warning); }
+
+.spec-footer {
+  text-align: center;
+  padding: var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--text-hint);
+  margin-left: 0;
+}
+
+
+
+/* ============================================================
+   当前平台样式覆盖（应用于 1-10 节，不新增额外章节）
+   来源：base.css、bank-analysis-compact.css、data-summary.css、risk-reference-override.css
+   ============================================================ */
+body {
+  font-size: var(--font-size-md);
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+.spec-side-nav {
+  width: 190px;
+  border-color: var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 10px;
+  font-size: 12px;
+}
+.spec-side-nav a {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 7px;
+}
+.spec-side-nav a:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+}
+.spec-cover {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-deep-blue) 100%);
+}
+.spec-section {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin: 0 var(--space-3) var(--space-4);
+}
+.spec-section-title {
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.3;
+}
+.spec-section-desc {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.spec-subhead {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  border-left: 3px solid var(--color-primary-hover);
+  padding-left: 8px;
+}
+.btn {
+  height: 26px;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 6px;
+  border: 1px solid #dbe5f0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 24px;
+  box-shadow: none;
+}
+.btn-primary {
+  border-color: var(--color-primary-hover);
+  background: var(--color-primary-hover);
+  color: #fff;
+}
+.btn-primary:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  box-shadow: 0 2px 6px rgba(29,78,216,.18);
+}
+.btn-outline {
+  background: #fff;
+  color: #334155;
+}
+.btn-outline:hover,
+.btn-text:hover {
+  background: #f5f9ff;
+  border-color: #c7d8f5;
+  color: var(--color-primary-hover);
+}
+.btn-danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: #fff;
+}
+.form-label {
+  font-size: 12px;
+  color: #475569;
+  font-weight: 600;
+}
+.form-input,
+.form-select,
+.form-textarea {
+  min-height: 24px;
+  border: 1px solid #dbe5f0;
+  border-radius: 6px;
+  background: #fff;
+  color: #334155;
+  font-size: 12px;
+  box-shadow: none;
+}
+.form-input,
+.form-select {
+  height: 24px;
+  padding: 0 7px;
+}
+.form-textarea {
+  padding: 6px 8px;
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--color-primary-hover);
+  box-shadow: 0 0 0 2px rgba(29,78,216,.10);
+}
+.tab-bar {
+  min-height: 34px;
+  gap: 6px;
+  padding: 0 10px;
+  border-bottom: 1px solid #e6edf5;
+  background: #fff;
+}
+.tab-item {
+  position: relative;
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #475569;
+  font-size: 12px;
+  line-height: 34px;
+  font-weight: 500;
+}
+.tab-item.active {
+  color: #003366;
+  font-weight: 600;
+  background: transparent;
+}
+.tab-item.active::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #003366;
+}
+.card {
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.card-head {
+  position: relative;
+  min-height: 36px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-head);
+}
+.card-head::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--color-primary-hover);
+}
+.card-title {
+  margin-left: 8px;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: #1e293b;
+}
+.card-body {
+  padding: 8px 10px 9px;
+}
+.tag,
+.badge,
+.status-badge {
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #dbe5f0;
+}
+.badge-info,
+.tag-info {
+  background: var(--color-info-soft);
+  color: var(--color-primary-hover);
+  border-color: #bfdbfe;
+}
+.badge-success,
+.tag-success {
+  background: var(--color-success-soft);
+  color: #0f766e;
+  border-color: #bdeee6;
+}
+.badge-warning,
+.tag-warning {
+  background: var(--color-warning-soft);
+  color: #b45309;
+  border-color: #fed7aa;
+}
+.badge-danger,
+.tag-danger {
+  background: var(--color-danger-soft);
+  color: #be185d;
+  border-color: #f9c8d7;
+}
+.audit-table,
+.data-table,
+.layout-table,
+.type-scale-table,
+.bloodline-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11.5px;
+  color: #334155;
+  white-space: nowrap;
+  border: 1px solid #dfe9f5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.audit-table th,
+.data-table th,
+.layout-table th,
+.type-scale-table th,
+.bloodline-table th {
+  height: 30px;
+  padding: 4px 8px;
+  border-right: 1px solid #dce7f3;
+  border-bottom: 1px solid #d7e4f1;
+  background: #f4f8fd;
+  color: #263a57;
+  font-weight: 700;
+}
+.audit-table td,
+.data-table td,
+.layout-table td,
+.type-scale-table td,
+.bloodline-table td {
+  height: 30px;
+  padding: 4px 8px;
+  border-right: 1px solid #e7eef7;
+  border-bottom: 1px solid #e9f0f7;
+  background: #fff;
+  color: #334155;
+}
+.audit-table tr:hover td,
+.data-table tr:hover td,
+.layout-table tr:hover td,
+.type-scale-table tr:hover td,
+.bloodline-table tr:hover td {
+  background: #f8fbff;
+}
+.num,
+.amount,
+.table-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.amount-in,
+.inflow,
+.color-inflow {
+  color: var(--color-inflow) !important;
+}
+.amount-sales,
+.sales-vat,
+.tax-sales,
+.color-sales {
+  color: var(--color-sales-vat) !important;
+}
+.amount-out,
+.outflow,
+.color-outflow {
+  color: var(--color-outflow) !important;
+}
+.amount-purchase,
+.purchase-vat,
+.tax-purchase,
+.color-purchase {
+  color: var(--color-purchase-vat) !important;
+}
+.type-customer,
+.cell-customer {
+  background: #eef5ff !important;
+  color: #334155 !important;
+}
+.type-supplier,
+.cell-supplier {
+  background: #f8f3ea !important;
+  color: #334155 !important;
+}
+.type-personal,
+.cell-personal {
+  background: #f5f1ff !important;
+  color: #334155 !important;
+}
+.pagination,
+.pager {
+  gap: 6px;
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 11px;
+}
+.pagination .btn,
+.pager .btn {
+  height: 26px;
+  min-height: 26px;
+  padding: 0 9px;
+}
+.modal-box,
+.drawer,
+.spec-modal {
+  border: 1px solid #dbe5f0;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+}
+.modal-head,
+.drawer-head {
+  min-height: 38px;
+  padding: 0 12px;
+  border-bottom: 1px solid #e6edf5;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.modal-body,
+.drawer-body {
+  padding: 10px;
+}
+.modal-foot,
+.drawer-foot {
+  padding: 8px 10px;
+  border-top: 1px solid #e6edf5;
+}
+.filter-chip,
+.chip {
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: var(--color-primary-hover);
+  font-size: 11px;
+  font-weight: 600;
+}
+.color-card,
+.component-demo,
+.state-card,
+.audit-card,
+.wp-card,
+.principle-card {
+  border-color: var(--border-default);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+.color-swatch {
+  border-radius: 7px 7px 0 0;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,.45);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+</style>
+</head>
+<body>
+
+<div class="spec-layout">
+
+<!-- ===== Side Nav ===== -->
+<nav class="spec-side-nav">
+  <a href="index.html" style="display:block;padding:8px 14px;margin-bottom:12px;background:rgba(30,73,226,0.08);border-radius:6px;color:#1e49e2;text-decoration:none;font-size:13px;font-weight:500;">&larr; 返回首页</a>
+  <div class="spec-side-nav-title">章节导航</div>
+  <a href="#cover">封面</a>
+  <a href="#principles">1. 设计原则</a>
+  <a href="#colors">2. 标准色</a>
+  <a href="#typography">3. 标准字</a>
+  <a href="#buttons">4. 按钮</a>
+  <a href="#forms">5. 表单</a>
+  <a href="#basic">6. 基础组件</a>
+  <a href="#modal">7. 弹窗</a>
+  <a href="#layout">8. 页面布局</a>
+  <a href="#states">9. 状态设计</a>
+  <a href="#audit">10. 审计与数据组件</a>
+  <a href="#appendix">附录</a>
+</nav>
+
+<main class="spec-content">
+
+<!-- ===== Cover ===== -->
+<header class="spec-cover" id="cover">
+  <div class="spec-cover-content">
+    <span class="spec-cover-brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAlCAYAAADV/m7fAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAPQSURBVHja7FrtcdswDH3oZQB3gmqDyBNEniDuBHEmqDJBnAmcTOBmAjsTWJnA6gTRBtIG6B8qZSiApCz96R1xlx8SKRB8fPggYmJmJLlcviUIpskVABDRl5fMvACQz6C/BrAAkM2kKzP6JgkRVcycz6CrI2aWACwA7AE0E5RnAO4BFADuJurKAfwE8Gg23U3QVRARMfNpNgYq8kpE20sVM/N2Rl32Zh+IqJqgiy0mrqaAx8ynFANTEkkAJgATgEkSgAnABGACMEkCMAH438lVggAwnZkCwDWGnaMGwDuAIxF1YwC8Y+Yb6/mFiI7WogcM20E1ET1Yz7t+jqUrN+/6hkAN4Mk2TtCdG12ZB4S9Z/yViH4L32wA/EK4dbcBsGPmexuDXolkTMFDyWxjhfGz6SN+gsDx8tF/y8x5YG4hARH4Zm3NZWZemDUvkSymGzOgMRE11klvnPEOwL1D8fUIL8qs+cVI91sYdvqkdp5PHrZWlndobAwmkVvn+RgAb0VEtbUpCbwlGQGwxLDBmilrh2QPf2e56w/fCQmuPAD4TkQr0ydcIqJxq8VAlwVvzFzGgKeA0NlziKhm5k5hUzGCfUUE0ytrfqnMWbp7MDbWQXvcGMjMa8fnWyXGtCZ7STrd+HJwxjMpTglrsxBLix5sYZ2T8P3Wmt8K4+WE7C3GwBvFTWKY15cEbnx5d553ClNuhXX+KPaXwjqvHgaWgqs3RPQ8dyHtusQiFjxP8rhm5i0z75j5Q5jzbBJQIcVe5ZAenddPSizs7bwTxl5cRgUy8MHrwhElBGtua+k4jywLzsa9pLU3BvgvLiyscVZKpw9PyBjsJcLW0gX8KpA8RIbZ9Z7A1nyEB1SGObmSfTsAP5x3UuH7ZmKj+75R3n/aa9WV+YjE9S/Z2P8XNieZO9eYzJfZhFIki5wLobRYOODVik7XRTvl8PqxbOQ+JDJ1Qj1Zf7qwcaNB1a1U7IVyOqILxRTDnuy5jbzBrDU7PToWI+w5hJLIWrl9PAnfPUYmkGMk+4qR7OjFvv0MXND6B3zlyeSx9rx760CBPTtPXTdgoY8BEQx079atNbaNyYhCBj0FGNXL3k4mJpnto5OnBWCrbV4ppE+xIEQAqBbeCoCt636C/buAfWOk9d5EpNtHxCZdkNuYmCHVdFL5EgCwHKPDYuH5QgAPoUL6JiJ2qbFQ+anYWyQB1yPjXyXcHvJQB8bEypXZR4d4qdyCe1DGCCVEI3QwIMU081s7sYSQOriCzkGJYf/6Shgf6A3p8NRz0sE3/Z+EgQZgkhnvwklGyN8BALWe+9iUXFNDAAAAAElFTkSuQmCC" alt="KPMG" /></span>
+    <h1 class="spec-cover-title">Audit Compass</h1>
+    <p class="spec-cover-subtitle">UI 设计管理规范 V1.0</p>
+    <div class="spec-cover-meta">
+      <div class="spec-cover-meta-item">
+        <span class="spec-cover-meta-label">版本</span>
+        <span class="spec-cover-meta-value">V1.0 (2026.06)</span>
+      </div>
+      <div class="spec-cover-meta-item">
+        <span class="spec-cover-meta-label">整理人</span>
+        <span class="spec-cover-meta-value">产品设计组</span>
+      </div>
+      <div class="spec-cover-meta-item">
+        <span class="spec-cover-meta-label">适用对象</span>
+        <span class="spec-cover-meta-value">前端开发 / UI 设计 / 产品</span>
+      </div>
+      <div class="spec-cover-meta-item">
+        <span class="spec-cover-meta-label">规范范围</span>
+        <span class="spec-cover-meta-value">后台全模块</span>
+      </div>
+    </div>
+    <div class="spec-cover-toc">
+      <span>标准色</span>
+      <span>标准字体</span>
+      <span>按钮</span>
+      <span>表单</span>
+      <span>基础组件</span>
+      <span>弹窗</span>
+      <span>页面布局</span>
+      <span>状态设计</span>
+      <span>审计与数据组件</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Section 1: 设计原则 ===== -->
+<section class="spec-section" id="principles">
+  <div class="spec-section-head">
+    <span class="spec-section-num">1</span>
+    <h2 class="spec-section-title">设计原则</h2>
+  </div>
+  <div class="spec-section-desc">
+    本规范服务于 KPMG Audit Compass 审计系统的产品设计。下列 5 条原则是所有视觉与交互决策的顶层依据。
+  </div>
+  <div class="principle-grid">
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 01</div>
+      <div class="principle-title">审计业务优先</div>
+      <p class="principle-desc">界面服务于审计业务流程，不为视觉美观牺牲信息密度。专业感与可用性优先于装饰性元素。</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 02</div>
+      <div class="principle-title">风险可识别</div>
+      <p class="principle-desc">异常、风险、警示状态用统一语义色（红/橙/绿）即时传达。风险等级可视化需贯穿列表、卡片、详情页。</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 03</div>
+      <div class="principle-title">留痕可追溯</div>
+      <p class="principle-desc">所有操作、变更、审批均有可追溯的视觉标记和时间戳。PBC 状态、底稿留痕、复核链是审计合规的核心。</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 04</div>
+      <div class="principle-title">数据密度合理</div>
+      <p class="principle-desc">高密度表格与摘要卡片共存，按场景切换。KPI 汇总区使用 4 列布局，详情表格使用紧凑型单元格。</p>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 05</div>
+      <div class="principle-title">视觉克制</div>
+      <p class="principle-desc">平台主蓝为交互核心，蓝绿粉橙区分资金与税票语义。卡片使用细边框、浅灰头部和左侧蓝条建立层级，不使用厚重装饰。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 2: 标准色 ===== -->
+<section class="spec-section" id="colors">
+  <div class="spec-section-head">
+    <span class="spec-section-num">2</span>
+    <h2 class="spec-section-title">标准色</h2>
+  </div>
+  <div class="spec-section-desc">
+    本规范按当前平台实际样式提炼：深蓝用于导航与当前态，业务蓝用于主按钮和关键操作，蓝/绿/粉/橙分别对应流入金额、销项税价合计、流出金额、进项税价合计；灰阶用于卡片、表格、筛选与辅助说明。
+  </div>
+
+  <h3 class="spec-subhead">2.1 品牌色（主色系）</h3>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-primary)">#1e49e2</div>
+      <div class="color-info">
+        <div class="color-name">--color-primary</div>
+        <div class="color-value">#1e49e2</div>
+        <div class="color-usage">平台主蓝。顶部栏、主按钮、关键操作、当前页强调</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-primary-hover)">#1d4ed8</div>
+      <div class="color-info">
+        <div class="color-name">--color-primary-hover</div>
+        <div class="color-value">#1d4ed8</div>
+        <div class="color-usage">主按钮 Hover / 当前操作蓝</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-primary-active);color:#fff">#00338d</div>
+      <div class="color-info">
+        <div class="color-name">--color-primary-active</div>
+        <div class="color-value">#00338d</div>
+        <div class="color-usage">深蓝导航 / Tab 激活下划线</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-primary-soft);color:var(--color-primary)">#eef4ff</div>
+      <div class="color-info">
+        <div class="color-name">--color-primary-soft</div>
+        <div class="color-value">#eef4ff</div>
+        <div class="color-usage">浅蓝底：选中行、筛选 chip、信息提示 / 轻量说明</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-accent)">#2f6fed</div>
+      <div class="color-info">
+        <div class="color-name">--color-accent</div>
+        <div class="color-value">#2f6fed</div>
+        <div class="color-usage">强调蓝：链接、表格操作、查看明细</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-accent-hover)">#235fd3</div>
+      <div class="color-info">
+        <div class="color-name">--color-accent-hover</div>
+        <div class="color-value">#235fd3</div>
+        <div class="color-usage">强调色悬停</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="spec-subhead">2.2 状态色（语义）</h3>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-success)">#2aa99a</div>
+      <div class="color-info">
+        <div class="color-name">--color-success</div>
+        <div class="color-value">#2aa99a</div>
+        <div class="color-usage">成功 / 调节平衡 / 零差异</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-warning)">#dd8b22</div>
+      <div class="color-info">
+        <div class="color-name">--color-warning</div>
+        <div class="color-value">#dd8b22</div>
+        <div class="color-usage">警示 / 流出金额 / 待处理</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-danger)">#d95785</div>
+      <div class="color-info">
+        <div class="color-name">--color-danger</div>
+        <div class="color-value">#d95785</div>
+        <div class="color-usage">错误 / 逾期 / 高风险</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-info)">#2f6fed</div>
+      <div class="color-info">
+        <div class="color-name">--color-info</div>
+        <div class="color-value">#2f6fed</div>
+        <div class="color-usage">信息提示 / 轻量说明</div>
+      </div>
+    </div>
+  </div>
+
+
+  <h3 class="spec-subhead">2.3 资金与税票语义色（全平台统一）</h3>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-inflow)">#4f8df7</div>
+      <div class="color-info">
+        <div class="color-name">--color-inflow</div>
+        <div class="color-value">#4f8df7</div>
+        <div class="color-usage">流入金额 / 银行流入 / 表格浅蓝数字</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-sales-vat)">#2aa99a</div>
+      <div class="color-info">
+        <div class="color-name">--color-sales-vat</div>
+        <div class="color-value">#2aa99a</div>
+        <div class="color-usage">销项税价合计 / 销项发票 / 青绿色数字</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-outflow)">#d95785</div>
+      <div class="color-info">
+        <div class="color-name">--color-outflow</div>
+        <div class="color-value">#d95785</div>
+        <div class="color-usage">流出金额 / 银行流出 / 粉红色数字</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-purchase-vat)">#dd8b22</div>
+      <div class="color-info">
+        <div class="color-name">--color-purchase-vat</div>
+        <div class="color-value">#dd8b22</div>
+        <div class="color-usage">进项税价合计 / 进项发票 / 橙色数字</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="spec-subhead">2.4 风险等级色</h3>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-risk-high)">高</div>
+      <div class="color-info">
+        <div class="color-name">--color-risk-high</div>
+        <div class="color-value">#d95785</div>
+        <div class="color-usage">高风险标识，需重点核查</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-risk-medium)">中</div>
+      <div class="color-info">
+        <div class="color-name">--color-risk-medium</div>
+        <div class="color-value">#dd8b22</div>
+        <div class="color-usage">中风险标识，需关注</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-risk-low)">低</div>
+      <div class="color-info">
+        <div class="color-name">--color-risk-low</div>
+        <div class="color-value">#2aa99a</div>
+        <div class="color-usage">低风险标识，可接受</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="spec-subhead">2.5 图表分类色板（5 色）</h3>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-chart-1)">系列 1</div>
+      <div class="color-info">
+        <div class="color-name">--color-chart-1</div>
+        <div class="color-value">#4f8df7</div>
+        <div class="color-usage">流入 / 蓝色系图表</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-chart-2)">系列 2</div>
+      <div class="color-info">
+        <div class="color-name">--color-chart-2</div>
+        <div class="color-value">#2aa99a</div>
+        <div class="color-usage">销项 / 青绿色图表</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-chart-3)">系列 3</div>
+      <div class="color-info">
+        <div class="color-name">--color-chart-3</div>
+        <div class="color-value">#d95785</div>
+        <div class="color-usage">流出 / 粉红色图表</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-chart-4)">系列 4</div>
+      <div class="color-info">
+        <div class="color-name">--color-chart-4</div>
+        <div class="color-value">#dd8b22</div>
+        <div class="color-usage">进项 / 橙色图表</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-chart-5)">系列 5</div>
+      <div class="color-info">
+        <div class="color-name">--color-chart-5</div>
+        <div class="color-value">#7c8ca3</div>
+        <div class="color-usage">辅助灰蓝 / 中性分类</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="spec-subhead">2.6 中性色（9 级灰阶）</h3>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-50);color:var(--text-secondary)">50</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-50</div>
+        <div class="color-value">#f8fafc</div>
+        <div class="color-usage">最浅背景</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-100);color:var(--text-secondary)">100</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-100</div>
+        <div class="color-value">#f5f7fa</div>
+        <div class="color-usage">禁用态背景</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-200);color:var(--text-secondary)">200</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-200</div>
+        <div class="color-value">#e7eef7</div>
+        <div class="color-usage">骨架屏占位</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-300);color:var(--text-secondary)">300</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-300</div>
+        <div class="color-value">#dbe5f0</div>
+        <div class="color-usage">开关关闭态</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-400);color:white">400</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-400</div>
+        <div class="color-value">#94a3b8</div>
+        <div class="color-usage">提示文字 / 占位符</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-500);color:white">500</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-500</div>
+        <div class="color-value">#64748b</div>
+        <div class="color-usage">次要文字</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-600);color:white">600</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-600</div>
+        <div class="color-value">#475569</div>
+        <div class="color-usage">正文辅助</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-700);color:white">700</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-700</div>
+        <div class="color-value">#334155</div>
+        <div class="color-usage">正文主色</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:var(--color-gray-900);color:white">900</div>
+      <div class="color-info">
+        <div class="color-name">--color-gray-900</div>
+        <div class="color-value">#0f172a</div>
+        <div class="color-usage">最高对比文字</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 3: 标准字 ===== -->
+<section class="spec-section" id="typography">
+  <div class="spec-section-head">
+    <span class="spec-section-num">3</span>
+    <h2 class="spec-section-title">标准字</h2>
+  </div>
+  <div class="spec-section-desc">
+    字体栈优先使用系统默认字体，保证中英文混排的最佳渲染效果。8 级字号阶梯覆盖从 10px 子标签到 28px 章节大标题的所有场景。
+  </div>
+
+  <h3 class="spec-subhead">3.1 字体栈</h3>
+  <div class="type-stack-demo">
+    --font-family-base: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  </div>
+
+  <h3 class="spec-subhead">3.2 字号阶梯</h3>
+  <table class="type-scale-table">
+    <thead>
+      <tr><th>Token</th><th>像素</th><th>示例</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>--font-size-xs</td><td>10px</td><td><span class="type-demo-text" style="font-size:10px">次级数字 / 子标签</span></td><td>月份数字、子标签</td></tr>
+      <tr><td>--font-size-sm</td><td>11px</td><td><span class="type-demo-text" style="font-size:11px">辅助提示信息</span></td><td>百分比、图例、提示、校验信息</td></tr>
+      <tr><td>--font-size-base</td><td>12px</td><td><span class="type-demo-text" style="font-size:12px">按钮与工具栏文字</span></td><td>按钮、工具栏、表格内小字段</td></tr>
+      <tr><td>--font-size-md</td><td>13px</td><td><span class="type-demo-text" style="font-size:13px">默认正文（推荐阅读）</span></td><td>表格正文、Tab、默认 UI 文字</td></tr>
+      <tr><td>--font-size-lg</td><td>14px</td><td><span class="type-demo-text" style="font-size:14px">小标题文字</span></td><td>卡片小标题、表单标签</td></tr>
+      <tr><td>--font-size-xl</td><td>17px</td><td><span class="type-demo-text" style="font-size:17px;font-weight:600">页面顶部标题</span></td><td>页面主标题、面包屑当前页</td></tr>
+      <tr><td>--font-size-2xl</td><td>18px</td><td><span class="type-demo-text" style="font-size:18px;font-weight:700">KPI 卡片数值</span></td><td>汇总卡数值、章节大标题</td></tr>
+      <tr><td>--font-size-4xl</td><td>28px</td><td><span class="type-demo-text" style="font-size:28px;font-weight:700">章节大标题</span></td><td>规范章节大标题</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="spec-subhead">3.3 字重</h3>
+  <table class="type-scale-table">
+    <thead><tr><th>Token</th><th>数值</th><th>示例</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>--font-weight-normal</td><td>400</td><td><span class="type-demo-text" style="font-weight:400">常规正文 Regular</span></td><td>正文、长描述</td></tr>
+      <tr><td>--font-weight-medium</td><td>500</td><td><span class="type-demo-text" style="font-weight:500">中等 Medium</span></td><td>按钮文字</td></tr>
+      <tr><td>--font-weight-semibold</td><td>600</td><td><span class="type-demo-text" style="font-weight:600">半粗 Semibold</span></td><td>表头、Tab 激活、卡片标题</td></tr>
+      <tr><td>--font-weight-bold</td><td>700</td><td><span class="type-demo-text" style="font-weight:700">粗体 Bold</span></td><td>页面标题、数值、合计行</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="spec-subhead">3.4 行高</h3>
+  <table class="type-scale-table">
+    <thead><tr><th>Token</th><th>数值</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>--line-height-tight</td><td>1.2</td><td>标题、按钮、单行场景</td></tr>
+      <tr><td>--line-height-normal</td><td>1.5</td><td>正文、表格、默认 UI 文字</td></tr>
+      <tr><td>--line-height-relaxed</td><td>1.65</td><td>描述段落、长文本</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== Section 4: 按钮 ===== -->
+<section class="spec-section" id="buttons">
+  <div class="spec-section-head">
+    <span class="spec-section-num">4</span>
+    <h2 class="spec-section-title">按钮</h2>
+  </div>
+  <div class="spec-section-desc">
+    按钮采用当前平台紧凑规格：常规高度 26px，主按钮用于查询、执行、导出等关键动作；次按钮为白底细边框；危险操作需配合确认。
+  </div>
+  <table class="btn-table">
+    <thead>
+      <tr><th>类型</th><th>默认</th><th>悬停</th><th>按下</th><th>禁用</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>主按钮 Primary</td>
+        <td><button class="btn btn-primary">主按钮</button></td>
+        <td><button class="btn btn-primary" style="background:var(--color-primary-hover)">主按钮</button></td>
+        <td><button class="btn btn-primary" style="background:var(--color-primary-active)">主按钮</button></td>
+        <td><button class="btn btn-primary" disabled>主按钮</button></td>
+      </tr>
+      <tr>
+        <td>次按钮 Outline</td>
+        <td><button class="btn btn-outline">次按钮</button></td>
+        <td><button class="btn btn-outline" style="background:var(--color-primary-soft)">次按钮</button></td>
+        <td><button class="btn btn-outline" style="background:var(--color-primary-soft);border-color:var(--color-primary-hover)">次按钮</button></td>
+        <td><button class="btn btn-outline" disabled>次按钮</button></td>
+      </tr>
+      <tr>
+        <td>文字按钮 Text</td>
+        <td><button class="btn btn-text">文字按钮</button></td>
+        <td><button class="btn btn-text" style="background:var(--color-primary-soft)">文字按钮</button></td>
+        <td><button class="btn btn-text" style="background:var(--color-primary-soft)">文字按钮</button></td>
+        <td><button class="btn btn-text" disabled>文字按钮</button></td>
+      </tr>
+      <tr>
+        <td>危险按钮 Danger</td>
+        <td><button class="btn btn-danger">危险操作</button></td>
+        <td><button class="btn btn-danger" style="background:#b91c1c">危险操作</button></td>
+        <td><button class="btn btn-danger" style="background:#991b1b">危险操作</button></td>
+        <td><button class="btn btn-danger" disabled>危险操作</button></td>
+      </tr>
+      <tr>
+        <td>禁用态 Disabled</td>
+        <td><button class="btn btn-disabled">已禁用</button></td>
+        <td><span style="color:var(--text-hint);font-size:var(--font-size-sm)">— 不可交互 —</span></td>
+        <td><span style="color:var(--text-hint);font-size:var(--font-size-sm)">— 不可交互 —</span></td>
+        <td><button class="btn btn-disabled">已禁用</button></td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:var(--space-3);font-size:var(--font-size-sm);color:var(--text-hint)">
+    通用规范：高度 32px / 圆角 6px / 内边距 0 12px / 字号 12px / 字重 500
+  </div>
+</section>
+
+<!-- ===== Section 5: 表单 ===== -->
+<section class="spec-section" id="forms">
+  <div class="spec-section-head">
+    <span class="spec-section-num">5</span>
+    <h2 class="spec-section-title">表单</h2>
+  </div>
+  <div class="spec-section-desc">
+    6 种状态覆盖完整生命周期：默认 / 悬停 / 聚焦 / 已填 / 禁用 / 错误。所有必填字段用红色 * 标识，选填字段显式标注。
+  </div>
+  <div class="form-demo-grid">
+    <div class="form-field">
+      <label class="form-label form-label-required">默认状态</label>
+      <input class="form-input" type="text" placeholder="请输入..." />
+    </div>
+    <div class="form-field">
+      <label class="form-label">悬停状态</label>
+      <input class="form-input" type="text" value="悬停边框" style="border-color:var(--color-primary-muted)" />
+    </div>
+    <div class="form-field">
+      <label class="form-label">聚焦状态</label>
+      <input class="form-input" type="text" value="聚焦蓝边" style="border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-soft)" />
+    </div>
+    <div class="form-field">
+      <label class="form-label form-label-optional">已填状态</label>
+      <input class="form-input is-filled" type="text" value="已填写内容" />
+    </div>
+    <div class="form-field">
+      <label class="form-label">禁用状态</label>
+      <input class="form-input is-disabled" type="text" value="不可编辑" disabled />
+    </div>
+    <div class="form-field">
+      <label class="form-label form-label-required">错误状态</label>
+      <input class="form-input is-error" type="text" value="格式错误" />
+      <span class="form-help-error">请输入正确的金额</span>
+    </div>
+  </div>
+  <div style="margin-top:var(--space-3);font-size:var(--font-size-sm);color:var(--text-hint)">
+    通用规范：高度 32px / 圆角 6px / 内边距 0 8px / 字号 13px / 聚焦时显示 3px 主色光晕
+  </div>
+</section>
+
+<!-- ===== Section 6: 基础组件 ===== -->
+<section class="spec-section" id="basic">
+  <div class="spec-section-head">
+    <span class="spec-section-num">6</span>
+    <h2 class="spec-section-title">基础组件</h2>
+  </div>
+  <div class="spec-section-desc">
+    覆盖导航、表单扩展、标识三大类基础组件。平台卡片使用细边框、浅灰头部和 3-4px 左侧蓝条；标签和状态采用轻量浅底色。
+  </div>
+
+  <h3 class="spec-subhead">6.1 标签 Tag / 徽章 Badge</h3>
+  <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-4)">
+    <span class="tag tag-primary">主要标签</span>
+    <span class="tag tag-success">成功</span>
+    <span class="tag tag-warning">警示</span>
+    <span class="tag tag-danger">错误</span>
+    <span class="tag tag-info">信息</span>
+    <span class="tag tag-neutral">中性</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-4);align-items:center">
+    <span class="badge badge-primary">12</span>
+    <span class="badge badge-danger">3</span>
+    <span class="badge badge-success">99+</span>
+    <span style="color:var(--text-hint);font-size:var(--font-size-sm);margin-left:var(--space-3)">圆角 999px / 最小宽度 18px / 高度 18px</span>
+  </div>
+
+  <h3 class="spec-subhead">6.2 Tab 导航</h3>
+  <div class="tab-bar">
+    <button class="tab-item active">账户总览</button>
+    <button class="tab-item">账号完整性</button>
+    <button class="tab-item">流水画像</button>
+    <button class="tab-item">关联方交易</button>
+    <button class="tab-item">高风险核查</button>
+  </div>
+  <div style="font-size:var(--font-size-sm);color:var(--text-hint)">
+    高度 32px / 圆角 0 / 下边框 2px（激活时主色，否则透明）/ 字号 13px
+  </div>
+
+  <h3 class="spec-subhead">6.3 面包屑 Breadcrumb</h3>
+  <div class="breadcrumb">
+    <a href="#">项目列表</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="#">测试项目 FY25</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="#">银行流水分析</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">账户总览</span>
+  </div>
+
+  <h3 class="spec-subhead">6.4 搜索框 Search</h3>
+  <div class="search-box">
+    <span class="search-box-icon"></span>
+    <input type="text" placeholder="搜索银行账号、对手方..." />
+  </div>
+
+  <h3 class="spec-subhead">6.5 复选框 / 单选框 / 开关</h3>
+  <div style="display:flex;gap:var(--space-6);align-items:center;flex-wrap:wrap">
+    <label class="checkbox-row">
+      <input type="checkbox" checked /> 已选
+    </label>
+    <label class="checkbox-row">
+      <input type="checkbox" /> 未选
+    </label>
+    <label class="radio-row">
+      <input type="radio" name="r1" checked /> 选项 A
+    </label>
+    <label class="radio-row">
+      <input type="radio" name="r1" /> 选项 B
+    </label>
+    <label class="switch">
+      <input type="checkbox" checked />
+      <span class="switch-slider"></span>
+    </label>
+    <label class="switch">
+      <input type="checkbox" />
+      <span class="switch-slider"></span>
+    </label>
+  </div>
+
+  <h3 class="spec-subhead">6.6 卡片 Card（含左侧蓝条）</h3>
+  <div class="card" style="max-width:480px">
+    <div class="card-head">
+      <span class="card-title">资金余额变动趋势</span>
+      <button class="btn btn-text">查看详情</button>
+    </div>
+    <div class="card-body">
+      <p style="color:var(--text-secondary);font-size:var(--font-size-md);line-height:var(--line-height-relaxed)">
+        卡片头部使用 3-4px 左侧蓝色竖条 + #f8fafc 浅灰底作为视觉锚点，标题左对齐，业务逻辑/操作提示紧跟标题，操作区右对齐。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 7: 弹窗 ===== -->
+<section class="spec-section" id="modal">
+  <div class="spec-section-head">
+    <span class="spec-section-num">7</span>
+    <h2 class="spec-section-title">弹窗</h2>
+  </div>
+  <div class="spec-section-desc">
+    4 种宽度规范：400（确认）/ 500（表单）/ 800（详情）/ 1000（复杂内容）。高度自适应内容。统一结构：标题 + 正文 + 底部按钮。
+  </div>
+  <div class="modal-demo">
+    <div>
+      <span class="modal-label">400 × 自适应 — 确认弹窗</span>
+      <div class="modal-box modal-size-400">
+        <div class="modal-head">确认删除</div>
+        <div class="modal-body">删除后将无法恢复，确定要删除此条 PBC 记录吗？</div>
+        <div class="modal-foot">
+          <button class="btn btn-outline">取消</button>
+          <button class="btn btn-danger">确认删除</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="modal-label">500 × 自适应 — 表单弹窗</span>
+      <div class="modal-box modal-size-500">
+        <div class="modal-head">新增 PBC 任务</div>
+        <div class="modal-body">
+          <div class="form-field" style="margin-bottom:var(--space-2)">
+            <label class="form-label form-label-required">任务名称</label>
+            <input class="form-input" type="text" placeholder="请输入..." />
+          </div>
+          <div class="form-field">
+            <label class="form-label form-label-required">截止日期</label>
+            <input class="form-input" type="date" />
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-outline">取消</button>
+          <button class="btn btn-primary">提交</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="modal-label">800 × 自适应 — 详情弹窗</span>
+      <div class="modal-box modal-size-800">
+        <div class="modal-head">银行流水详情</div>
+        <div class="modal-body">
+          <p>本方账号：3100****4725 建设银行</p>
+          <p>对手方：ABC 科技有限公司</p>
+          <p>金额：¥1,250,000.00</p>
+          <p>日期：2025-12-15</p>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-outline">关闭</button>
+          <button class="btn btn-primary">查看完整底稿</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="modal-label">1000 × 自适应 — 复杂内容</span>
+      <div class="modal-box modal-size-1000">
+        <div class="modal-head">调节平衡详情</div>
+        <div class="modal-body">
+          <p>总账与银行流水调节表：含分组表头、银行侧 / 总账侧 / 差异对比三段式结构。</p>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-outline">导出</button>
+          <button class="btn btn-primary">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 8: 页面布局 ===== -->
+<section class="spec-section" id="layout">
+  <div class="spec-section-head">
+    <span class="spec-section-num">8</span>
+    <h2 class="spec-section-title">页面布局</h2>
+  </div>
+  <div class="spec-section-desc">
+    以 1280×720 为开发基准，8px 栅格节奏。完整 Shell 架构包含顶栏、侧边栏、面包屑、主内容区、页脚。
+  </div>
+
+  <h3 class="spec-subhead">8.1 Shell 架构图</h3>
+  <svg class="layout-svg" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg">
+    <!-- Header -->
+    <rect x="0" y="0" width="900" height="40" fill="#00338d" rx="4" />
+    <text x="20" y="25" fill="white" font-size="13" font-weight="700">Audit Compass</text>
+    <text x="160" y="25" fill="white" font-size="11" opacity="0.85">项目列表 / 测试项目 / 银行流水分析</text>
+    <text x="780" y="25" fill="white" font-size="11">中/EN | 用户 | 设置</text>
+    <text x="450" y="20" fill="white" font-size="10" text-anchor="middle" opacity="0.6">顶栏 48px (header-h)</text>
+    <!-- Sidebar -->
+    <rect x="0" y="44" width="180" height="380" fill="white" stroke="#e4e7ef" />
+    <text x="20" y="65" fill="#003366" font-size="12" font-weight="700">KPMG</text>
+    <line x1="0" y1="80" x2="180" y2="80" stroke="#e6edf5" />
+    <text x="20" y="100" fill="#003366" font-size="12">项目列表</text>
+    <text x="20" y="125" fill="#003366" font-size="12">工作簿详情</text>
+    <rect x="20" y="135" width="140" height="22" fill="#eef2ff" rx="4" />
+    <text x="30" y="150" fill="#1e49e2" font-size="11" font-weight="600">数据上传</text>
+    <rect x="20" y="160" width="140" height="22" fill="#eef2ff" rx="4" />
+    <text x="30" y="175" fill="#1e49e2" font-size="11" font-weight="600">银行流水分析</text>
+    <text x="20" y="200" fill="#003366" font-size="12">系统管理</text>
+    <text x="100" y="240" fill="#94a3b8" font-size="10" text-anchor="middle">侧边栏 210px (sidebar-w)</text>
+    <!-- Breadcrumb -->
+    <rect x="184" y="44" width="716" height="28" fill="#f0f2f7" />
+    <text x="195" y="62" fill="#64748b" font-size="11">← 返回项目列表 / 测试项目 / <tspan fill="#0f172a" font-weight="700">银行流水分析</tspan></text>
+    <text x="540" y="62" fill="#94a3b8" font-size="10" text-anchor="middle">面包屑 24px</text>
+    <!-- Tab Nav -->
+    <rect x="184" y="76" width="716" height="40" fill="white" stroke="#e4e7ef" />
+    <text x="200" y="100" fill="#00338d" font-size="12" font-weight="600">账户总览</text>
+    <line x1="195" y1="113" x2="260" y2="113" stroke="#00338d" stroke-width="2" />
+    <text x="270" y="100" fill="#6b7280" font-size="12">账号完整性</text>
+    <text x="345" y="100" fill="#6b7280" font-size="12">流水画像</text>
+    <text x="410" y="100" fill="#6b7280" font-size="12">关联方</text>
+    <text x="475" y="100" fill="#6b7280" font-size="12">高风险</text>
+    <!-- Global Filter Bar -->
+    <rect x="194" y="126" width="696" height="48" fill="white" stroke="#e4e7ef" rx="4" />
+    <text x="205" y="148" fill="#1a1f36" font-size="11" font-weight="600">被审计单位</text>
+    <rect x="270" y="138" width="120" height="22" fill="white" stroke="#e4e7ef" rx="3" />
+    <text x="280" y="152" fill="#6b7280" font-size="10">全部 ▾</text>
+    <text x="405" y="148" fill="#1a1f36" font-size="11" font-weight="600">分析期间</text>
+    <rect x="465" y="138" width="180" height="22" fill="white" stroke="#e4e7ef" rx="3" />
+    <text x="475" y="152" fill="#6b7280" font-size="10">2021-01-01 至 2023-12-31</text>
+    <text x="660" y="148" fill="#1a1f36" font-size="11" font-weight="600">查询</text>
+    <rect x="690" y="138" width="50" height="22" fill="#00338d" rx="3" />
+    <text x="715" y="152" fill="white" font-size="10" text-anchor="middle">查询</text>
+    <!-- Content area -->
+    <rect x="194" y="184" width="696" height="40" fill="white" stroke="#e4e7ef" rx="4" />
+    <rect x="194" y="184" width="4" height="40" fill="#00338d" />
+    <text x="210" y="208" fill="#1a1f36" font-size="12" font-weight="600">资金余额变动趋势</text>
+    <rect x="194" y="232" width="340" height="100" fill="white" stroke="#e4e7ef" rx="4" />
+    <rect x="194" y="232" width="4" height="100" fill="#00338d" />
+    <text x="210" y="252" fill="#1a1f36" font-size="11" font-weight="600">资金总览</text>
+    <text x="210" y="280" fill="#6b7280" font-size="10">（表格区）</text>
+    <rect x="544" y="232" width="346" height="100" fill="white" stroke="#e4e7ef" rx="4" />
+    <rect x="544" y="232" width="4" height="100" fill="#00338d" />
+    <text x="560" y="252" fill="#1a1f36" font-size="11" font-weight="600">对手方汇总</text>
+    <text x="560" y="280" fill="#6b7280" font-size="10">（对手方类型分布）</text>
+    <text x="350" y="360" fill="#94a3b8" font-size="10" text-anchor="middle">主内容区（卡片 + 表格）</text>
+    <text x="350" y="450" fill="#94a3b8" font-size="10" text-anchor="middle">页脚（版本 + 版权）</text>
+  </svg>
+
+  <h3 class="spec-subhead">8.2 关键尺寸</h3>
+  <table class="layout-table">
+    <thead><tr><th>Token</th><th>数值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>--header-h</td><td>48px</td><td>顶部导航栏高度</td></tr>
+      <tr><td>--sidebar-w</td><td>210px</td><td>侧边栏展开宽度</td></tr>
+      <tr><td>--sidebar-w-collapsed</td><td>60px</td><td>侧边栏折叠宽度</td></tr>
+      <tr><td>--breadcrumb-h</td><td>24px</td><td>面包屑区域高度</td></tr>
+      <tr><td>--tab-h</td><td>40px</td><td>Tab 导航高度</td></tr>
+      <tr><td>--content-padding</td><td>16px</td><td>主内容区内边距</td></tr>
+      <tr><td>--card-gap</td><td>10px</td><td>卡片之间垂直间距</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="spec-subhead">8.3 8px 栅格节奏</h3>
+  <p style="font-size:var(--font-size-md);color:var(--text-secondary);line-height:var(--line-height-relaxed);margin-bottom:var(--space-3)">
+    所有间距遵循 4px 基础节奏：<code style="font-family:var(--font-family-mono);background:var(--bg-head);padding:2px 6px;border-radius:3px">4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64</code>，对应 token <code style="font-family:var(--font-family-mono);background:var(--bg-head);padding:2px 6px;border-radius:3px">--space-1</code> 至 <code style="font-family:var(--font-family-mono);background:var(--bg-head);padding:2px 6px;border-radius:3px">--space-16</code>。
+  </p>
+</section>
+
+<!-- ===== Section 9: 状态设计 ===== -->
+<section class="spec-section" id="states">
+  <div class="spec-section-head">
+    <span class="spec-section-num">9</span>
+    <h2 class="spec-section-title">状态设计</h2>
+  </div>
+  <div class="spec-section-desc">
+    10 种状态覆盖完整异常场景：空、加载、错误、403/404、Toast、离线、无权限、维护中、数据过期。每种状态都需提供用户操作出口。
+  </div>
+  <div class="state-grid">
+    <div class="state-card">
+      <div class="state-card-head">① 空状态 Empty</div>
+      <div class="state-card-body">
+        <div class="state-icon"></div>
+        <div class="state-title">暂无数据</div>
+        <div class="state-desc">尚未上传任何银行流水，请先上传数据开始分析</div>
+        <button class="btn btn-primary" style="margin-top:var(--space-2)">立即上传</button>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">② 加载中 Loading</div>
+      <div class="state-card-body">
+        <div class="spinner"></div>
+        <div class="state-title">正在加载</div>
+        <div class="state-desc">数据处理中，请稍候</div>
+        <div style="margin-top:var(--space-2);width:200px">
+          <div class="skeleton" style="margin-bottom:6px"></div>
+          <div class="skeleton" style="width:80%;margin-bottom:6px"></div>
+          <div class="skeleton" style="width:60%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">③ 错误 Error</div>
+      <div class="state-card-body">
+        <div class="state-icon" style="color:var(--color-danger)"></div>
+        <div class="state-title">加载失败</div>
+        <div class="state-desc">数据请求超时，请检查网络后重试</div>
+        <button class="btn btn-outline" style="margin-top:var(--space-2)">重新加载</button>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">④ 403 无权限访问</div>
+      <div class="state-card-body">
+        <div class="state-icon" style="color:var(--color-warning)"></div>
+        <div class="state-title">无权访问</div>
+        <div class="state-desc">您没有此模块的访问权限</div>
+        <button class="btn btn-outline" style="margin-top:var(--space-2)">申请权限</button>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">⑤ 404 资源不存在</div>
+      <div class="state-card-body">
+        <div class="state-icon"></div>
+        <div class="state-title">页面不存在</div>
+        <div class="state-desc">您访问的资源已被移除或地址错误</div>
+        <button class="btn btn-primary" style="margin-top:var(--space-2)">返回项目列表</button>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">⑥ Toast 提示</div>
+      <div class="state-card-body" style="gap:var(--space-2);align-items:stretch">
+        <div class="toast toast-success">
+          <span class="toast-icon"></span>
+          <span>数据上传成功</span>
+        </div>
+        <div class="toast toast-info">
+          <span class="toast-icon"></span>
+          <span>正在分析中，预计 3 分钟</span>
+        </div>
+        <div class="toast toast-warning">
+          <span class="toast-icon"></span>
+          <span>该银行账号 90 天未对账</span>
+        </div>
+        <div class="toast toast-error">
+          <span class="toast-icon"></span>
+          <span>对账失败：缺少总账数据</span>
+        </div>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">⑦ 离线 Offline</div>
+      <div class="state-card-body">
+        <div class="state-icon"></div>
+        <div class="state-title">网络已断开</div>
+        <div class="state-desc">请检查网络连接，恢复后自动重连</div>
+        <button class="btn btn-outline" style="margin-top:var(--space-2)">重新连接</button>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">⑧ 无访问权</div>
+      <div class="state-card-body">
+        <div class="state-icon" style="color:var(--color-warning)"></div>
+        <div class="state-title">权限不足</div>
+        <div class="state-desc">请联系项目管理员为您开通访问权限</div>
+        <button class="btn btn-primary" style="margin-top:var(--space-2)">联系管理员</button>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">⑨ 维护中 Maintenance</div>
+      <div class="state-card-body">
+        <div class="state-icon"></div>
+        <div class="state-title">系统维护中</div>
+        <div class="state-desc">系统升级中，预计 2026-06-23 02:00 恢复</div>
+        <button class="btn btn-text" style="margin-top:var(--space-2)">查看维护公告</button>
+      </div>
+    </div>
+    <div class="state-card">
+      <div class="state-card-head">⑩ 数据过期 Stale</div>
+      <div class="state-card-body">
+        <div class="state-icon" style="color:var(--color-warning)"></div>
+        <div class="state-title">数据已过期</div>
+        <div class="state-desc">最后更新于 7 天前，请刷新获取最新数据</div>
+        <button class="btn btn-primary" style="margin-top:var(--space-2)">立即刷新</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 10: 审计与数据组件 ===== -->
+<section class="spec-section" id="audit">
+  <div class="spec-section-head">
+    <span class="spec-section-num">10</span>
+    <h2 class="spec-section-title">审计与数据组件</h2>
+  </div>
+  <div class="spec-section-desc">
+    16 个组件分两段：10.1 为数据展示组件（10 个，源自数据组件 V1），10.2 为审计专用组件（6 个，规范新增）。每个组件标注来源与适用场景。
+  </div>
+
+  <h3 class="spec-subhead">10.1 数据展示组件（数据组件 V1，10 个）</h3>
+  <div class="audit-grid">
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>1. 多选下拉</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div class="ms-select">
+          <div class="ms-trigger">
+            <span>已选 3 项</span>
+            <span>▾</span>
+          </div>
+          <div class="ms-menu" style="position:static;display:block;margin-top:6px">
+            <div class="ms-item ms-item-all">
+              <input type="checkbox" checked /> 全选
+            </div>
+            <div class="ms-item"><input type="checkbox" checked /> 中国银行</div>
+            <div class="ms-item"><input type="checkbox" checked /> 建设银行</div>
+            <div class="ms-item"><input type="checkbox" checked /> 招商银行</div>
+            <div class="ms-item"><input type="checkbox" /> 工商银行</div>
+          </div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          带复选框 + 全选的多选下拉。用于被审计单位、银行账户、对手方等多选项筛选。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>2. 行内迷你图</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div class="mini-bar" style="margin-bottom:6px">
+          <div class="mini-bar-bar" style="height:60%"></div>
+          <div class="mini-bar-bar" style="height:80%"></div>
+          <div class="mini-bar-bar" style="height:40%"></div>
+          <div class="mini-bar-bar" style="height:90%"></div>
+          <div class="mini-bar-bar" style="height:50%"></div>
+          <div class="mini-bar-bar outflow" style="height:30%"></div>
+          <div class="mini-bar-bar outflow" style="height:70%"></div>
+          <div class="mini-bar-bar outflow" style="height:50%"></div>
+        </div>
+        <div class="mini-bar">
+          <div class="mini-bar-bar" style="height:30%"></div>
+          <div class="mini-bar-bar" style="height:60%"></div>
+          <div class="mini-bar-bar" style="height:45%"></div>
+          <div class="mini-bar-bar" style="height:75%"></div>
+          <div class="mini-bar-bar" style="height:55%"></div>
+          <div class="mini-bar-bar outflow" style="height:25%"></div>
+          <div class="mini-bar-bar outflow" style="height:60%"></div>
+          <div class="mini-bar-bar outflow" style="height:40%"></div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          蓝色为流入，粉色为流出，绿色为销项税价合计，橙色为进项税价合计。表格单元内嵌趋势展示。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>3. 热力图单元格</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div class="heat-row">
+          <span class="heat-label">正常</span>
+          <div class="heat-cell heat-blue"></div>
+          <div class="heat-cell heat-blue"></div>
+          <div class="heat-cell heat-blue"></div>
+          <div class="heat-cell heat-blue"></div>
+          <div class="heat-cell heat-blue"></div>
+          <div class="heat-cell heat-blue"></div>
+        </div>
+        <div class="heat-row">
+          <span class="heat-label">异常</span>
+          <div class="heat-cell"></div>
+          <div class="heat-cell heat-red"></div>
+          <div class="heat-cell"></div>
+          <div class="heat-cell"></div>
+          <div class="heat-cell heat-red"></div>
+          <div class="heat-cell"></div>
+        </div>
+        <div class="heat-row">
+          <span class="heat-label">无数据</span>
+          <div class="heat-cell"></div>
+          <div class="heat-cell"></div>
+          <div class="heat-cell"></div>
+          <div class="heat-cell"></div>
+          <div class="heat-cell"></div>
+          <div class="heat-cell"></div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          蓝=正常 / 红=异常 / 灰=无数据。用于月度数据密度展示。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>4. 重要性水平输入</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div style="display:flex;align-items:center;gap:var(--space-2)">
+          <label style="font-size:var(--font-size-md);font-weight:600;color:var(--color-primary)">重要性水平：</label>
+          <input class="form-input" type="text" value="5,000,000" style="width:140px;text-align:right" />
+          <span style="font-size:var(--font-size-sm);color:var(--text-hint)">元</span>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          顶栏右侧的内联编辑字段。审计核心概念，决定实质性程序的执行范围。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>5. 可编辑字段</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div>
+          关联交易占比：
+          <span class="editable-num">225,750,000</span>
+          元 / <span class="editable-num">12.3%</span>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          浅蓝边框 + 底部"可修改"提示，hover 时高亮。审计师可调整系统默认值。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>6. 总账核对表</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>公司</th>
+              <th>期间</th>
+              <th class="text-right">银行流入</th>
+              <th class="text-right">账面流入</th>
+              <th class="text-right">差异</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>abc 公司</td>
+              <td>2025</td>
+              <td class="text-right inflow">800,000</td>
+              <td class="text-right">0</td>
+              <td class="text-right diff-red">800,000</td>
+            </tr>
+            <tr>
+              <td>abc 公司</td>
+              <td>2024</td>
+              <td class="text-right inflow">500,000</td>
+              <td class="text-right inflow">500,000</td>
+              <td class="text-right diff-zero">0</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          银行对账专用表。含分组表头、银行/总账/差异三段结构。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>7. 流入/流出着色</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div style="display:flex;flex-direction:column;gap:6px;font-variant-numeric:tabular-nums">
+          <div>流入金额：<span style="color:var(--color-inflow);font-weight:600">+1,250,000.00</span></div>
+          <div>流出金额：<span style="color:var(--color-outflow);font-weight:600">-980,000.00</span></div>
+          <div>净流入：<span style="color:var(--color-inflow);font-weight:600">+270,000.00</span></div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          表格单元语义色规则。流入=浅蓝，销项=青绿，流出=粉红，进项=橙色；合计行可使用对应深色。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>8. 对手方类型标签</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div>ABC 科技 <span class="cp-tag cp-tag-customer">客户</span></div>
+          <div>XYZ 制造 <span class="cp-tag cp-tag-supplier">供应商</span></div>
+          <div>张三 <span class="cp-tag cp-tag-employee">员工</span></div>
+          <div>未知对手方 <span class="cp-tag cp-tag-other">其他</span></div>
+          <div>李四 <span class="cp-tag cp-tag-personal">个人</span></div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          5 种对手方类型用语义色区分。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>9. 差异标识</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);font-variant-numeric:tabular-nums">
+          <div>差异 1：<span class="diff-red" style="color:var(--color-diff-negative);font-weight:600">800,000.00</span></div>
+          <div>差异 2：<span class="diff-zero" style="color:var(--color-diff-positive);font-weight:600">0.00</span></div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          红=差异存在，绿=零差异/一致。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>10. 组行+明细行+折叠</span>
+        <span class="audit-card-head-source">来源：数据组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <table class="audit-table">
+          <tbody>
+            <tr class="group-row open">
+              <td colspan="2">a 科技公司（4 个账号）</td>
+            </tr>
+            <tr class="detail-row">
+              <td>3100****4725</td>
+              <td class="text-right">1,250,000</td>
+            </tr>
+            <tr class="detail-row">
+              <td>9990****0100</td>
+              <td class="text-right">820,000</td>
+            </tr>
+            <tr class="group-row">
+              <td colspan="2">b 化工公司（3 个账号）</td>
+            </tr>
+            <tr class="detail-row" style="display:none">
+              <td>4494****0582</td>
+              <td class="text-right">560,000</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          层级数据展示。▾展开 / ▸折叠。
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <h3 class="spec-subhead">10.2 审计专用组件（新增，6 个）</h3>
+  <div class="audit-grid">
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>11. PBC 状态徽章</span>
+        <span class="audit-card-head-source">来源：审计组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="pbc-badge pbc-received">已收</span>
+          <span class="pbc-badge pbc-pending">待收</span>
+          <span class="pbc-badge pbc-overdue">逾期</span>
+          <span class="pbc-badge pbc-partial">部分收取</span>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          PBC（Provided By Client）原始资料收取状态。审计系统核心组件。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>12. 工作底稿卡</span>
+        <span class="audit-card-head-source">来源：审计组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div class="wp-card">
+          <div class="wp-header">
+            <span class="wp-id">WP-B01-005</span>
+            <span class="tag tag-success">已完成</span>
+          </div>
+          <div class="wp-title">银行存款余额调节表</div>
+          <div class="wp-trail">
+            <div class="wp-trail-step completed">编制人：张三</div>
+            <span class="wp-trail-arrow">→</span>
+            <div class="wp-trail-step completed">复核人：李四</div>
+            <span class="wp-trail-arrow">→</span>
+            <div class="wp-trail-step current">审批人：王五</div>
+          </div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          底稿编号 + 标题 + 编制/复核/审批三级留痕链。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>13. 风险标识</span>
+        <span class="audit-card-head-source">来源：审计组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+          <div><span class="risk-badge risk-high">高风险</span> — 需重点核查</div>
+          <div><span class="risk-badge risk-medium">中风险</span> — 需关注</div>
+          <div><span class="risk-badge risk-low">低风险</span> — 可接受</div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          风险等级可视化，贯穿列表、卡片、详情页。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>14. 调节平衡状态</span>
+        <span class="audit-card-head-source">来源：审计组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div><span class="recon-status recon-balanced">已调节</span></div>
+          <div><span class="recon-status recon-unbalanced">未调节</span></div>
+          <div><span class="recon-status recon-progress">调节中</span></div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          总账与银行流水调节平衡状态。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>15. 重要性水平指示器</span>
+        <span class="audit-card-head-source">来源：审计组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <div class="mat-indicator">
+          <div class="mat-amount">¥5,000,000</div>
+          <div class="mat-ratio">占资产总额 0.85%</div>
+        </div>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          配合 #4 重要性水平输入使用，详情页/汇总卡展示。
+        </p>
+      </div>
+    </div>
+
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <span>16. 复核留痕时间线</span>
+        <span class="audit-card-head-source">来源：审计组件 V1</span>
+      </div>
+      <div class="audit-card-body">
+        <ul class="timeline">
+          <li class="timeline-item">
+            <span class="timeline-dot success"></span>
+            <div class="timeline-time">2026-06-15 10:30</div>
+            <div class="timeline-action">编制完成</div>
+            <div class="timeline-meta">操作人：张三（高级审计员）</div>
+          </li>
+          <li class="timeline-item">
+            <span class="timeline-dot success"></span>
+            <div class="timeline-time">2026-06-16 14:20</div>
+            <div class="timeline-action">复核通过</div>
+            <div class="timeline-meta">操作人：李四（项目经理）</div>
+          </li>
+          <li class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-time">2026-06-17 09:00</div>
+            <div class="timeline-action">待审批</div>
+            <div class="timeline-meta">操作人：王五（合伙人）</div>
+          </li>
+        </ul>
+        <p style="margin-top:var(--space-2);color:var(--text-hint);font-size:var(--font-size-sm)">
+          操作人 + 时间 + 动作 + 备注，完整可追溯。
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== Appendix ===== -->
+
+<section class="spec-appendix" id="appendix">
+  <div class="spec-section-head">
+    <span class="spec-section-num">附</span>
+    <h2 class="spec-section-title">附录</h2>
+  </div>
+
+  <h3 class="spec-subhead">A.1 版本记录</h3>
+  <table class="layout-table">
+    <thead><tr><th>版本</th><th>日期</th><th>变更</th></tr></thead>
+    <tbody>
+      <tr><td>V1.0</td><td>2026-06-22</td><td>首版发布。覆盖 10 章节、40+ 色 token、16 个审计/数据组件、10 种状态设计</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="spec-subhead">A.2 维护说明</h3>
+  <p style="font-size:var(--font-size-md);color:var(--text-secondary);line-height:var(--line-height-relaxed);margin-bottom:var(--space-2)">
+    本规范由产品设计组维护。如需新增组件或修改 token，请按以下流程：
+  </p>
+  <ol style="font-size:var(--font-size-md);color:var(--text-secondary);line-height:var(--line-height-relaxed);padding-left:var(--space-5);margin-bottom:var(--space-3)">
+    <li>提交设计变更申请，说明业务场景、视觉依据、影响范围</li>
+    <li>设计组评审 + 业务方确认</li>
+    <li>更新本规范文档（同步更新 token 表 + 组件 demo）</li>
+    <li>通知开发组同步更新 kpmg_bank_analysis.html 的对应样式</li>
+  </ol>
+
+  <h3 class="spec-subhead">A.3 版本演进</h3>
+  <p style="font-size:var(--font-size-md);color:var(--text-secondary);line-height:var(--line-height-relaxed);margin-bottom:var(--space-2)">
+    本规范作为 Audit Compass UI 设计的当前基线版本（V1.0），由两个历史版本综合而来：
+  </p>
+  <ul style="font-size:var(--font-size-md);color:var(--text-secondary);line-height:var(--line-height-relaxed);padding-left:var(--space-5);margin-bottom:var(--space-3)">
+    <li><strong>数据组件 V1</strong>：10 个数据展示组件（多选下拉、行内迷你图、热力图、重要性水平输入、可编辑字段、总账核对表、流入流出着色、对手方标签、差异标识、组行+明细行）</li>
+    <li><strong>审计组件 V1</strong>：6 个审计专用组件（PBC 状态、工作底稿卡、风险标识、调节平衡、重要性水平指示器、复核留痕）</li>
+    <li><strong>样式 token</strong>：采用行业标准命名（<code style="font-family:var(--font-family-mono);background:var(--bg-head);padding:2px 6px;border-radius:3px">--color-*</code> / <code style="font-family:var(--font-family-mono);background:var(--bg-head);padding:2px 6px;border-radius:3px">--text-*</code> / <code style="font-family:var(--font-family-mono);background:var(--bg-head);padding:2px 6px;border-radius:3px">--space-*</code>），作为未来重构的目标</li>
+  </ul>
+
+  <h3 class="spec-subhead">A.4 组件血缘表</h3>
+  <table class="bloodline-table">
+    <thead>
+      <tr><th>#</th><th>组件</th><th>来源</th><th>选择理由</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>多选下拉</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>审计筛选刚需</td></tr>
+      <tr><td>2</td><td>行内迷你图</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>表格内趋势展示</td></tr>
+      <tr><td>3</td><td>热力图单元格</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>月度数据密度展示</td></tr>
+      <tr><td>4</td><td>重要性水平输入</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>审计核心概念</td></tr>
+      <tr><td>5</td><td>可编辑字段</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>审计师可调整系统值</td></tr>
+      <tr><td>6</td><td>总账核对表</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>银行对账专用</td></tr>
+      <tr><td>7</td><td>流入/流出着色</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>资金流分析</td></tr>
+      <tr><td>8</td><td>对手方类型标签</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>关联方识别</td></tr>
+      <tr><td>9</td><td>差异标识</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>调节平衡</td></tr>
+      <tr><td>10</td><td>组行+明细行+折叠</td><td><span class="source-tag source-tag-v1-data">数据组件 V1</span></td><td>层级数据展示</td></tr>
+      <tr><td>11</td><td>PBC 状态徽章</td><td><span class="source-tag source-tag-v1-audit">审计组件 V1</span></td><td>审计系统核心</td></tr>
+      <tr><td>12</td><td>工作底稿卡</td><td><span class="source-tag source-tag-v1-audit">审计组件 V1</span></td><td>留痕可追溯原则落地</td></tr>
+      <tr><td>13</td><td>风险标识</td><td><span class="source-tag source-tag-v1-audit">审计组件 V1</span></td><td>风险可识别原则落地</td></tr>
+      <tr><td>14</td><td>调节平衡状态</td><td><span class="source-tag source-tag-v1-audit">审计组件 V1</span></td><td>审计核心流程</td></tr>
+      <tr><td>15</td><td>重要性水平指示器</td><td><span class="source-tag source-tag-v1-audit">审计组件 V1</span></td><td>配合 #4 共同覆盖</td></tr>
+      <tr><td>16</td><td>复核留痕时间线</td><td><span class="source-tag source-tag-v1-audit">审计组件 V1</span></td><td>留痕可追溯原则落地</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="spec-subhead">A.5 原创性声明</h3>
+  <p style="font-size:var(--font-size-md);color:var(--text-secondary);line-height:var(--line-height-relaxed)">
+    本规范基于 KPMG 品牌规范与 Audit Compass 业务需求原创编写，为内部产品设计依据。两个 UI 原型（kpmg_bank_analysis.html 与 erichu23/UI-design）作为设计参考，提供结构与 token 范式启发；本规范的章节组织、文案说明、组件实现均为原创编写，未直接复制任一原型的具体实现代码。
+  </p>
+</section>
+
+</main>
+
+</div>
+
+<div class="spec-footer">
+  © 2026 KPMG Audit Compass UI 设计规范 · V1.0 · 由产品设计组维护
+  <span style="margin:0 8px;color:#ccc;">|</span>
+  <a href="terms.html" style="color:#888;text-decoration:none;">Terms &amp; Conditions</a>
+</div>
+
+</body>
+</html>

@@ -399,7 +399,7 @@
       </div>
       <div class="overview-card">
         <h3><span class="dot" style="background:#8b5cf6"></span> 动画状态</h3>
-        <p>共 11 个动画状态，覆盖 idle / thinking / working / attention / sleeping 等 Claude Code 运行场景</p>
+        <p>共 16 个动画状态，覆盖 idle / thinking / working / attention / sleeping / sleep sequence / drag / roam 等全部场景</p>
       </div>
       <div class="overview-card">
         <h3><span class="dot" style="background:#a855f7"></span> 制作耗时</h3>
@@ -501,7 +501,11 @@
           <ul>
             <li><strong>sweeping</strong> — 上下文压缩时，手持小扫帚扫地</li>
             <li><strong>carrying</strong> — 创建 worktree 时，双手抱纸箱搬运</li>
-            <li><strong>yawning / dozing / collapsing</strong> — 入睡序列（打哈欠 → 打瞌睡 → 倒下蜷缩）</li>
+            <li><strong>yawning</strong> — 入睡序列第一步，站立打哈欠</li>
+            <li><strong>dozing</strong> — 入睡序列第二步，站立打盹挣扎</li>
+            <li><strong>collapsing</strong> — 入睡序列第三步，全身松软过渡到 sleeping</li>
+            <li><strong>drag</strong> — 拖拽时，手抓红气球起飞</li>
+            <li><strong>roam</strong> — 自由漫步，背着手模仿大人踱步</li>
           </ul>
         </div>
       </div>
@@ -540,7 +544,7 @@
       </div>
       <div class="overview-card">
         <h3 style="font-family:monospace;font-size:15px;">sleepSequence</h3>
-        <p>控制入睡行为。<code>"mode": "direct"</code> 直接切到 sleeping 状态；做出完整的 yawning → dozing → collapsing 序列后可改为 <code>"sequence"</code> 模式。</p>
+        <p>控制入睡行为。<code>"mode": "full"</code> 启用完整入睡序列（yawning → dozing → collapsing → sleeping → waking）；<code>"mode": "direct"</code> 跳过序列直接切到 sleeping。</p>
       </div>
       <div class="overview-card">
         <h3 style="font-family:monospace;font-size:15px;">eyeTracking</h3>
@@ -618,7 +622,12 @@ var states = [
   { file: '3.3_waking.gif',      name: 'waking',      cn: '睡醒',       stage: 'enhanced', trigger: '鼠标移动，唤醒睡眠',                       prompt: '角色站立，一只手在揉眼睛，另一只手自然垂在身侧。眼睛从半闭慢慢睁开，头从微垂姿势缓缓抬起，表情从迷迷糊糊变得清醒。动作缓慢自然。' },
   { file: '3.4_juggling.gif',    name: 'juggling',    cn: '多任务',     stage: 'enhanced', trigger: '2+ 子代理并发处理',                      prompt: '角色正面面对镜头坐在桌前，面前桌上左右并排两个小键盘。左手在左边键盘上打字，右手在右边键盘上打字，双手同时快速敲击。表情专注带一点得意。循环播放。' },
   { file: '4.1_sweeping.gif',    name: 'sweeping',    cn: '上下文压缩', stage: 'optional', trigger: '上下文压缩时',                             prompt: '角色双手持小扫帚，身体微弯前倾，扫帚在地面上左右来回扫动。动作轻快有节奏，循环播放。' },
-  { file: '4.2_carrying.gif',    name: 'carrying',    cn: '搬运',       stage: 'optional', trigger: '创建 worktree 时',                        prompt: '角色双手抱着小纸箱放在胸前，身体微蹲再站直，循环做出"用力搬起来又放下"的重复动作。表情认真，嘴巴微抿。循环播放。' }
+  { file: '4.2_carrying.gif',    name: 'carrying',    cn: '搬运',       stage: 'optional', trigger: '创建 worktree 时',                        prompt: '角色双手抱着小纸箱放在胸前，身体微蹲再站直，循环做出"用力搬起来又放下"的重复动作。表情认真，嘴巴微抿。循环播放。' },
+  { file: '4.3_yawning.gif',    name: 'yawning',     cn: '打哈欠',     stage: 'optional', trigger: '睡眠序列第一步，鼠标无操作 20-30s',          prompt: '角色站立，张大嘴巴打哈欠，一只手轻轻挡在嘴前。打哈欠时眼睛眯起、身体微微后仰；打完哈欠后嘴巴合拢、手放下、眼神涣散、头微微前倾。一次性播放。' },
+  { file: '4.4_dozing.gif',     name: 'dozing',      cn: '打盹',       stage: 'optional', trigger: '睡眠序列第二步，打哈欠之后',                prompt: '角色站立，头部往下垂、眼睛几乎全闭、身体前倾，随时要睡着的样子。突然头微微抬起、眼睛努力睁开一半，但又很快垂下——重复"快睡着→挣扎醒一下"。循环播放。' },
+  { file: '4.5_collapsing.gif', name: 'collapsing',  cn: '松软/倒下',  stage: 'optional', trigger: '睡眠序列第三步，打盹之后',                prompt: '角色站立，头部猛地向下一沉、全身瞬间松软无力（像断了线），双眼紧闭、嘴巴微张。身体大幅向前倾倒，膝盖微弯，双臂无力下垂。前半段快速干脆，后半段缓慢回正。一次性播放。' },
+  { file: '4.6_drag.gif',       name: 'drag',        cn: '红气球拖拽', stage: 'optional', trigger: '鼠标按住拖拽移动',                       prompt: '角色右手高举抓着红气球的线，双脚已经离地，被气球稳稳地带到空中。身体在空中微微左右轻摆（像钟摆一样缓慢轻柔），双腿自然下垂微微晃动，气球线随之轻轻摇曳。循环播放。' },
+  { file: '4.7_roam.gif',      name: 'roam',         cn: '背手踱步',    stage: 'optional', trigger: '空闲时随机漫步',                           prompt: '角色朝向右侧，双手背在身后，模仿大人来回踱步——右脚迈出、左脚跟上，步伐轻快有节奏。身体始终挺直（故意挺着小胸脯），头部微扬，表情认真专注。偶尔停顿一下再继续走。循环播放。' }
 ];
 
 var currentIdx = -1;

@@ -79,7 +79,10 @@
 
 生成顺序：idle → thinking → working → attention → sleeping。
 
-5 个状态生成完就能让主题跑起来。其余状态先用 `fallbackTo` 指向这 5 个。
+5 个状态生成完就能让主题跑起来。其余状态未做素材时的处理方式：
+
+- `error` / `notification` / `sweeping` / `carrying` 可先用 `fallbackTo` 回退到已有状态（fallbackTo 仅 error / attention / notification / sweeping / carrying / sleeping 这 6 个状态支持，且是视觉兜底，不影响逻辑状态运行）
+- 其他状态（如 juggling）不支持 `fallbackTo`，直接复用已有动画文件即可，如 `"juggling": ["working.apng"]`
 
 **阶段 2 即梦设置（每张都一样）**：
 
@@ -724,7 +727,7 @@ themes/my-daughter/
     "notification": { "fallbackTo": "attention" },
     "sweeping":     { "fallbackTo": "working" },
     "carrying":     { "fallbackTo": "working" },
-    "juggling":     { "fallbackTo": "working" }
+    "juggling":     ["working.apng"]
   },
   "sleepSequence": {
     "mode": "direct"

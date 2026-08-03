@@ -467,7 +467,7 @@
         <div class="wf-step-body">
           <h3>核心 5 状态（最小可用方案）</h3>
           <div class="wf-time">⏱ 1-2 h · 按阶段 2 流水线逐个生成</div>
-          <p>生成顺序：idle → thinking → working → attention → sleeping。这 5 个状态生成完就能让主题跑起来，其余状态先用 fallback 指向这 5 个。</p>
+          <p>生成顺序：idle → thinking → working → attention → sleeping。这 5 个状态生成完就能让主题跑起来；error / notification / sweeping / carrying 等状态可先用 <code>fallbackTo</code> 回退到已有动画（仅 error / attention / notification / sweeping / carrying / sleeping 这 6 个状态支持）。</p>
           <ul>
             <li><strong>idle</strong> — 待机，眼睛左右转动</li>
             <li><strong>thinking</strong> — 思考中，歪头 → 托下巴沉思</li>
@@ -518,7 +518,7 @@
           <ul>
             <li>用脚手架创建主题目录：<code>node scripts/create-theme.js my-daughter</code></li>
             <li>将 GIF 文件放入 <code>assets/</code> 目录，编辑 <code>theme.json</code> 映射各状态到对应动画文件</li>
-            <li>未完成的状态通过 <code>fallbackTo</code> 指向已有状态（如 error → attention）</li>
+            <li>未完成的状态通过 <code>fallbackTo</code> 指向已有状态（如 error → attention），仅 error / attention / notification / sweeping / carrying / sleeping 支持；它是视觉兜底，逻辑状态（计时、命中框、流转）照常运行</li>
             <li>关闭眼球追踪和 Mini Mode（非 SVG 素材不支持）</li>
             <li>运行验证脚本确认配置正确：<code>node scripts/validate-theme.js</code></li>
           </ul>
@@ -540,7 +540,7 @@
       </div>
       <div class="overview-card">
         <h3 style="font-family:monospace;font-size:15px;">states</h3>
-        <p>核心配置。将逻辑状态映射到 <code>assets/</code> 下的动画文件。格式为 <code>"状态名": ["文件名.gif"]</code>。未完成的状态用 <code>"fallbackTo": "已有状态"</code> 回退。</p>
+        <p>核心配置。将逻辑状态映射到 <code>assets/</code> 下的动画文件。格式为 <code>"状态名": ["文件名.gif"]</code>，也支持对象格式 <code>{"files": [...], "fallbackTo": "状态名"}</code> 做素材缺失兜底——仅 error / attention / notification / sweeping / carrying / sleeping 这 6 个状态可写 <code>fallbackTo</code>，兜底不影响逻辑状态运行。</p>
       </div>
       <div class="overview-card">
         <h3 style="font-family:monospace;font-size:15px;">sleepSequence</h3>

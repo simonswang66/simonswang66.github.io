@@ -28,6 +28,7 @@ Simons Work Suites — personal tools suite hosted on GitHub Pages. Pure static 
   - `字母学习乐园.html` — 键盘字母/数字答题（看字母按对应键）
   - `魔法敲击乐园.html` — 自由敲击，字母蹦跳+音效+动画（保留 `event.repeat`，女儿喜欢长按听声音）
   - `趣味画板.html` — 三种绘画模式
+  - `弹珠掉落乐园.html` — 弹珠机物理掉落（canvas 钉子阵 + 弹簧杆弹射 + 赔率跑灯 2/4/6/8 + 破产结算）；玩法/物理常量集中在脚本顶部 GAME_CONFIG；键盘：右键+1 球、↑+5 球、回车开始/停灯、按住空格蓄力弹出
 
 ### 趣味画板模式
 

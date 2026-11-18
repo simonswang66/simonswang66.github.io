@@ -10,7 +10,7 @@ Simons Work Suites — personal tools suite hosted on GitHub Pages. Pure static 
 
 - `index.html` — tools suite landing page
 - `terms.html` — Terms & Conditions 条款页面
-- `UI设计规范_AuditCompass.html` — Audit Compass UI Design System V1.0 设计规范文档
+- `UI设计规范_AuditTechSolution.html` — Audit Tech Solution UI 设计规范 V1.0 设计规范文档
 - `counterparty-tool/index.html` — 交易对手方打标工具 (Ant Design + React via CDN)，首页卡片已移除，工具仍可用
 - `ai-api-demo/` — AI API 调用演示
 - `ui-comment-tool/` — UI 原型图评审协作工具

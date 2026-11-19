@@ -244,6 +244,11 @@ html[data-lang="zh"] .t-en-only{display:none !important}
   font-size:12px;font-weight:500;color:#475569;white-space:nowrap;
   transition:color .15s ease;
 }
+/* five admin tabs must stay on one line at 1280 without a horizontal scrollbar */
+@media (max-width:1366px){
+  .tab-bar{padding:0 10px}
+  .tab-item{padding:0 6px}
+}
 .tab-item:hover{color:var(--color-primary)}
 .tab-item.active{color:#003366;font-weight:600}
 .tab-item.active::after{
@@ -344,6 +349,33 @@ table.dt tbody tr:hover .upload-cell .reup{opacity:.6}
 /* checkbox */
 .check{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--color-gray-700);cursor:pointer;white-space:nowrap}
 .check input{accent-color:var(--color-primary);width:13px;height:13px;margin:0;cursor:pointer}
+
+/* AAP Procedure Type master data: editable sub category rows in the drawer */
+.subcat-row{display:flex;align-items:center;gap:6px}
+.subcat-row + .subcat-row{margin-top:6px}
+.subcat-row .input{flex:1;min-width:0}
+.subcat-row .check{font-size:11px;gap:4px}
+.subcat-row .icon-btn{flex:0 0 22px}
+.subcat-row .icon-btn.subcat-mv{font-size:11px;line-height:1}
+.subcat-row .icon-btn:disabled{opacity:.3;cursor:default}
+.subcat-row .icon-btn:disabled:hover{background:transparent;color:var(--color-gray-500);border-color:transparent}
+.subcat-use{flex:0 0 auto;font-size:10px;line-height:1;color:#1c7a70;background:#e8f6f4;border-radius:9px;padding:3px 6px}
+.subcat-actions{display:flex;gap:6px;margin-top:8px}
+
+/* AAP Procedure Type list: inline sub category preview + expandable chips */
+.ptc-subcell{display:flex;align-items:center;gap:6px;min-width:0}
+.ptc-subcell .ptc-names{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#475569}
+.ptc-count{flex:0 0 auto;font-size:10px;line-height:1;color:#475569;background:#eef2f7;border-radius:9px;padding:3px 6px}
+.ptc-exp-btn{flex:0 0 22px}
+.ptc-exp-btn .ico{transition:transform .15s;color:#64748b}
+.ptc-exp-btn:hover,.ptc-exp-btn:focus{background:transparent;border-color:transparent;color:var(--color-gray-500)}
+.ptc-exp-btn.open .ico{transform:rotate(90deg)}
+tr.ptc-row-open > td{background:#fbfdff}
+tr.ptc-exp > td{background:#fbfdff;border-top:0;padding-top:0;padding-bottom:0}
+tr.ptc-exp > td.ptc-exp-td{padding:0 8px 8px}
+.ptc-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border:1px dashed #dbe4f0;border-radius:6px;background:#fff}
+.ptc-chips .tag{height:auto;padding:3px 8px;line-height:1.35;white-space:normal;text-align:left}
+.ptc-chips .tag.ptc-off{opacity:.55;text-decoration:line-through}
 
 /* tags */
 .tag{
@@ -616,9 +648,8 @@ table.dt tr.group-row.sticky-on td{box-shadow:inset 0 -1px 0 var(--border-light)
   width:18px;height:18px;border:0;background:transparent;cursor:pointer;color:var(--color-gray-500);
   display:inline-flex;align-items:center;justify-content:center;border-radius:4px;padding:0;
 }
-.expander:hover{background:#e7eef7}
+.expander:hover{background:transparent}
 .expander .tri{display:block;width:0;height:0;border-left:5px solid #64748b;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;transition:transform .15s ease}
-.expander:hover .tri{border-left-color:var(--color-primary-hover)}
 .expander.open .tri{transform:rotate(90deg)}
 
 /* collapsible block */
@@ -956,7 +987,7 @@ table.dt.proc-dt{width:100%;min-width:1912px}
 table.dt.proc-dt .cell-name{max-width:100%}
 /* frozen columns for the substantive procedure table: Workpaper Name on the left, Review Status + Review on the right */
 table.dt.proc-dt th.sticky-l1,table.dt.proc-dt td.sticky-l1{position:sticky;left:0;background:#fff;z-index:2}
-table.dt.proc-dt th.sticky-l2,table.dt.proc-dt td.sticky-l2{position:sticky;left:20px;background:#fff;z-index:2;box-shadow:1px 0 0 var(--border-light)}
+table.dt.proc-dt th.sticky-l2,table.dt.proc-dt td.sticky-l2{position:sticky;left:28px;background:#fff;z-index:2;box-shadow:1px 0 0 var(--border-light)}
 table.dt.proc-dt th.sticky-r1,table.dt.proc-dt td.sticky-r1{position:sticky;right:0;background:#fff;z-index:2}
 table.dt.proc-dt th.sticky-r2,table.dt.proc-dt td.sticky-r2{position:sticky;right:58px;background:#fff;z-index:2;box-shadow:-1px 0 0 var(--border-light)}
 table.dt.proc-dt thead th.sticky-l1,table.dt.proc-dt thead th.sticky-l2,
@@ -969,7 +1000,7 @@ table.dt.proc-dt tbody tr.row-selected td.sticky-r1,table.dt.proc-dt tbody tr.ro
 table.dt.admin-dt .cell-name,
 table.dt.admin-dt .cell-strong{font-weight:600;color:#1e293b}
 /* two-line stacked cells (Procedure / RMM) in the substantive procedure table */
-.sub-hold{position:sticky;left:0;background:#fff;padding-left:22px;box-sizing:border-box;z-index:1}
+.sub-hold{position:sticky;left:0;background:#fff;padding-left:28px;box-sizing:border-box;z-index:1}
 .stack-cell{min-width:0}
 .stack-cell .sc-l1{font-size:11.5px;font-weight:600;color:#334155;font-variant-numeric:tabular-nums;letter-spacing:.1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
 .stack-cell .sc-l2{font-size:10.5px;color:#64748b;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
@@ -996,6 +1027,7 @@ table.dt td.cell-upload{text-overflow:clip}
     <symbol id="i-gear" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.1" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 1.9v1.6M8 12.5v1.6M2.4 8h1.6M12 8h1.6M3.9 3.9l1.1 1.1M11 11l1.1 1.1M12.1 3.9L11 5M5 11l-1.1 1.1" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></symbol>
     <symbol id="i-caret" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-caret-down" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-tri-right" viewBox="0 0 16 16"><path d="M5.6 3.4 11.8 8l-6.2 4.6z" fill="currentColor"/></symbol>
     <symbol id="i-download" viewBox="0 0 16 16"><path d="M8 2v7.2M5.2 6.6 8 9.4l2.8-2.8M2.6 11.6v1.6h10.8v-1.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-upload" viewBox="0 0 16 16"><path d="M8 9.6V2.4M5.2 5.2 8 2.4l2.8 2.8M2.6 11.6v1.6h10.8v-1.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.2 8.6 6.2 11.6 12.8 4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -1117,6 +1149,8 @@ const I18N = {
     "admin.spr": "实质性程序映射规则",
     "admin.sbr": "子系统映射规则",
     "admin.spw": "专家底稿映射规则",
+    "admin.ptc": "AAP 程序类别配置",
+    "admin.ptcTitle": "AAP 程序类别配置",
     "card.overview": "状态跟踪",
     "card.filter": "范围选择",
     "card.attr": "项目属性",
@@ -1218,6 +1252,8 @@ const I18N = {
     "admin.spr": "Substantive Procedure Mapping Rules",
     "admin.sbr": "Subsystem Mapping Rules",
     "admin.spw": "Specialist Workpaper Mapping Rules",
+    "admin.ptc": "AAP Procedure Type Config",
+    "admin.ptcTitle": "AAP Procedure Type Config",
     "card.overview": "Status tracking",
     "card.filter": "Scoping Selection",
     "card.attr": "Engagement Nature attributes",
@@ -1666,25 +1702,21 @@ const WORKFLOWS = ["Enhanced", "Standard"];
 const ENTITY_TYPES = ["Listed", "PIE", "Non-PIE"];
 const STOCK_EXCHANGES = ["MB", "GEM", "A Share", "US", "NA"];
 
-const PROCEDURE_TYPES = [
-  "Financial Statements Reconciliation and/or Formatting",
-  "KDC Service on Cash at Bank Work Paper",
-  "KDC Service on Audit Confirmations",
-  "Credit Review",
-  "Alteryx D&A Service",
-  "Journal Entries Testing",
-  "Lease recalculation",
-  "Group Audit",
-  "Physical attendance procedures",
-  "Vouching"
-];
-
-const PROCEDURE_CATEGORIES = {
-  "Financial Statements Reconciliation and/or Formatting": ["Reconciliation", "Audit Opinion Only", "Reconciliation and FS preparation assistance", "Reconciliation and FS preparation assistance & translation", "Reconciliation and FS word processing and/or translation"],
-  "Alteryx D&A Service": ["Alteryx D&A Routines - Sales Three-way Match Item Matching", "Alteryx D&A Routines - Trade Purchase Three-Way Match Item Matching", "Alteryx D&A Routines - Revenue to Cash Item Matching", "Alteryx D&A Routines - Contract Liability to Cash Item Matching"],
-  "Physical attendance procedures": ["Inventory observations", "On-site visit"],
+/* AAP Procedure Type / Sub Category are master data maintained in the Admin Panel
+   (tab "AAP Procedure Type Config"). SBR rules keep the option text, so renaming a
+   value cascades to the rules that already selected it. */
+const PTYPE_SEED = [
+  { name: "Financial Statements Reconciliation and/or Formatting", subs: ["Reconciliation", "Audit Opinion Only", "Reconciliation and FS preparation assistance", "Reconciliation and FS preparation assistance & translation", "Reconciliation and FS word processing and/or translation"] },
+  { name: "KDC Service on Cash at Bank Work Paper", subs: [] },
+  { name: "KDC Service on Audit Confirmations", subs: [] },
+  { name: "Credit Review", subs: [] },
+  { name: "Alteryx D&A Service", subs: ["Alteryx D&A Routines - Sales Three-way Match Item Matching", "Alteryx D&A Routines - Trade Purchase Three-Way Match Item Matching", "Alteryx D&A Routines - Revenue to Cash Item Matching", "Alteryx D&A Routines - Contract Liability to Cash Item Matching"] },
+  { name: "Journal Entries Testing", subs: [] },
+  { name: "Lease recalculation", subs: [] },
+  { name: "Group Audit", subs: [] },
+  { name: "Physical attendance procedures", subs: ["Inventory observations", "On-site visit"] },
   /* 2026-11-18 按 Subsystem & Substantive Procedure 映射表更新（17 项） */
-  "Vouching": [
+  { name: "Vouching", subs: [
     "Sales cut-off test (GOSPD1030)",
     "Purchases cut-off test (SPD02006)",
     "Revenue throughout the period – Inspect, vouch and evaluate(GOSPD01010)",
@@ -1702,14 +1734,36 @@ const PROCEDURE_CATEGORIES = {
     "Full customisation (customise your own tests)",
     "Individual income tax certificate(GOSPT09004)",
     "Value added tax payment certificate(CNSP47)"
-  ],
-  "KDC Service on Cash at Bank Work Paper": [],
-  "KDC Service on Audit Confirmations": [],
-  "Credit Review": [],
-  "Journal Entries Testing": [],
-  "Lease recalculation": [],
-  "Group Audit": []
-};
+  ] }
+];
+const PTYPE_RULES = PTYPE_SEED.map((t, i) => ({
+  id: "pt" + (i + 1),
+  rule: "PT-" + String(i + 1).padStart(4, "0"),
+  name: t.name,
+  subcats: t.subs.map((s, j) => ({ id: "pt" + (i + 1) + "s" + (j + 1), name: s, active: true })),
+  active: true,
+  updatedBy: "Wang, Simons (KDiNJ/TECH)",
+  updatedAt: "2026/11/18 10:00"
+}));
+
+/* option helpers used by the SBR rule drawer and the master-data tab */
+function ptypeOptions(current) {
+  const list = store.ptc.filter(t => t.active).map(t => t.name);
+  if (current && list.indexOf(current) < 0) list.unshift(current);
+  return list;
+}
+function subcatOptions(ptype, current) {
+  const t = store.ptc.find(x => x.name === ptype);
+  const list = t ? t.subcats.filter(s => s.active !== false).map(s => s.name) : [];
+  if (current && list.indexOf(current) < 0) list.unshift(current);
+  return list;
+}
+function sbrUsingType(name) {
+  return store.sbr.filter(r => r.ptype === name).length;
+}
+function sbrUsingSubcat(ptype, subcat) {
+  return store.sbr.filter(r => r.ptype === ptype && r.subcat === subcat).length;
+}
 
 /* ENR rules derived from the standard workpaper templates */
 /* Extra admin mock rules generated from the v1.0 field spec (real template-library names) */
@@ -2002,7 +2056,8 @@ const store = {
   enr: ENR_RULES,
   spr: SPR_RULES,
   sbr: SBR_RULES,
-  spw: SPW_RULES
+  spw: SPW_RULES,
+  ptc: PTYPE_RULES
 };
 
 /* ---------- "Apply for all engagements" workpapers in Project Team View ----------
@@ -2147,10 +2202,10 @@ const state = {
   collapsed: {},
   expandedProc: {},
   expandedSys: {},
-  page: { enr: 1, spr: 1, sbr: 1, spw: 1 },
-  adminQ: { enr: "", spr: "", sbr: "", spw: "" },
-  adminSec: { enr: "", spr: "", sbr: "", spw: "" },
-  adminStatus: { enr: "", spr: "", sbr: "", spw: "" },
+  page: { enr: 1, spr: 1, sbr: 1, spw: 1, ptc: 1 },
+  adminQ: { enr: "", spr: "", sbr: "", spw: "", ptc: "" },
+  adminSec: { enr: "", spr: "", sbr: "", spw: "", ptc: "" },
+  adminStatus: { enr: "", spr: "", sbr: "", spw: "", ptc: "" },
   creating: null,
   pendingUpload: null,
   nonStdDraft: null,
@@ -2162,8 +2217,9 @@ const state = {
   wpflowForce: null,
   wpflowDemo: null,
   autoExpandDone: false,
-  colSort: { std: null, proc: null, spec: null, enr: null, spr: null, sbr: null, spw: null },
-  colFilter: { std: {}, proc: {}, spec: {}, enr: {}, spr: {}, sbr: {}, spw: {} },
+  ptcOpen: {},
+  colSort: { std: null, proc: null, spec: null, enr: null, spr: null, sbr: null, spw: null, ptc: null },
+  colFilter: { std: {}, proc: {}, spec: {}, enr: {}, spr: {}, sbr: {}, spw: {}, ptc: {} },
   showTree: false,
   langEditing: false,
   pageStd: 1,
@@ -2318,6 +2374,8 @@ function tplCell(w, kind) {
   if (w.link) {
     return `<button class="btn-link tpl-link" title="${esc(t("ttl.systemLink"))}" onclick="toast('Opening ARMS retention memo…','info')">${ico("i-link", "ico-sm")}<span>${esc(state.lang === "zh" ? "计划备忘录" : "Planning Memo")}</span></button>`;
   }
+  /* an apply-for-all row has no procedure-level data at all: every placeholder is a dash */
+  if (w.applyAll) return `<span class="hint">—</span>`;
   if (!w.tplCN && !w.tplEN) return `<span class="hint">N/A</span>`;
   /* Specialist workpapers expose both languages; project-team tables follow the Language filter. */
   if (kind === "specialist") {
@@ -2430,7 +2488,7 @@ const COLS = {
   },
   sbr: {
     rule:    { en: "Rule Name",          cn: "规则名称",     sort: true, filter: false, get: r => r.rule },
-    ptype:   { en: "Procedure Type",     cn: "程序类别",     sort: true, filter: true,  get: r => r.ptype },
+    ptype:   { en: "AAP Procedure Type", cn: "AAP 程序类别", sort: true, filter: true,  get: r => r.ptype },
     subcat:  { en: "Sub Category",       cn: "子类别",       sort: true, filter: true,  get: r => r.subcat || "" },
     sprRule: { en: "Substantive Procedure Rule Name", cn: "实质性程序规则名称", sort: true, filter: true, get: r => sbrRulesOf(r).join(" / ") },
     status:  { en: "Status",             cn: "状态",         sort: true, filter: true,  get: r => t(r.active ? "admin.active" : "admin.inactive") }
@@ -2442,11 +2500,18 @@ const COLS = {
     name:       { en: "Workpaper Name",    cn: "底稿名称", sort: true, filter: false, get: r => r.name },
     attachments:{ en: "Attachments",       cn: "附件",     sort: true, filter: false, get: r => (r.attachments || []).length },
     status:     { en: "Status",            cn: "状态",     sort: true, filter: true,  get: r => t(r.active ? "admin.active" : "admin.inactive") }
+  },
+  /* SBR master data: AAP Procedure Type / Sub Category option values */
+  ptc: {
+    rule:    { en: "Rule Name",          cn: "规则名称",   sort: true, filter: false, get: r => r.rule },
+    name:    { en: "AAP Procedure Type", cn: "AAP 程序类别", sort: true, filter: false, get: r => r.name },
+    subcats: { en: "Sub Category",       cn: "子类别",     sort: true, filter: false, get: r => (r.subcats || []).map(s => s.name).join(" / ") },
+    status:  { en: "Status",             cn: "状态",       sort: true, filter: true,  get: r => t(r.active ? "admin.active" : "admin.inactive") }
   }
 };
 function colOptions(table, key) {
   const set = new Set();
-  const SRC = { std: store.standard, proc: store.proc, spec: store.specialist, enr: store.enr, spr: store.spr, sbr: store.sbr, spw: store.spw };
+  const SRC = { std: store.standard, proc: store.proc, spec: store.specialist, enr: store.enr, spr: store.spr, sbr: store.sbr, spw: store.spw, ptc: store.ptc };
   const src = SRC[table] || store.specialist;
   src.forEach(r => set.add(String(COLS[table][key].get(r))));
   return Array.from(set).sort((a, b) => a.localeCompare(b, state.lang === "zh" ? "zh" : "en", { numeric: true }));
@@ -3026,7 +3091,8 @@ function renderTabs() {
       { id: "enr", label: t("admin.enr"), count: store.enr.length },
       { id: "spr", label: t("admin.spr"), count: store.spr.length },
       { id: "sbr", label: t("admin.sbr"), count: store.sbr.length },
-      { id: "spw", label: t("admin.spw"), count: store.spw.length }
+      { id: "spw", label: t("admin.spw"), count: store.spw.length },
+      { id: "ptc", label: t("admin.ptc"), count: store.ptc.length }
     ];
     bar.innerHTML = tabs.map(x => `<button class="tab-item ${state.adminTab === x.id ? "active" : ""}" onclick="setAdminTab('${x.id}')">
       <span>${esc(x.label)}</span><span class="tab-count">${x.count}</span></button>`).join("");
@@ -3265,14 +3331,14 @@ function procRow(p) {
   const open = !!state.expandedProc[p.id];
   const sysCount = (p.systems || []).length;
   const samplingCell = p.applyAll
-    ? `<span class="hint">N/A</span>`
+    ? `<span class="hint">—</span>`
     : `<select class="select sm" onclick="event.stopPropagation()" onchange="setSampling('${p.id}',this.value)">
       ${["KSP", "MUS", "N/A"].map(v => `<option ${p.sampling === v ? "selected" : ""}>${v}</option>`).join("")}
     </select>`;
   const sampleCell = p.applyAll
     ? `<span class="hint">—</span>`
     : (p.sampling === "N/A"
-      ? `<span class="hint">N/A</span>`
+      ? `<span class="hint">—</span>`
       : `<input class="input sm" style="width:64px" type="number" min="1" value="${p.samples || 1}" onchange="setSamples('${p.id}',this.value)">`);
   const main = `<tr class="${open ? "row-selected" : ""}">
     <td class="col-idx sticky-l1">${sysCount ? `<button class="expander ${open ? "open" : ""}" title="${esc(state.lang === "zh" ? "展开子系统任务" : "Expand subsystem tasks")}" onclick="toggleProc('${p.id}')"><span class="tri"></span></button>` : ""}</td>
@@ -3309,7 +3375,7 @@ function procRow(p) {
       if (sysOpen) {
         rows += tasks.map((tk, ti) => `<tr class="taskrow${ti === tasks.length - 1 ? " task-last" : ""}">
               <td><span class="branch"></span></td>
-              <td class="subcat-cell" title="${esc(tk.subcat || "")}">${tk.subcat ? esc(tk.subcat) : '<span class="hint">N/A</span>'}</td>
+              <td class="subcat-cell" title="${esc(tk.subcat || "")}">${tk.subcat ? esc(tk.subcat) : '<span class="hint">—</span>'}</td>
               <td><a class="task-link" href="javascript:void(0)" title="${esc(state.lang === "zh" ? "跳转到子系统任务" : "Open subsystem task")}" onclick="toast('Opening subsystem task ${esc(tk.id)}…','info')">${ico("i-link", "ico-sm")}<span>${esc(tk.id)}</span></a>
                 <span class="tag tag-xs ${tk.status === "Completed" ? "tag-success" : "tag-warning"}" style="margin-left:6px">${esc(tk.status)}</span></td>
               <td><button class="btn-link tpl-link" title="${esc(tk.id)}" onclick="downloadPack('${esc(tk.id)}')">${ico("i-clip", "ico-sm")}<span>${esc(t("act.download"))}</span></button></td>
@@ -3473,7 +3539,7 @@ function renderProjectTeam() {
       <div class="table-wrap tall">
         <table class="dt compact proc-dt">
           <thead><tr>
-            <th class="col-idx sticky-l1" style="width:20px"></th>
+            <th class="col-idx sticky-l1" style="width:28px"></th>
             ${thCol("proc", "wp", 'class="sticky-l2"')}
             ${state.groupProc === "sec" ? "" : thCol("proc", "sec", 'style="width:112px"')}
             ${thCol("proc", "proc", 'style="width:235px"')}
@@ -3687,7 +3753,8 @@ const ADMIN_META = {
   enr: { prefix: "ENR", storeKey: "enr" },
   spr: { prefix: "SPR", storeKey: "spr" },
   sbr: { prefix: "SBR", storeKey: "sbr" },
-  spw: { prefix: "SPW", storeKey: "spw" }
+  spw: { prefix: "SPW", storeKey: "spw" },
+  ptc: { prefix: "PT",  storeKey: "ptc" }
 };
 
 function adminRows(tab) {
@@ -3697,7 +3764,8 @@ function adminRows(tab) {
   if (q) rows = rows.filter(r => (r.name || "").toLowerCase().includes(q) || (r.rule || "").toLowerCase().includes(q)
     || (r.ref || "").toLowerCase().includes(q) || (r.subcat || "").toLowerCase().includes(q)
     || (r.ptype || "").toLowerCase().includes(q) || (r.type || "").toLowerCase().includes(q)
-    || sbrRulesOf(r).join(" ").toLowerCase().includes(q));
+    || sbrRulesOf(r).join(" ").toLowerCase().includes(q)
+    || (r.subcats || []).map(s => s.name).join(" ").toLowerCase().includes(q));
   const sec = state.adminSec[tab];
   if (sec) rows = rows.filter(r => (r.sec || r.ptype || "") === sec);
   const st = state.adminStatus[tab];
@@ -3766,6 +3834,30 @@ function adminTableHTML(tab, rows) {
         : '<span class="hint">—</span>'}</td>
       <td>${statusTag(r)}</td>
       <td class="col-act">${actCell(tab, r)}</td></tr>`;
+  } else if (tab === "ptc") {
+    head = `<tr>${thCol("ptc","rule",'style="width:106px"')}${thCol("ptc","name",'style="width:380px"')}${thCol("ptc","subcats")}${thCol("ptc","status",'style="width:84px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
+    const zh = state.lang === "zh";
+    bodyFn = r => {
+      const subs = r.subcats || [];
+      const open = !!state.ptcOpen[r.id];
+      const names = subs.map(s => s.name + (s.active === false ? (zh ? "（停用）" : " (inactive)") : ""));
+      const tip = names.join("\n");
+      /* collapsed preview shows only the first sub category */
+      const preview = names.slice(0, 1).join(" · ") + (names.length > 1 ? ` · +${names.length - 1}` : "");
+      const chips = subs.map(s => `<span class="tag tag-xs ${s.active === false ? "tag-neutral ptc-off" : "tag-soft"}" title="${esc(s.name)}">${esc(s.name)}${s.active === false ? esc(zh ? " （停用）" : " (inactive)") : ""}</span>`).join("");
+      /* the expanded block sits exactly under the Sub Category column (same left / right edges) */
+      const exp = `<tr class="ptc-exp"><td></td><td></td><td class="ptc-exp-td"><div class="ptc-chips">${chips || `<span class="hint">${esc(zh ? "暂无子类别" : "No sub category")}</span>`}</div></td><td></td><td></td></tr>`;
+      return `<tr class="${open ? "ptc-row-open" : ""}">
+        <td><span class="ref-code">${esc(r.rule)}</span></td>
+        <td><span class="cell-name" title="${esc(r.name)}">${esc(r.name)}</span></td>
+        <td><div class="ptc-subcell">
+          ${subs.length ? `<button class="icon-btn ptc-exp-btn ${open ? "open" : ""}" title="${esc(zh ? "展开 / 收起子类别" : "Expand / collapse sub categories")}" onclick="togglePtcOpen('${r.id}')">${ico("i-tri-right", "ico-sm")}</button>` : ""}
+          <span class="ptc-names" title="${esc(tip)}">${subs.length ? esc(preview) : '<span class="hint">—</span>'}</span>
+          ${subs.length ? `<span class="ptc-count">${subs.length}</span>` : ""}
+        </div></td>
+        <td>${statusTag(r)}</td>
+        <td class="col-act">${actCell(tab, r)}</td></tr>${open ? exp : ""}`;
+    };
   } else {
     head = `<tr>${thCol("spw","rule",'style="width:110px"')}${thCol("spw","type",'style="width:120px"')}${thCol("spw","sec",'style="width:120px"')}${thCol("spw","name")}${thCol("spw","attachments",'style="width:122px"')}${thCol("spw","status",'style="width:88px"')}${th("Actions", "操作", 'class="col-act" style="width:76px"')}</tr>`;
     bodyFn = r => `<tr>
@@ -3779,8 +3871,9 @@ function adminTableHTML(tab, rows) {
   }
 
   const pages = Math.max(1, Math.ceil(rows.length / pageSize));
+  const totalLbl = tab === "ptc" ? (state.lang === "zh" ? "个 AAP 程序类别" : "AAP procedure types") : t("admin.total");
   const pager = `<div class="pagination">
-      <span>${rows.length} ${esc(t("admin.total"))}</span>
+      <span>${rows.length} ${esc(totalLbl)}</span>
       <span class="spacer"></span>
       <span class="simple-pager">
         <button class="sp-btn" ${page <= 1 ? "disabled" : ""} onclick="setPage('${tab}',${page - 1})">‹</button>
@@ -3794,30 +3887,36 @@ function adminTableHTML(tab, rows) {
 
 function renderAdmin() {
   const tab = state.adminTab;
+  const zh = state.lang === "zh";
   const rows = adminRows(tab);
   const { table, pager } = adminTableHTML(tab, rows);
-  const secOpts = adminSectionOptions(tab);
+  const secOpts = tab === "ptc" ? [] : adminSectionOptions(tab);
+  const titleKey = tab === "ptc" ? "admin.ptcTitle" : "admin." + tab;
+  const searchPh = tab === "ptc"
+    ? (zh ? "搜索类别或子类别" : "Search type / sub category")
+    : t("admin.search");
+  const newLabel = tab === "ptc" ? (zh ? "新增 AAP 程序类别" : "New AAP Procedure Type") : t("act.newRule");
   return `
   <div class="card">
     <div class="card-head">
-      <div class="card-title"><span>${esc(t("admin." + tab))}</span></div>
+      <div class="card-title"><span>${esc(t(titleKey))}</span></div>
     </div>
     <div class="admin-bar">
       <div class="search">
         ${ico("i-search", "ico-sm")}
-        <input class="input sm" placeholder="${esc(t("admin.search"))}" value="${esc(state.adminQ[tab])}" oninput="state.adminQ['${tab}']=this.value;state.page['${tab}']=1;render();">
+        <input class="input sm" placeholder="${esc(searchPh)}" value="${esc(state.adminQ[tab])}" oninput="state.adminQ['${tab}']=this.value;state.page['${tab}']=1;render();">
       </div>
-      <select class="select sm" onchange="state.adminSec['${tab}']=this.value;state.page['${tab}']=1;render();">
+      ${tab === "ptc" ? "" : `<select class="select sm" onchange="state.adminSec['${tab}']=this.value;state.page['${tab}']=1;render();">
         <option value="">${esc(t("admin.section"))}</option>
         ${secOpts.map(s => `<option value="${esc(s)}" ${state.adminSec[tab] === s ? "selected" : ""}>${esc(secLabel(s))}</option>`).join("")}
-      </select>
+      </select>`}
       <select class="select sm" onchange="state.adminStatus['${tab}']=this.value;state.page['${tab}']=1;render();">
         <option value="">${esc(t("admin.status"))}</option>
         <option value="active" ${state.adminStatus[tab] === "active" ? "selected" : ""}>${esc(t("admin.active"))}</option>
         <option value="inactive" ${state.adminStatus[tab] === "inactive" ? "selected" : ""}>${esc(t("admin.inactive"))}</option>
       </select>
       <span class="spacer"></span>
-      <button class="btn btn-primary btn-xs" onclick="openRuleDrawer('${tab}',null)">${ico("i-plus", "ico-sm")}${esc(t("act.newRule"))}</button>
+      <button class="btn btn-primary btn-xs" onclick="openRuleDrawer('${tab}',null)">${ico("i-plus", "ico-sm")}${esc(newLabel)}</button>
     </div>
     <div class="card-body flush">
       <div class="table-wrap tall">${table}</div>
@@ -3827,6 +3926,7 @@ function renderAdmin() {
 }
 
 function setPage(tab, p) { state.page[tab] = p; render(); }
+function togglePtcOpen(id) { state.ptcOpen[id] = !state.ptcOpen[id]; render(); }
 
 /* ---------- rule drawer ---------- */
 function nextRuleNo(tab) {
@@ -3902,7 +4002,7 @@ function onAttPicked(input) {
   const f = input.files && input.files[0];
   if (f && attPickIdx !== null && draft && draft.atts[attPickIdx]) {
     draft.atts[attPickIdx].file = f.name;
-    draft.atts[attPickIdx].by = "Wang, Simons (SH/AQPP)";
+    draft.atts[attPickIdx].by = "Wang, Simons (KDiNJ/TECH)";
     draft.atts[attPickIdx].at = nowStamp();
     rerenderAtts();
   }
@@ -3944,6 +4044,11 @@ function openRuleDrawer(tab, id) {
     draft.subcat = base ? base.subcat : "";
     draft.sprRules = base ? sbrRulesOf(base).slice() : [""];
     if (!draft.sprRules.length) draft.sprRules = [""];
+  } else if (tab === "ptc") {
+    draft.name = base ? base.name : "";
+    draft.savedName = base ? base.name : "";
+    draft.subcats = base ? JSON.parse(JSON.stringify(base.subcats || [])) : [];
+    draft.bulkInsert = false;
   } else {
     draft.type = base ? base.type : "Tax";
     draft.sec = base ? base.sec : "system";
@@ -3988,9 +4093,78 @@ function removeSprRuleRow(i) {
   renderRuleDrawer();
 }
 
+/* ---------- AAP Procedure Type master data: sub category rows ---------- */
+function subcatRowsHTML() {
+  const zh = state.lang === "zh";
+  if (!draft.subcats.length) {
+    return `<div class="field-help">${esc(zh ? "暂无子类别，可通过下方按钮添加。" : "No sub category yet — add one below.")}</div>`;
+  }
+  return draft.subcats.map((s, i) => {
+    const used = draft.savedName ? sbrUsingSubcat(draft.savedName, (s.name || "").trim()) : 0;
+    return `<div class="subcat-row">
+      <input class="input sm" value="${esc(s.name)}" placeholder="${esc(zh ? "子类别名称" : "Sub category name")}" oninput="draft.subcats[${i}].name=this.value">
+      ${used ? `<span class="subcat-use" title="${esc(zh ? `已被 ${used} 条子系统映射规则引用` : `Referenced by ${used} SBR rule(s)`)}">${used}${esc(zh ? " 条" : used === 1 ? " rule" : " rules")}</span>` : ""}
+      <label class="check" title="${esc(zh ? "停用后不再出现在新建规则的选项中，已有规则保留该值" : "Inactive values are hidden from new rules; existing rules keep the value")}">
+        <input type="checkbox" ${s.active !== false ? "checked" : ""} onchange="draft.subcats[${i}].active=this.checked"><span>${esc(zh ? "启用" : "Active")}</span></label>
+      <button class="icon-btn subcat-mv" title="${esc(zh ? "上移" : "Move up")}" ${i === 0 ? "disabled" : ""} onclick="moveSubcat(${i},-1)">↑</button>
+      <button class="icon-btn subcat-mv" title="${esc(zh ? "下移" : "Move down")}" ${i === draft.subcats.length - 1 ? "disabled" : ""} onclick="moveSubcat(${i},1)">↓</button>
+      <button class="icon-btn" title="${esc(zh ? "移除" : "Remove")}" onclick="removeSubcatRow(${i})">${ico("i-close", "ico-sm")}</button>
+    </div>`;
+  }).join("");
+}
+function addSubcatRow() {
+  draft.subcats.push({ id: "ps" + Date.now() + "_" + draft.subcats.length, name: "", active: true });
+  renderRuleDrawer();
+  setTimeout(() => {
+    const els = document.querySelectorAll("#drawerBody .subcat-row input.input");
+    const el = els[els.length - 1];
+    if (el) el.focus();
+  }, 30);
+}
+function removeSubcatRow(i) {
+  const s = draft.subcats[i];
+  const used = draft.savedName ? sbrUsingSubcat(draft.savedName, (s.name || "").trim()) : 0;
+  if (used) {
+    toast(state.lang === "zh"
+      ? `该子类别已被 ${used} 条子系统映射规则引用，请先调整映射规则。`
+      : `This sub category is used by ${used} SBR rule(s); update those rules first.`, "error");
+    return;
+  }
+  draft.subcats.splice(i, 1);
+  renderRuleDrawer();
+}
+function moveSubcat(i, d) {
+  const j = i + d;
+  if (j < 0 || j >= draft.subcats.length) return;
+  const t = draft.subcats[i]; draft.subcats[i] = draft.subcats[j]; draft.subcats[j] = t;
+  renderRuleDrawer();
+}
+function toggleBulkInsert() {
+  draft.bulkInsert = !draft.bulkInsert;
+  renderRuleDrawer();
+}
+function applyBulkInsert() {
+  const zh = state.lang === "zh";
+  const el = $("#f_bulk");
+  const lines = (el ? el.value : "").split(/\n+/).map(x => x.trim()).filter(Boolean);
+  const have = new Set(draft.subcats.map(s => (s.name || "").trim().toLowerCase()).filter(Boolean));
+  let n = 0;
+  lines.forEach(nm => {
+    const k = nm.toLowerCase();
+    if (have.has(k)) return;
+    have.add(k);
+    draft.subcats.push({ id: "ps" + Date.now() + "_" + (draft.subcats.length + n), name: nm, active: true });
+    n++;
+  });
+  draft.bulkInsert = false;
+  renderRuleDrawer();
+  toast(n ? (zh ? `已添加 ${n} 个子类别` : `${n} sub category(s) added`) : (zh ? "没有新增的子类别" : "Nothing added"), n ? "success" : "info");
+}
+
 function renderRuleDrawer() {
   const tab = draft.tab;
   const isNew = !draft.id;
+  const zhAll = state.lang === "zh";
   let body = "";
   const secOpts = (keys) => keys.map(k => `<option value="${k}" ${draft.sec === k ? "selected" : ""}>${esc(secLabel(k))}</option>`).join("");
 
@@ -4079,7 +4253,8 @@ function renderRuleDrawer() {
         <button class="btn btn-xs" style="margin-top:6px" onclick="addAtt()">${ico("i-plus", "ico-sm")}${esc(t("act.attach"))}</button>
       </div>`;
   } else if (tab === "sbr") {
-    const cats = PROCEDURE_CATEGORIES[draft.ptype] || [];
+    /* options come from the AAP Procedure Type master data (Admin → AAP Procedure Type Config) */
+    const cats = draft.ptype ? subcatOptions(draft.ptype, draft.subcat) : [];
     body = `
       <div class="drawer-section">
         <div class="drawer-section-head">${esc(t("drawer.basic"))}</div>
@@ -4087,10 +4262,10 @@ function renderRuleDrawer() {
           <div class="field-row">
             <div class="field"><span class="field-label">${fl("Rule Name","规则名称")}</span><input class="input" readonly value="${esc(draft.id ? (store.sbr.find(r => r.id === draft.id) || {}).rule : nextRuleNo("sbr"))}"></div>
           </div>
-          <div class="field"><span class="field-label">${fl("Procedure Type","程序类别")}</span>
+          <div class="field"><span class="field-label">${fl("AAP Procedure Type","AAP 程序类别")}</span>
             <select class="select" onchange="draft.ptype=this.value;draft.subcat='';renderRuleDrawer()">
               <option value="" ${draft.ptype === "" ? "selected" : ""}>—</option>
-              ${PROCEDURE_TYPES.map(p => `<option ${draft.ptype === p ? "selected" : ""}>${esc(p)}</option>`).join("")}
+              ${ptypeOptions(draft.ptype).map(p => `<option ${draft.ptype === p ? "selected" : ""}>${esc(p)}</option>`).join("")}
             </select></div>
           <div class="field"><span class="field-label">${fl("Sub Category","子类别")} <span class="opt">${esc(state.lang === "zh" ? "非必填" : "optional")}</span></span>
             <select class="select" onchange="draft.subcat=this.value">
@@ -4102,6 +4277,40 @@ function renderRuleDrawer() {
           </div>
           <div class="field-help">${esc(state.lang === "zh" ? "一个子系统可对应多条实质性程序规则（如 Lease recalculation 同时对应租赁负债与使用权资产两张底稿），点击 + 继续添加；用户端展示时，子系统 procedure 合并到实质性程序模块，按树形折叠展示：一条实质性程序可对应多个 ProcedureRunId，一个 ProcedureRunId 可对应多个底稿文件。" : "One subsystem may map to several substantive procedure rules — click + to add more. In the user view, subsystem procedures are merged into the substantive procedure module and rendered as a tree.")}</div>
         </div>
+      </div>`;
+  } else if (tab === "ptc") {
+    const zh = zhAll;
+    body = `
+      <div class="drawer-section">
+        <div class="drawer-section-head">${esc(t("drawer.basic"))}</div>
+        <div class="stack">
+          <div class="field-row">
+            <div class="field"><span class="field-label">${fl("Rule Name","规则名称")}</span><input class="input" readonly value="${esc(draft.id ? (store.ptc.find(r => r.id === draft.id) || {}).rule : nextRuleNo("ptc"))}"></div>
+          </div>
+          <div class="field"><span class="field-label">${fl("AAP Procedure Type","AAP 程序类别")} <span class="req">*</span></span>
+            <input class="input" id="f_name" placeholder="${esc(zh ? "输入 AAP 程序类别名称" : "Enter the AAP procedure type")}" value="${esc(draft.name)}" oninput="draft.name=this.value"></div>
+          <div class="field-help">${esc(zh
+            ? "此处维护的选项直接用于「子系统映射规则」的 AAP 程序类别下拉框；停用后不再出现在新建规则中，重命名会同步更新已引用该值的规则。"
+            : "These values feed the AAP Procedure Type dropdown in Subsystem Mapping Rules. Inactive types are hidden from new rules; renaming cascades to the rules that already use the value.")}</div>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <div class="drawer-section-head">${fl("Sub Category","子类别")} <span class="tag tag-xs tag-soft" style="margin-left:4px">${draft.subcats.length}</span></div>
+        <div class="field-help" style="margin-bottom:8px">${esc(zh
+          ? "下拉框按此顺序展示。停用的选项不再出现在新建的子系统映射规则中，已被引用的规则保持原值。"
+          : "Options follow this order. Inactive values are hidden from new SBR rules; existing rules keep their value.")}</div>
+        <div id="subcatBlock">${subcatRowsHTML()}</div>
+        <div class="subcat-actions">
+          <button class="btn btn-xs" onclick="addSubcatRow()">${ico("i-plus", "ico-sm")}${esc(zh ? "添加子类别" : "Add sub category")}</button>
+          <button class="btn btn-xs" onclick="toggleBulkInsert()">${esc(zh ? "批量粘贴" : "Bulk paste")}</button>
+        </div>
+        ${draft.bulkInsert ? `<div class="field" style="margin-top:8px">
+          <textarea class="input" id="f_bulk" rows="6" placeholder="${esc(zh ? "每行一个子类别" : "One sub category per line")}"></textarea>
+          <div style="display:flex;gap:6px;margin-top:6px">
+            <button class="btn btn-xs btn-primary" onclick="applyBulkInsert()">${esc(zh ? "插入" : "Insert")}</button>
+            <button class="btn btn-xs" onclick="toggleBulkInsert()">${esc(t("act.cancel"))}</button>
+          </div>
+        </div>` : ""}
       </div>`;
   } else {
     body = `
@@ -4141,8 +4350,11 @@ function renderRuleDrawer() {
         ? `最后更新：<b>${esc(editingRule.updatedBy || "—")}</b> · ${esc(editingRule.updatedAt || "—")}`
         : `Last updated by <b>${esc(editingRule.updatedBy || "—")}</b> · ${esc(editingRule.updatedAt || "—")}`)
     : "";
+  const drawerTitle = tab === "ptc"
+    ? (isNew ? (zhAll ? "新建 AAP 程序类别" : "New AAP Procedure Type") : (zhAll ? "编辑 AAP 程序类别" : "Edit AAP Procedure Type"))
+    : (isNew ? t("drawer.newRule") : t("drawer.editRule"));
   openDrawer({
-    title: isNew ? t("drawer.newRule") : t("drawer.editRule"),
+    title: drawerTitle,
     sub: t("admin." + tab),
     footMeta,
     body,
@@ -4191,9 +4403,53 @@ function saveRule() {
     else store.spr.push(Object.assign({ id: "spr" + Date.now(), rule: nextRuleNo("spr"), active: true }, fields));
   } else if (tab === "sbr") {
     const rules = (draft.sprRules || []).filter(Boolean);
-    if (!draft.ptype || !rules.length) { toast(state.lang === "zh" ? "请选择程序类别与至少一条实质性程序规则" : "Select the Procedure Type and at least one Substantive Procedure Rule", "error"); return; }
+    if (!draft.ptype || !rules.length) { toast(state.lang === "zh" ? "请选择 AAP 程序类别与至少一条实质性程序规则" : "Select the AAP Procedure Type and at least one Substantive Procedure Rule", "error"); return; }
     if (editing) Object.assign(editing, { ptype: draft.ptype, subcat: draft.subcat, sprRule: rules[0], sprRules: rules });
     else store.sbr.push({ id: "sbr" + Date.now(), rule: nextRuleNo("sbr"), ptype: draft.ptype, subcat: draft.subcat, sprRule: rules[0], sprRules: rules, active: true });
+  } else if (tab === "ptc") {
+    const zh = state.lang === "zh";
+    const nm = (draft.name || "").trim();
+    if (!nm) { toast(zh ? "请填写 AAP 程序类别名称" : "AAP procedure type is required", "error"); return; }
+    if (store.ptc.some(t => t.id !== draft.id && t.name.trim().toLowerCase() === nm.toLowerCase())) {
+      toast(zh ? "AAP 程序类别名称已存在" : "This AAP procedure type already exists", "error"); return;
+    }
+    /* a still-open bulk paste box is saved along with the list */
+    if (draft.bulkInsert) {
+      const el = $("#f_bulk");
+      const lines = (el ? el.value : "").split(/\n+/).map(x => x.trim()).filter(Boolean);
+      const have = new Set(draft.subcats.map(s => (s.name || "").trim().toLowerCase()).filter(Boolean));
+      lines.forEach(line => {
+        const k = line.toLowerCase();
+        if (have.has(k)) return;
+        have.add(k);
+        draft.subcats.push({ id: "ps" + Date.now() + "_" + draft.subcats.length, name: line, active: true });
+      });
+    }
+    const subs = draft.subcats.map(s => ({ id: s.id, name: (s.name || "").trim(), active: s.active !== false })).filter(s => s.name);
+    const seen = new Set();
+    const dup = subs.find(s => { const k = s.name.toLowerCase(); if (seen.has(k)) return true; seen.add(k); return false; });
+    if (dup) { toast(zh ? `子类别名称重复：${dup.name}` : `Duplicate sub category: ${dup.name}`, "error"); return; }
+    if (editing) {
+      /* an option still referenced by an SBR rule cannot be removed */
+      const kept = new Set(subs.map(s => s.id));
+      const blocked = (editing.subcats || []).find(s => !kept.has(s.id) && sbrUsingSubcat(editing.name, s.name) > 0);
+      if (blocked) {
+        const n = sbrUsingSubcat(editing.name, blocked.name);
+        toast(zh ? `子类别「${blocked.name}」已被 ${n} 条子系统映射规则引用，请先调整映射规则。`
+                 : `Sub category "${blocked.name}" is used by ${n} SBR rule(s); update those rules first.`, "error");
+        return;
+      }
+      /* renames cascade to the SBR rules that already selected the value */
+      const oldName = editing.name;
+      if (oldName !== nm) store.sbr.forEach(r => { if (r.ptype === oldName) r.ptype = nm; });
+      (editing.subcats || []).forEach(old => {
+        const now = subs.find(s => s.id === old.id);
+        if (now && now.name !== old.name) store.sbr.forEach(r => { if (r.ptype === nm && r.subcat === old.name) r.subcat = now.name; });
+      });
+      Object.assign(editing, { name: nm, subcats: subs });
+    } else {
+      store.ptc.push({ id: "ptc" + Date.now(), rule: nextRuleNo("ptc"), name: nm, subcats: subs, active: true });
+    }
   } else {
     const nameEl = $("#f_name");
     const nm = (nameEl ? nameEl.value : draft.name).trim();
@@ -4201,7 +4457,7 @@ function saveRule() {
     else store.spw.push({ id: "spw" + Date.now(), rule: nextRuleNo("spw"), type: draft.type, sec: draft.sec, name: nm, attachments: draft.atts.slice(), active: true });
   }
   const rec = editing || store[key][store[key].length - 1];
-  if (rec) { rec.updatedBy = "Wang, Simons (SH/AQPP)"; rec.updatedAt = nowStamp(); }
+  if (rec) { rec.updatedBy = "Wang, Simons (KDiNJ/TECH)"; rec.updatedAt = nowStamp(); }
   closeDrawer();
   render();
   toast(t("toast.saved"), "success");
@@ -4209,7 +4465,21 @@ function saveRule() {
 
 function deleteRule(tab, id) {
   const key = ADMIN_META[tab].storeKey;
-  if (!window.confirm(state.lang === "zh" ? "确认删除该规则？" : "Delete this rule?")) return;
+  const zh = state.lang === "zh";
+  const rec = store[key].find(r => r.id === id);
+  /* master data still referenced by SBR rules must not be deleted */
+  if (tab === "ptc" && rec) {
+    const n = sbrUsingType(rec.name);
+    if (n) {
+      toast(zh ? `该 AAP 程序类别已被 ${n} 条子系统映射规则引用，请先在子系统映射规则中调整后再删除。`
+               : `This procedure type is used by ${n} SBR rule(s); update those rules before deleting it.`, "error");
+      return;
+    }
+  }
+  const ask = tab === "ptc"
+    ? (zh ? "确认删除该 AAP 程序类别？其下的子类别将一并删除。" : "Delete this AAP procedure type and all its sub categories?")
+    : (zh ? "确认删除该规则？" : "Delete this rule?");
+  if (!window.confirm(ask)) return;
   store[key] = store[key].filter(r => r.id !== id);
   render();
   toast(t("toast.deleted"), "success");
@@ -4220,9 +4490,13 @@ function toggleRuleActive(tab, id) {
   const r = store[key].find(x => x.id === id);
   if (!r) return;
   const zh = state.lang === "zh";
-  const ask = r.active
-    ? (zh ? "确认停用该规则？停用后不再参与匹配。" : "Disable this rule? It will stop matching.")
-    : (zh ? "确认启用该规则？" : "Enable this rule?");
+  const ask = tab === "ptc"
+    ? (r.active
+        ? (zh ? "确认停用该 AAP 程序类别？停用后不再出现在新建的子系统映射规则下拉框中，已有规则保持原值。" : "Disable this AAP procedure type? It will no longer appear in new Subsystem Mapping Rules; existing rules keep the value.")
+        : (zh ? "确认启用该 AAP 程序类别？" : "Enable this AAP procedure type?"))
+    : (r.active
+        ? (zh ? "确认停用该规则？停用后不再参与匹配。" : "Disable this rule? It will stop matching.")
+        : (zh ? "确认启用该规则？" : "Enable this rule?"));
   if (!window.confirm(ask)) return;
   r.active = !r.active;
   closeDrawer();
@@ -4400,7 +4674,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(
 /* ---------- boot ---------- */
 /* Deep-link support for demos & screenshots:
    ?role=tax|vm|frm|act|forensic|audit|admin  ?view=project|specialist|admin
-   ?tab=enr|spr|sbr|spw  ?lang=zh|en  ?scroll=600  ?group=req  */
+   ?tab=enr|spr|sbr|spw|ptc  ?lang=zh|en  ?scroll=600  ?group=req  */
 (function bootFromQuery() {
   try {
     const p = new URLSearchParams(location.search);
@@ -4409,7 +4683,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(
     const v = p.get("view");
     if (v === "admin") {
       state.area = "admin";
-      if (["enr", "spr", "sbr", "spw"].indexOf(p.get("tab")) >= 0) state.adminTab = p.get("tab");
+      if (["enr", "spr", "sbr", "spw", "ptc"].indexOf(p.get("tab")) >= 0) state.adminTab = p.get("tab");
     } else if (v === "project" || v === "specialist") {
       state.area = "user";
       state.userTab = v;
@@ -4431,7 +4705,7 @@ render();
   try {
     const p = new URLSearchParams(location.search);
     if (p.get("history")) { const id = p.get("history"); if (findWp("standard", id)) setTimeout(() => openHistory("standard", id), 80); }
-    if (p.get("rule")) { const tab = p.get("rule"); if (["enr", "spr", "sbr", "spw"].indexOf(tab) >= 0) setTimeout(() => openRuleDrawer(tab, null), 80); }
+    if (p.get("rule")) { const tab = p.get("rule"); if (["enr", "spr", "sbr", "spw", "ptc"].indexOf(tab) >= 0) setTimeout(() => openRuleDrawer(tab, null), 80); }
   } catch (e) { /* noop */ }
 })();
 

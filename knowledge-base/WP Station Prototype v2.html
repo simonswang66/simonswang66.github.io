@@ -133,7 +133,6 @@ html[data-lang="zh"] .t-en-only{display:none !important}
 }
 .hdr-menu:hover{background:rgba(255,255,255,.2)}
 .hdr-logo{height:22px;width:auto;display:block;flex:0 0 auto;margin-right:2px}
-.hdr-divider{width:1px;height:20px;background:rgba(255,255,255,.28);flex:0 0 1px}
 .hdr-brand{display:flex;align-items:baseline;gap:10px;min-width:0}
 .hdr-name{font-size:15px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
 .hdr-project{font-size:12px;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -618,6 +617,8 @@ table.dt .cell-name{max-width:340px;overflow:hidden;text-overflow:ellipsis;displ
 /* full-width tables (standard / specialist) let the name use the whole column before truncating */
 table.dt.fixtable .cell-name{max-width:100%}
 table.dt .cell-tight{max-width:190px;overflow:hidden;text-overflow:ellipsis;display:block;white-space:nowrap}
+/* SPR Procedure Name: use the whole column, keep one line, truncate with ellipsis */
+table.dt .cell-tight.cell-wide{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .col-idx{width:26px}
 .col-act{width:96px}
 table.dt thead th.col-act-review{background:#e3f4ee;color:#0f766e;text-align:center}
@@ -635,7 +636,9 @@ table.dt tr.group-row.sticky-on{position:sticky;top:var(--th-h);z-index:2}
 table.dt tr.group-row.sticky-on td{box-shadow:inset 0 -1px 0 var(--border-light)}
 .group-row .g-toggle{cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .tag.sect,.tag.gtag{max-width:100%;min-width:0;display:inline-flex}
-.tag.sect > span,.tag.gtag > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+/* give the text a line box taller than the 10px font so ascenders / descenders
+   are not clipped inside the pill (visible as the lower half of the glyphs cut) */
+.tag.sect > span,.tag.gtag > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;line-height:14px}
 .group-row .car{transition:transform .15s ease;display:inline-block;color:#64748b}
 .group-row.closed .car{transform:rotate(-90deg)}
 .group-count{font-weight:500;color:#64748b;margin-left:4px}
@@ -646,7 +649,9 @@ table.dt tr.group-row.sticky-on td{box-shadow:inset 0 -1px 0 var(--border-light)
 .indent-2{padding-left:52px !important}
 .expander{
   width:18px;height:18px;border:0;background:transparent;cursor:pointer;color:var(--color-gray-500);
-  display:inline-flex;align-items:center;justify-content:center;border-radius:4px;padding:0;
+  /* grid instead of inline-flex: the inline-level box painted a stray 1px dot on
+     the cell's right border next to the triangle */
+  display:grid;place-items:center;border-radius:4px;padding:0;
 }
 .expander:hover{background:transparent}
 .expander .tri{display:block;width:0;height:0;border-left:5px solid #64748b;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;transition:transform .15s ease}
@@ -793,6 +798,26 @@ table.dt tr.group-row.sticky-on td{box-shadow:inset 0 -1px 0 var(--border-light)
 .ms.open .ms-menu{display:block}
 .ms-item{display:flex;align-items:center;gap:6px;padding:5px 8px;font-size:11.5px;cursor:pointer}
 .ms-item:hover{background:var(--bg-hover)}
+
+/* searchable substantive-procedure picker (SBR drawer) */
+.spr-combo{position:relative;flex:1;min-width:0}
+.spr-combo-input{width:100%}
+.spr-combo-panel{
+  display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;
+  border:1px solid var(--border-default);border-radius:var(--radius-md);box-shadow:var(--shadow-md);
+  padding:4px;max-height:240px;overflow:auto;z-index:var(--z-dropdown);
+}
+.spr-combo.open .spr-combo-panel{display:block}
+.spr-opt{
+  display:block;width:100%;text-align:left;border:0;background:transparent;cursor:pointer;
+  padding:5px 7px;border-radius:4px;font-size:11.5px;color:var(--color-gray-700);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.spr-opt:hover{background:var(--bg-hover)}
+.spr-opt.sel{background:#eaf3ff;color:#1d4ed8}
+.spr-opt .code{font-weight:600;font-variant-numeric:tabular-nums;margin-right:6px}
+.spr-opt .meta{color:#94a3b8;margin-right:6px}
+.spr-empty{padding:8px;font-size:11px;color:#94a3b8}
 
 /* attachment rows */
 .att-table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px}
@@ -983,11 +1008,13 @@ table.dt.compact .btn-xs{padding:0 5px}
 /* Admin tables keep a readable Workpaper Name column on 1280 screens: scroll inside the card instead */
 table.dt.admin-dt{min-width:1330px}
 table.dt.admin-dt .cell-name{max-width:100%}
-table.dt.proc-dt{width:100%;min-width:1912px}
+table.dt.proc-dt{width:100%;min-width:1700px}
 table.dt.proc-dt .cell-name{max-width:100%}
-/* frozen columns for the substantive procedure table: Workpaper Name on the left, Review Status + Review on the right */
+/* frozen columns for the substantive procedure table: Procedure on the left, Review Status + Review on the right */
 table.dt.proc-dt th.sticky-l1,table.dt.proc-dt td.sticky-l1{position:sticky;left:0;background:#fff;z-index:2}
-table.dt.proc-dt th.sticky-l2,table.dt.proc-dt td.sticky-l2{position:sticky;left:28px;background:#fff;z-index:2;box-shadow:1px 0 0 var(--border-light)}
+/* the frozen column already has a 1px border-right; the extra box-shadow doubled
+   that line and left a tiny dot at the row corners, so it is intentionally omitted */
+table.dt.proc-dt th.sticky-l2,table.dt.proc-dt td.sticky-l2{position:sticky;left:28px;background:#fff;z-index:2}
 table.dt.proc-dt th.sticky-r1,table.dt.proc-dt td.sticky-r1{position:sticky;right:0;background:#fff;z-index:2}
 table.dt.proc-dt th.sticky-r2,table.dt.proc-dt td.sticky-r2{position:sticky;right:58px;background:#fff;z-index:2;box-shadow:-1px 0 0 var(--border-light)}
 table.dt.proc-dt thead th.sticky-l1,table.dt.proc-dt thead th.sticky-l2,
@@ -1004,6 +1031,8 @@ table.dt.admin-dt .cell-strong{font-weight:600;color:#1e293b}
 .stack-cell{min-width:0}
 .stack-cell .sc-l1{font-size:11.5px;font-weight:600;color:#334155;font-variant-numeric:tabular-nums;letter-spacing:.1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
 .stack-cell .sc-l2{font-size:10.5px;color:#64748b;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
+/* several RMMs in one cell: keep a small gap between ID/description pairs */
+.stack-cell .sc-l2 + .sc-l1{margin-top:4px}
 /* cells that host buttons must not render a stray ellipsis */
 table.dt td.cell-upload{text-overflow:clip}
 .up-cell{min-width:112px}
@@ -1056,7 +1085,6 @@ table.dt td.cell-upload{text-overflow:clip}
     <svg class="ico" style="color:#fff"><use href="#i-menu"/></svg>
   </div>
   <img class="hdr-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAlCAYAAADV/m7fAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAPQSURBVHja7FrtcdswDH3oZQB3gmqDyBNEniDuBHEmqDJBnAmcTOBmAjsTWJnA6gTRBtIG6B8qZSiApCz96R1xlx8SKRB8fPggYmJmJLlcviUIpskVABDRl5fMvACQz6C/BrAAkM2kKzP6JgkRVcycz6CrI2aWACwA7AE0E5RnAO4BFADuJurKAfwE8Gg23U3QVRARMfNpNgYq8kpE20sVM/N2Rl32Zh+IqJqgiy0mrqaAx8ynFANTEkkAJgATgEkSgAnABGACMEkCMAH438lVggAwnZkCwDWGnaMGwDuAIxF1YwC8Y+Yb6/mFiI7WogcM20E1ET1Yz7t+jqUrN+/6hkAN4Mk2TtCdG12ZB4S9Z/yViH4L32wA/EK4dbcBsGPmexuDXolkTMFDyWxjhfGz6SN+gsDx8tF/y8x5YG4hARH4Zm3NZWZemDUvkSymGzOgMRE11klvnPEOwL1D8fUIL8qs+cVI91sYdvqkdp5PHrZWlndobAwmkVvn+RgAb0VEtbUpCbwlGQGwxLDBmilrh2QPf2e56w/fCQmuPAD4TkQr0ydcIqJxq8VAlwVvzFzGgKeA0NlziKhm5k5hUzGCfUUE0ytrfqnMWbp7MDbWQXvcGMjMa8fnWyXGtCZ7STrd+HJwxjMpTglrsxBLix5sYZ2T8P3Wmt8K4+WE7C3GwBvFTWKY15cEbnx5d553ClNuhXX+KPaXwjqvHgaWgqs3RPQ8dyHtusQiFjxP8rhm5i0z75j5Q5jzbBJQIcVe5ZAenddPSizs7bwTxl5cRgUy8MHrwhElBGtua+k4jywLzsa9pLU3BvgvLiyscVZKpw9PyBjsJcLW0gX8KpA8RIbZ9Z7A1nyEB1SGObmSfTsAP5x3UuH7ZmKj+75R3n/aa9WV+YjE9S/Z2P8XNieZO9eYzJfZhFIki5wLobRYOODVik7XRTvl8PqxbOQ+JDJ1Qj1Zf7qwcaNB1a1U7IVyOqILxRTDnuy5jbzBrDU7PToWI+w5hJLIWrl9PAnfPUYmkGMk+4qR7OjFvv0MXND6B3zlyeSx9rx760CBPTtPXTdgoY8BEQx079atNbaNyYhCBj0FGNXL3k4mJpnto5OnBWCrbV4ppE+xIEQAqBbeCoCt636C/buAfWOk9d5EpNtHxCZdkNuYmCHVdFL5EgCwHKPDYuH5QgAPoUL6JiJ2qbFQ+anYWyQB1yPjXyXcHvJQB8bEypXZR4d4qdyCe1DGCCVEI3QwIMU081s7sYSQOriCzkGJYf/6Shgf6A3p8NRz0sE3/Z+EgQZgkhnvwklGyN8BALWe+9iUXFNDAAAAAElFTkSuQmCC" alt="KPMG">
-  <span class="hdr-divider"></span>
   <div class="hdr-brand">
     <div class="hdr-name">AAP-Workpaper Station</div>
   </div>
@@ -1382,7 +1410,10 @@ const SECTIONS = {
   "pr.grp":      { en: "PR17. Group entities and related parties", cn: "PR17. 集团实体及关联方" },
   "pr.lessor":   { en: "PR22. Leases — lessor",                  cn: "PR22. 租赁 — 出租人" },
   "pr.securities": { en: "Securities — Investment banking",      cn: "证券 — 投资银行业务" },
-  "pr.deposit":  { en: "Banking — Customer deposit",             cn: "银行存款 — 客户存款" }
+  "pr.deposit":  { en: "Banking — Customer deposit",             cn: "银行存款 — 客户存款" },
+  /* v1.1 底稿模板-sub proc 新增的两个类别（追加在末尾，保持既有 secColor 颜色索引不变） */
+  "tod":         { en: "TOD Substantive Procedures",             cn: "TOD 实质性程序" },
+  "sap":         { en: "SAP Substantive Procedures",             cn: "SAP 实质性程序" }
 };
 
 const REQ_LEVELS = [
@@ -1589,8 +1620,8 @@ const PROC_WPS = [
   proc({ id: "p06", ref: "SPD05004", name: "在建工程 — 评价分类 (PPE under construction - evaluate classification)", ptype: "TOD", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [] }),
   proc({ id: "p07", ref: "SPD05008", name: "固定资产 — 识别 (PPE - identification)", ptype: "SAP", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [] }),
   proc({ id: "p08", ref: "SPD05002", name: "资本化的固定资产内部成本 — 检查 (PPE internally capitalized costs - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "KSP", samples: 20, status: "none", systems: [] }),
-  proc({ id: "p09", ref: "SPO0701", name: "投资前推 (Investments roll-forward)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, status: "none", systems: [] }),
-  proc({ id: "p10", ref: "SPO0702", name: "投资明细账与总账的调节 (Investments sub-ledger to general ledger reconciliation)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, status: "none", systems: [] }),
+  proc({ id: "p09", ref: "SPO0701", name: "投资前推 (Investments roll-forward)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, tplCN: false, tplEN: true, status: "none", systems: [] }),
+  proc({ id: "p10", ref: "SPO0702", name: "投资明细账与总账的调节 (Investments sub-ledger to general ledger reconciliation)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, tplCN: false, tplEN: true, status: "none", systems: [] }),
   proc({ id: "p11", ref: "TT GOSPT15004", name: "无形资产的处置或报废 — 检查 (Intangible assets disposals or retirements - vouch)", ptype: "TOD", sec: "j.intang", sampling: "MUS", samples: 12, status: "none", systems: [] }),
   proc({ id: "p12", ref: "TT GOSPT15002", name: "单独取得的无形资产 — 评价初始确认和计量 (Separately acquired intangible assets)", ptype: "TOD", sec: "j.intang", sampling: "N/A", samples: null, status: "none", systems: [] }),
   proc({ id: "p13", ref: "TT SPT15014", name: "无形资产的摊销费用 — 重新计算 (Intangible assets amortization expenses - recalculate)", ptype: "TOD", sec: "j.intang", sampling: "KSP", samples: 18, status: "none", systems: [] }),
@@ -1601,7 +1632,7 @@ const PROC_WPS = [
   ] }),
   proc({ id: "p15", ref: "SPD03016", name: "盘点日存货截止 — 截止前 (Inventory cut-off at count date - before)", ptype: "TOD", sec: "k.stock", sampling: "KSP", samples: 35, status: "none", systems: [] }),
   proc({ id: "p16", ref: "SPD03019", name: "存货截止性（期后）— 检查 (Inventory cut-off (after period end) - vouch)", ptype: "TOD", sec: "k.stock", sampling: "KSP", samples: 35, status: "none", systems: [] }),
-  proc({ id: "p17", ref: "SPD03025", name: "销售成本 — 检查 (Cost of goods sold - vouch)", ptype: "TOD", sec: "k.stock", sampling: "MUS", samples: 45, status: "none", systems: [] }),
+  proc({ id: "p17", ref: "SPD03025", name: "销售成本 — 检查 (Cost of goods sold - vouch)", ptype: "TOD", sec: "tod", sampling: "MUS", samples: 45, tplCN: false, tplEN: false, status: "none", systems: [] }),
   proc({ id: "p18", ref: "GOSPD06004", name: "现金及现金等价物 — 银行存款余额调节表 (Cash and cash equivalents - bank reconciliation)", ptype: "SAP", sec: "m.cash", sampling: "N/A", samples: null, status: "modified", by: BY_SIMONS, at: "2026/11/13 16:15:00", ver: 2, file: "GOSPD06004.Bank_recon_v2.xlsx", history: [
     h("upload", BY_SIMONS, "2026/11/11 10:00:00", { file: "GOSPD06004.Bank_recon_v1.xlsx", ver: 1 }),
     h("review", "Zhou, Emily (SH/PTR)", "2026/11/12 14:20:00", { result: "reviewed" }),
@@ -1627,38 +1658,40 @@ const SPECIALIST_TYPES = [
   { key: "Forensic", en: "Forensic", cn: "法证" }
 ];
 
-/* substantive procedure rows: EMLC procedure name + RMM mapping, taken from
-   "02 Procedure/整理.xlsx" + "Substantive procedure from EMLC data table.xlsx" (RM_RMM / SubstantiveProcedures) */
+/* RMM now comes from the API (mock). One procedure may map to several RMMs,
+   so every entry is a list of [id, description] pairs. Rows marked "mock"
+   carry a second RMM only to exercise the multi-RMM rendering. */
 const PROC_RMM = {
-  "SPD05011": ["216.3.04", "Depreciation expense and accumulated depreciation are not accurately recorded.", "PPE depreciation expense - recalculate"],
-  "SPD05001": ["216.1.01", "Additions to property, plant and equipment are not completely identified and recorded.", "PPE additions - vouch"],
-  "GOSPD05007": ["216.4.02", "Property, plant and equipment does not exist or the entity no longer has the rights to the asset.", "PPE - inspect from system to asset"],
-  "GOSPD05009": ["216.4.01", "Disposals and retirements of property, plant and equipment are recorded inappropriately when: - the transaction is not accurately recorded, - the entity still holds the rights to the assets, or - the disposal has not occurred.", "PPE disposals and retirements - vouch"],
-  "SPD05006": ["216.1.02", "Additions to property, plant and equipment are recorded inappropriately when: - the expenditure is not eligible for capitalisation, - the assets are not accurately recorded, - the entity does not have the rights to the assets, or - the assets do not exist.", "PPE under construction - inspect from system to asset"],
-  "SPD05004": ["216.5.01", "报告期末，固定资产未被恰当分类，或者重分类未被恰当记录。(Property, plant and equipment is not appropriately classified as at the period end, or the reclassification of an asset is not accurately recorded.)", "PPE under construction - evaluate classification"],
-  "SPD05008": ["216.1.01", "Additions to property, plant and equipment are not completely identified and recorded.", "PPE - identification"],
-  "SPD05002": ["216.1.02", "Additions to property, plant and equipment are recorded inappropriately when: - the expenditure is not eligible for capitalisation, - the assets are not accurately recorded, - the entity does not have the rights to the assets, or - the assets do not exist.", "PPE internally capitalized costs - vouch"],
-  "SPO0701": ["", "", ""],
-  "SPO0702": ["109.6.02a", "Debt or equity securities are recorded inappropriately when: - they are not accurately recorded, - they do not meet the recognition requirements, or - they do not exist.", "Investments sub-ledger to general ledger reconciliation"],
-  "TT GOSPT15004": ["238.4.01", "Disposals and retirements of intangible assets are recorded inappropriately when: - the transaction is not accurately recorded - the entity still holds the rights to the assets, or - the disposal has not occurred.", "Intangible assets disposals or retirements - vouch"],
-  "TT GOSPT15002": ["238.1.02", "Additions to separately acquired intangible assets are recorded inappropriately when: - the expenditure is not eligible for capitalisation, - the assets are not accurately recorded, - the entity does not have the rights to the assets, or - the assets do not exist.", "Separately acquired intangible assets – evaluate initial recognition and measurement"],
-  "TT SPT15014": ["238.4.02", "Intangible assets do not exist or the entity no longer has the rights to the asset.", "Intangible assets amortization expenses - recalculate"],
-  "SPD03001": ["202.1.02", "Quantity of inventory held by the entity is not completely and accurately recorded, the inventory does not exist, or the condition of inventory is not identified.", "Inventory observations"],
-  "SPD03016": ["202.1.04", "Inventory receipts and/or shipments are not recorded in the correct accounting period.", "Inventory cut-off at count date - before"],
-  "SPD03019": ["202.1.04", "Inventory receipts and/or shipments are not recorded in the correct accounting period.", "Inventory cut-off (after period end) - vouch"],
-  "SPD03025": ["202.1.01", "Cost of goods sold are not completely identified or are recorded inappropriately when: - they are not accurately recorded, - they are not recorded in the correct accounting period, or - they have not been incurred.", "Cost of goods sold - vouch"],
-  "GOSPD06004": ["207.1.03", "Cash and cash equivalents are recorded inappropriately when: - they are not accurately recorded, - the entity does not have the rights to the recorded amount, or - they do not exist.", "Cash and cash equivalents - bank reconciliation"],
-  "GOSPD06403": ["109.7.121", "Interest expense relating to borrowings is not accurately recorded or has not occurred.", "Interest expense from borrowings - recalculate"],
-  "GOSPD06008": ["207.1.03", "Cash and cash equivalents are recorded inappropriately when: - they are not accurately recorded, - the entity does not have the rights to the recorded amount, or - they do not exist.", "Bank confirmations or direct access"]
+  "SPD05011": [["216.3.04", "Depreciation expense and accumulated depreciation are not accurately recorded."],
+               ["216.3.05", "The useful life, residual value or depreciation method used is not appropriate."]], /* mock 2nd RMM */
+  "SPD05001": [["216.1.01", "Additions to property, plant and equipment are not completely identified and recorded."],
+               ["216.1.02", "Additions to property, plant and equipment are recorded inappropriately when: - the expenditure is not eligible for capitalisation, - the assets are not accurately recorded, - the entity does not have the rights to the assets, or - the assets do not exist."]],
+  "GOSPD05007": [["216.4.02", "Property, plant and equipment does not exist or the entity no longer has the rights to the asset."]],
+  "GOSPD05009": [["216.4.01", "Disposals and retirements of property, plant and equipment are recorded inappropriately when: - the transaction is not accurately recorded, - the entity still holds the rights to the assets, or - the disposal has not occurred."]],
+  "SPD05006": [["216.1.02", "Additions to property, plant and equipment are recorded inappropriately when: - the expenditure is not eligible for capitalisation, - the assets are not accurately recorded, - the entity does not have the rights to the assets, or - the assets do not exist."]],
+  "SPD05004": [["216.5.01", "报告期末，固定资产未被恰当分类，或者重分类未被恰当记录。(Property, plant and equipment is not appropriately classified as at the period end, or the reclassification of an asset is not accurately recorded.)"]],
+  "SPD05008": [["216.1.01", "Additions to property, plant and equipment are not completely identified and recorded."]],
+  "SPD05002": [["216.1.02", "Additions to property, plant and equipment are recorded inappropriately when: - the expenditure is not eligible for capitalisation, - the assets are not accurately recorded, - the entity does not have the rights to the assets, or - the assets do not exist."]],
+  "SPO0701": [],
+  "SPO0702": [["109.6.02a", "Debt or equity securities are recorded inappropriately when: - they are not accurately recorded, - they do not meet the recognition requirements, or - they do not exist."]],
+  "TT GOSPT15004": [["238.4.01", "Disposals and retirements of intangible assets are recorded inappropriately when: - the transaction is not accurately recorded - the entity still holds the rights to the assets, or - the disposal has not occurred."]],
+  "TT GOSPT15002": [["238.1.02", "Additions to separately acquired intangible assets are recorded inappropriately when: - the expenditure is not eligible for capitalisation, - the assets are not accurately recorded, - the entity does not have the rights to the assets, or - the assets do not exist."]],
+  "TT SPT15014": [["238.4.02", "Intangible assets do not exist or the entity no longer has the rights to the asset."]],
+  "SPD03001": [["202.1.02", "Quantity of inventory held by the entity is not completely and accurately recorded, the inventory does not exist, or the condition of inventory is not identified."]],
+  "SPD03016": [["202.1.04", "Inventory receipts and/or shipments are not recorded in the correct accounting period."]],
+  "SPD03019": [["202.1.04", "Inventory receipts and/or shipments are not recorded in the correct accounting period."]],
+  "SPD03025": [["202.1.01", "Cost of goods sold are not completely identified or are recorded inappropriately when: - they are not accurately recorded, - they are not recorded in the correct accounting period, or - they have not been incurred."],
+               ["202.1.02", "Quantity of inventory held by the entity is not completely and accurately recorded, the inventory does not exist, or the condition of inventory is not identified."]],
+  "GOSPD06004": [["207.1.03", "Cash and cash equivalents are recorded inappropriately when: - they are not accurately recorded, - the entity does not have the rights to the recorded amount, or - they do not exist."],
+                 ["207.1.04", "Cash and cash equivalents are not appropriately classified or presented."]], /* mock 2nd RMM */
+  "GOSPD06403": [["109.7.121", "Interest expense relating to borrowings is not accurately recorded or has not occurred."]],
+  "GOSPD06008": [["207.1.03", "Cash and cash equivalents are recorded inappropriately when: - they are not accurately recorded, - the entity does not have the rights to the recorded amount, or - they do not exist."]]
 };
 
 (function seedProcDetails() {
   PROC_WPS.forEach(p => {
-    const x = PROC_RMM[p.ref];
-    const m = String(p.name || "").match(/\(([^()]+)\)\s*$/);
-    p.procName = (x && x[2]) ? x[2] : (m ? m[1].trim() : p.name);
-    p.rmmId = (x && x[0]) ? x[0] : "";
-    p.rmmDesc = (x && x[1]) ? x[1] : "";
+    const x = PROC_RMM[p.ref] || [];
+    p.rmms = x.map(pair => ({ id: pair[0], desc: pair[1] }));
   });
 })();
 
@@ -1705,46 +1738,10 @@ const STOCK_EXCHANGES = ["MB", "GEM", "A Share", "US", "NA"];
 /* AAP Procedure Type / Sub Category are master data maintained in the Admin Panel
    (tab "AAP Procedure Type Config"). SBR rules keep the option text, so renaming a
    value cascades to the rules that already selected it. */
-const PTYPE_SEED = [
-  { name: "Financial Statements Reconciliation and/or Formatting", subs: ["Reconciliation", "Audit Opinion Only", "Reconciliation and FS preparation assistance", "Reconciliation and FS preparation assistance & translation", "Reconciliation and FS word processing and/or translation"] },
-  { name: "KDC Service on Cash at Bank Work Paper", subs: [] },
-  { name: "KDC Service on Audit Confirmations", subs: [] },
-  { name: "Credit Review", subs: [] },
-  { name: "Alteryx D&A Service", subs: ["Alteryx D&A Routines - Sales Three-way Match Item Matching", "Alteryx D&A Routines - Trade Purchase Three-Way Match Item Matching", "Alteryx D&A Routines - Revenue to Cash Item Matching", "Alteryx D&A Routines - Contract Liability to Cash Item Matching"] },
-  { name: "Journal Entries Testing", subs: [] },
-  { name: "Lease recalculation", subs: [] },
-  { name: "Group Audit", subs: [] },
-  { name: "Physical attendance procedures", subs: ["Inventory observations", "On-site visit"] },
-  /* 2026-11-18 按 Subsystem & Substantive Procedure 映射表更新（17 项） */
-  { name: "Vouching", subs: [
-    "Sales cut-off test (GOSPD1030)",
-    "Purchases cut-off test (SPD02006)",
-    "Revenue throughout the period – Inspect, vouch and evaluate(GOSPD01010)",
-    "Purchase throughout the period (Actual cost method) – Vouch and evaluate(CNSP112)",
-    "Expense - vouch (SPD02013)",
-    "Trade receivables – vouch to relevant documentation(GOSPD01003)",
-    "PPE additions – vouch (SPD05001)",
-    "PPE disposals and retirements – vouch (GOSPD05009)",
-    "Intangible assets disposals or retirements – vouch (TT GOSPT15004)",
-    "Cost of goods sold – vouch (SPD03025)",
-    "Share capital issuance – vouch(GOSPD10009)",
-    "Lease liabilities – vouch lease payments(TT GOSPT14018)",
-    "Short term lease expenses – vouch(TT GOSPT14013)",
-    "Search for unrecorded liabilities(SPD02007)",
-    "Full customisation (customise your own tests)",
-    "Individual income tax certificate(GOSPT09004)",
-    "Value added tax payment certificate(CNSP47)"
-  ] }
-];
-const PTYPE_RULES = PTYPE_SEED.map((t, i) => ({
-  id: "pt" + (i + 1),
-  rule: "PT-" + String(i + 1).padStart(4, "0"),
-  name: t.name,
-  subcats: t.subs.map((s, j) => ({ id: "pt" + (i + 1) + "s" + (j + 1), name: s, active: true })),
-  active: true,
-  updatedBy: "Wang, Simons (KDiNJ/TECH)",
-  updatedAt: "2026/11/18 10:00"
-}));
+/* AAP Procedure Type / Sub Category options are rebuilt from the v1.1 SUBSYS_MAP
+   below, so the option text and the SBR rule values always share one source. */
+let PTYPE_SEED = [];
+let PTYPE_RULES = [];
 
 /* option helpers used by the SBR rule drawer and the master-data tab */
 function ptypeOptions(current) {
@@ -1805,33 +1802,6 @@ const EXTRA_ENR = [
   {"name": "Assessment of Training and Experience Work Paper", "sec": "req.group", "standards": ["HKSA", "ISA"], "workflow": ["Enhanced", "Standard"], "entityType": ["Listed", "PIE"], "exchange": ["MB", "GEM"], "req": "Required"},
   {"name": "Random Sample Tool", "sec": "opt.gp", "standards": ["HKSA", "ISA"], "workflow": ["Enhanced", "Standard"], "entityType": ["Listed", "PIE"], "exchange": ["MB", "GEM"], "req": "Optional"}
 ];
-const EXTRA_SPR = [
-  {"name": "增值税销项税实质性分析(预测)(Output VAT substantive analytical (predictive))", "ref": "CNSP55", "sec": "q.tax"},
-  {"name": "整个期间的收入 — 检查、核对和评价(Revenue throughout the period - inspect, vouch and evaluate)", "ref": "GOSPD01010", "sec": "s.sales"},
-  {"name": "查找未入账的负债(Search for unrecorded liabilities)", "ref": "SPD02007", "sec": "o.other"},
-  {"name": "从盘点日起执行存货前推或后推程序 — 检查(Inventory roll-forward or roll-back from count date - vouch)", "ref": "SPD03003", "sec": "k.stock"},
-  {"name": "工资费用的实质性分析（预测）(Payroll expense substantive analytical (predictive))", "ref": "SPD04901", "sec": "p.payroll"},
-  {"name": "采购 — 截止测试(Purchases - cut-off test)", "ref": "SPD02006", "sec": "t.purchase"},
-  {"name": "贷款函证控制表 — 香港(Loan confirmation control log-HK)", "ref": "BL GOBKSPD41001", "sec": "pr.bank"},
-  {"name": "股本发行 — 检查(Share capital issuance - vouch)", "ref": "GOSPD10009", "sec": "r.equity"},
-  {"name": "诉讼、索赔及评估预计负债前推(Litigation, claims and assessments provisions roll-forward)", "ref": "GOSPO2301", "sec": "l.litig"},
-  {"name": "借款前推(Borrowings roll-forward)", "ref": "GOSPO0602", "sec": "m.cash"},
-  {"name": "增值税进项税实质性分析(预测)(Input VAT substantive analytical (predictive))", "ref": "CNSP56", "sec": "q.tax"},
-  {"name": "从现金到收入的实质性分析（预测）(Cash to revenue substantive analytical (predictive))", "ref": "GOSPD01911", "sec": "s.sales"},
-  {"name": "费用 - 检查 (Expenses - vouch)", "ref": "SPD02013", "sec": "o.other"},
-  {"name": "盘点日存货截止 — 截止后(Inventory cut-off at count date - after)", "ref": "SPD03017", "sec": "k.stock"},
-  {"name": "定期工资费用 — 检查(Periodic payroll expenses - vouch)", "ref": "SPD04004", "sec": "p.payroll"},
-  {"name": "采购 — 外部函证.大陆(Purchases - external confirmation.Mainland)", "ref": "SPD02001", "sec": "t.purchase"},
-  {"name": "贷款 — 明细账与总账的调节(Loans - sub-ledger to general ledger reconciliation)", "ref": "GOBKSPD41021", "sec": "pr.bank"},
-  {"name": "对所有者的分配 — 检查并重新计算(Distributions to owners - vouch and recalculate)", "ref": "GOSPD10004", "sec": "r.equity"},
-  {"name": "增值税 — 检查纳税申报(VAT general - inspect tax filing)", "ref": "CNSP4546", "sec": "q.tax"},
-  {"name": "销售 — 截止测试（期末后）(Sales cut-off (after period end))", "ref": "GOSPD01030", "sec": "s.sales"},
-  {"name": "预付款 — 重新计算并检查(Prepayment - recalculate and vouch)", "ref": "SPD02005", "sec": "o.other"},
-  {"name": "存货截止性（期前）— 检查(Inventory cut-off (before period end) - vouch)", "ref": "SPD03018", "sec": "k.stock"},
-  {"name": "职工薪酬费用 — 检查并重新计算 (Employee personnel expenses - vouch and recalculate)", "ref": "SPD04026", "sec": "p.payroll"},
-  {"name": "应收供应商采购激励款 — 检查并重新计算(Supplier purchase incentives receivables - recalculate and vouch)", "ref": "SPD02009", "sec": "t.purchase"}
-];
-
 const ENR_RULES = STANDARD_WPS.slice(0, 24).map((w, i) => {
   const pool = [
     ["HKSA", "PCAOB"], ["ISA"], ["CSA"], ["HKSA"], ["ISA", "CSA"],
@@ -1867,147 +1837,158 @@ const ENR_RULES = STANDARD_WPS.slice(0, 24).map((w, i) => {
   };
 }));
 
-/* SPR rules appended after the template-derived ones:
-   - lease: the Lease recalculation subsystem feeds several substantive procedures
-   - applyAll: subsystems with no EMLC procedure at all (JE Testing / FS reconciliation) */
-const TAIL_SPR = [
-  /* 租赁子系统在映射表中对应 GOSPT14016/14017/14019/14020 四个 procedureID，原型建模为两张底稿 */
-  { name: "租赁负债 — 重新计算(Lease liability - recalculate)", sec: "u.lease", ref: "GOSPT14016", pname: "Lease liability - recalculate", rmmId: "224.1.03",
-    rmmDesc: "租赁负债的计量不准确，或未在正确的会计期间确认。" },
-  { name: "使用权资产折旧 — 重新计算(ROU asset depreciation - recalculate)", sec: "u.lease", ref: "GOSPT14017", pname: "Right-of-use asset depreciation - recalculate", rmmId: "224.2.01",
-    rmmDesc: "使用权资产的折旧计提不准确，或未在正确的会计期间计提。" },
-  { name: "Journal Entries Testing — 分录测试(Journal Entries Testing)", sec: "pr.je", applyAll: true },
-  { name: "财务报表调节与格式整理(Financial Statements Reconciliation and/or Formatting)", sec: "req.gp", applyAll: true }
-];
+/* =========================================================================
+   v1.1 substantive procedure master (prototype sample: 47 sheet rows + 2 kept)
+   Source: Workpaper Station字段整理 v1.1.xlsx — 底稿模板-sub proc / API-proc
+   ========================================================================= */
+const SUBPROC_SEED = [{"ref":"GOSPD05007","cn":"固定资产 — 从系统检查至实物资产","en":"PPE - inspect from system to asset","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"GOSPD05009","cn":"固定资产处置与报废 — 检查","en":"PPE disposals and retirements - vouch","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"SPD05001","cn":"新增固定资产 — 检查","en":"PPE additions - vouch","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"SPD05002","cn":"资本化的固定资产内部成本 — 检查","en":"PPE internally capitalized costs - vouch","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"SPD05004","cn":"在建工程 — 评价分类","en":"PPE under construction - evaluate classification","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"SPD05006","cn":"在建工程 — 从系统检查至实物资产","en":"PPE under construction - inspect from system to asset","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"SPD05008","cn":"固定资产 — 识别","en":"PPE - identification","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"SPD05011","cn":"固定资产的折旧费用 — 重新计算","en":"PPE depreciation expense - recalculate","sec":"h.ppe","tpl":["CN","BIL"]},{"ref":"SPO0701","cn":"投资前推","en":"Investments roll-forward","sec":"i.inv","tpl":["EN"]},{"ref":"SPO0702","cn":"投资明细账与总账的调节","en":"Investments sub-ledger to general ledger reconciliation","sec":"i.inv","tpl":["EN"]},{"ref":"TT GOSPT15002","cn":"单独取得的无形资产 — 评价初始确认和计量","en":"Separately acquired intangible assets – evaluate initial recognition and measurement","sec":"j.intang","tpl":["CN","BIL"]},{"ref":"TT GOSPT15004","cn":"无形资产的处置或报废 — 检查","en":"Intangible assets disposals or retirements - vouch","sec":"j.intang","tpl":["CN","BIL"]},{"ref":"TT SPT15014","cn":"无形资产的摊销费用 — 重新计算","en":"Intangible assets amortization expenses - recalculate","sec":"j.intang","tpl":["CN","BIL"]},{"ref":"SPD03001","cn":"存货监盘","en":"Inventory observations","sec":"k.stock","tpl":["CN","BIL"]},{"ref":"SPD03016","cn":"盘点日存货截止 — 截止前","en":"Inventory cut-off at count date - before","sec":"k.stock","tpl":["CN","BIL"]},{"ref":"SPD03019","cn":"存货截止性（期后）— 检查","en":"Inventory cut-off (after period end) - vouch","sec":"k.stock","tpl":["CN","BIL"]},{"ref":"GOSPO2301","cn":"诉讼、索赔及评估预计负债前推","en":"Litigation, claims and assessments provisions roll-forward","sec":"l.litig","tpl":[]},{"ref":"GOSPD06004","cn":"现金及现金等价物 — 银行存款余额调节表","en":"Cash and cash equivalents - bank reconciliation","sec":"m.cash","tpl":["CN","BIL"]},{"ref":"GOSPD06008","cn":"银行函证.大陆","en":"Bank confirmations.mainland","sec":"m.cash","tpl":["CN","BIL","EN"]},{"ref":"GOSPD06403","cn":"借款利息费用 — 重新计算","en":"Interest expense from borrowings - recalculate","sec":"m.cash","tpl":["CN","BIL"]},{"ref":"SPD02007","cn":"查找未入账的负债","en":"Search for unrecorded liabilities","sec":"o.other","tpl":["CN","BIL"]},{"ref":"SPD02013","cn":"费用 - 检查","en":"Expenses - vouch","sec":"o.other","tpl":["CN","BIL"]},{"ref":"SPD04901","cn":"工资费用的实质性分析（预测）","en":"Payroll expense substantive analytical (predictive)","sec":"p.payroll","tpl":["CN","BIL"]},{"ref":"CNSP47","cn":"增值税 — 检查增值税付款","en":"VAT - vouch tax payments","sec":"q.tax","tpl":["CN","BIL"]},{"ref":"TT GOSPT09004","cn":"当期所得税 — 检查所得税付款","en":"Current tax - vouch income tax payments","sec":"q.tax","tpl":["CN","BIL"]},{"ref":"GOSPD10009","cn":"股本发行 — 检查","en":"Share capital issuance - vouch","sec":"r.equity","tpl":["CN","BIL"]},{"ref":"GOSPD01001","cn":"应收账款（发票）— 外部函证.大陆","en":"Trade receivables (invoice) - external confirmation.Mainland","sec":"s.sales","tpl":["CN","EN"]},{"ref":"GOSPD01003","cn":"应收账款 — 检查至相关文件","en":"Trade receivables - vouch to relevant documentation","sec":"s.sales","tpl":["CN"]},{"ref":"GOSPD01030","cn":"销售 — 截止测试（期末后）","en":"Sales cut-off (after period end)","sec":"s.sales","tpl":["CN","BIL"]},{"ref":"SPD02001","cn":"采购 — 外部函证.大陆","en":"Purchases - external confirmation.Mainland","sec":"t.purchase","tpl":["CN","EN"]},{"ref":"SPD02006","cn":"采购 — 截止测试","en":"Purchases - cut-off test","sec":"t.purchase","tpl":["CN","BIL"]},{"ref":"CNSP111","cn":"当期采购（标准成本法）- 检查并评价","en":"Purchase throughout the period (Standard cost method) – Vouch and evaluate","sec":"tod","tpl":[]},{"ref":"CNSP112","cn":"当期采购 （实际成本法）- 检查并评价","en":"Purchase throughout the period (Actual cost method) – Vouch and evaluate","sec":"tod","tpl":[]},{"ref":"GOSPD01010.1","cn":"整个期间的收入 — 检查和评价（单个错报风险程序 — 115.2.02）","en":"Revenue throughout the period – inspect, vouch and evaluate (single RM procedure - 115.2.02)","sec":"tod","tpl":[]},{"ref":"GOSPD01011","cn":"销售 — 三单匹配 — 数据分析（D&A）","en":"Sales - Three-way match - D&A","sec":"tod","tpl":[]},{"ref":"GOSPD01012","cn":"销售 — 收入现金收款细节测试 — 数据分析","en":"Sales - Revenue Cash Receipts Detailed Testing - D&A","sec":"tod","tpl":[]},{"ref":"GOSPD01033","cn":"合同负债 — 检查并重新计算","en":"Contract liability – vouch and recalculate","sec":"tod","tpl":[]},{"ref":"SPD03025","cn":"已销售货物的成本 — 检查","en":"Cost of goods sold - vouch","sec":"tod","tpl":[]},{"ref":"TT GOSPT14013","cn":"短期租赁费用 — 检查","en":"Short term lease expenses - vouch","sec":"tod","tpl":[]},{"ref":"TT GOSPT14016","cn":"使用权资产 -  重新计算于租赁期开始日的使用权资产","en":"ROU assets - recalculate as at lease commencement date","sec":"tod","tpl":[]},{"ref":"TT GOSPT14017","cn":"使用权资产 - 重新计算重新计量结果","en":"ROU assets - recalculate remeasurement","sec":"tod","tpl":[]},{"ref":"TT GOSPT14019","cn":"租赁负债的后续计量 — 利息费用 — 重新计算","en":"Subsequent measurement of lease liabilities - interest expense - recalculate","sec":"tod","tpl":[]},{"ref":"TT GOSPT14020","cn":"新增的使用权资产 - 评估计量","en":"ROU assets additions - assess measurement","sec":"tod","tpl":[]},{"ref":"GOSPD06901","cn":"借款利息费用实质性分析（预测）","en":"Interest expense from borrowings substantive analytical (predictive)","sec":"sap","tpl":[]},{"ref":"GOBKSPD49001","cn":"整个期间的投资银行业务收入 — 检查和评估","en":"Investment banking revenue throughout the period - vouch and assess","sec":"pr.je","tpl":["BIL"]},{"ref":"SPO0802","cn":"预计负债前推","en":"Provisions roll-forward","sec":"pr.prov","tpl":["EN"]},{"ref":"GOSPO2202","cn":"投资性房地产前推","en":"Investment property roll-forward","sec":"pr.lessor","tpl":["EN"]},{"ref":"BL_GOBKSPD43009","cn":"应计应付利息 — 重新计算","en":"Accrued interest payable - recalculate","sec":"pr.deposit","tpl":["BIL"]},{"ref":"BL_GOBKSPD41024","cn":"贷款应计利息的细节测试","en":"Accrued interest receivables on loans test of details","sec":"pr.bank","tpl":["BIL"]}];
 
-/* 2026-11-18 Subsystem & Substantive Procedure 映射表中新增、原型尚未建规则的数据挖掘程序 */
-const LINKED_SPR = [
-  { name: "存货监盘(Inventory observations)", sec: "k.stock", ref: "SPD03001", pname: "Inventory observations" },
-  { name: "现金及现金等价物 — 银行存款余额调节表(Cash and cash equivalents - bank reconciliation)", sec: "m.cash", ref: "GOSPD06004", pname: "Cash and cash equivalents - bank reconciliation" },
-  { name: "整个期间的采购（实际成本法）— 检查并评价(Purchase throughout the period (Actual cost method) - Vouch and evaluate)", sec: "t.purchase", ref: "CNSP112", pname: "Purchase throughout the period (Actual cost method) - Vouch and evaluate" },
-  { name: "应收账款 — 检查至相关支持性文件(Trade receivables - vouch to relevant documentation)", sec: "s.sales", ref: "GOSPD01003", pname: "Trade receivables - vouch to relevant documentation" },
-  { name: "销售成本 — 检查(Cost of goods sold - vouch)", sec: "k.stock", ref: "SPD03025", pname: "Cost of goods sold - vouch" },
-  { name: "租赁负债 — 检查租赁付款(Lease liabilities - vouch lease payments)", sec: "u.lease", ref: "TT GOSPT14018", pname: "Lease liabilities - vouch lease payments" },
-  { name: "短期租赁费用 — 检查(Short term lease expenses - vouch)", sec: "u.lease", ref: "TT GOSPT14013", pname: "Short term lease expenses - vouch" },
-  { name: "当期所得税 — 检查所得税缴纳(Current tax - vouch income tax payments)", sec: "q.tax", ref: "GOSPT09004", pname: "Current tax - vouch income tax payments" },
-  { name: "增值税完税凭证(Value added tax payment certificate)", sec: "q.tax", ref: "CNSP47", pname: "Value added tax payment certificate" }
-];
+const KEPT_SPR_SEED = [{"ref":"TT GOSPT14018","cn":"租赁负债 — 检查租赁付款","en":"Lease liabilities - vouch lease payments","sec":"u.lease","tpl":["CN"]}];
 
-/* SPR rules derived from the substantive procedure templates */
-const SPR_RULES = PROC_WPS.slice(0, 12).map((p, i) => ({
+const SUBSYS_MAP = [{"ptype":"Financial Statements Reconciliation and/or Formatting","subcat":"Reconciliation","refs":[],"mandatory":true},{"ptype":"Financial Statements Reconciliation and/or Formatting","subcat":"Audit Opinion Only","refs":[],"mandatory":true},{"ptype":"Financial Statements Reconciliation and/or Formatting","subcat":"Reconciliation and FS preparation assistance","refs":[],"mandatory":true},{"ptype":"Financial Statements Reconciliation and/or Formatting","subcat":"Reconciliation and FS preparation assistance & translation","refs":[],"mandatory":true},{"ptype":"Financial Statements Reconciliation and/or Formatting","subcat":"Reconciliation and FS word processing and/or translation","refs":[],"mandatory":true},{"ptype":"KDC Service on Cash at Bank Work Paper","subcat":"","refs":["GOSPD06004"]},{"ptype":"KDC Service on Audit Confirmations","subcat":"","refs":["GOSPD01001","SPD02001"]},{"ptype":"Credit Review","subcat":"","refs":[]},{"ptype":"Alteryx D&A Service","subcat":"Alteryx D&A Routines - Sales Three-way Match Item Matching","refs":["GOSPD01011"]},{"ptype":"Alteryx D&A Service","subcat":"Alteryx D&A Routines - Trade Purchase Three-Way Match Item Matching","refs":["CNSP111","CNSP112"]},{"ptype":"Alteryx D&A Service","subcat":"Alteryx D&A Routines - Revenue to Cash Item Matching","refs":["GOSPD01012"]},{"ptype":"Alteryx D&A Service","subcat":"Alteryx D&A Routines - Contract Liability to Cash Item Matching","refs":["GOSPD01033"]},{"ptype":"Journal Entries Testing","subcat":"","refs":[],"mandatory":true},{"ptype":"Lease recalculation","subcat":"","refs":["TT GOSPT14016","TT GOSPT14017","TT GOSPT14019","TT GOSPT14020"]},{"ptype":"Group Audit","subcat":"","refs":[]},{"ptype":"Physical attendance procedures","subcat":"Inventory observations","refs":["SPD03001"]},{"ptype":"Physical attendance procedures","subcat":"On-site visit","refs":[]},{"ptype":"Vouching","subcat":"Sales cut-off test (GOSPD1030)","refs":["GOSPD01030"]},{"ptype":"Vouching","subcat":"Purchases cut-off test (SPD02006)","refs":["SPD02006"]},{"ptype":"Vouching","subcat":"Revenue throughout the period – Inspect, vouch and evaluate (GOSPD01010.1)","refs":["GOSPD01010.1"]},{"ptype":"Vouching","subcat":"Purchase throughout the period (Actual cost method) – Vouch and evaluate (CNSP112)","refs":["CNSP112"]},{"ptype":"Vouching","subcat":"Expense - vouch (SPD02013)","refs":["SPD02013"]},{"ptype":"Vouching","subcat":"Trade receivables - vouch to relevant documentation(GOSPD01003)","refs":["GOSPD01003"]},{"ptype":"Vouching","subcat":"PPE additions - vouch (SPD05001)","refs":["SPD05001"]},{"ptype":"Vouching","subcat":"PPE disposals and retirements - vouch (GOSPD05009)","refs":["GOSPD05009"]},{"ptype":"Vouching","subcat":"Intangible assets disposals or retirements - vouch (TT GOSPT15004)","refs":["TT GOSPT15004"]},{"ptype":"Vouching","subcat":"Cost of goods sold - vouch (SPD03025)","refs":["SPD03025"]},{"ptype":"Vouching","subcat":"Share capital issuance - vouch(GOSPD10009)","refs":["GOSPD10009"]},{"ptype":"Vouching","subcat":"Lease liabilities - vouch lease payments(TT GOSPT14018)","refs":["TT GOSPT14018"]},{"ptype":"Vouching","subcat":"Short term lease expenses - vouch(TT GOSPT14013)","refs":["TT GOSPT14013"]},{"ptype":"Vouching","subcat":"Search for unrecorded liabilities(SPD02007)","refs":["SPD02007"]},{"ptype":"Vouching","subcat":"Full customisation (customise your own tests)","refs":[]},{"ptype":"Vouching","subcat":"Individual income tax certificate（GOSPT09004）","refs":["TT GOSPT09004"]},{"ptype":"Vouching","subcat":"Value added tax payment certificate（CNSP47）","refs":["CNSP47"]}];
+
+/* hydrate the project-team demo rows from the v1.1 master: separate CN / EN names
+   and the template languages available for each procedure */
+const SUBPROC_BY_REF = {};
+SUBPROC_SEED.concat(KEPT_SPR_SEED).forEach(s => { SUBPROC_BY_REF[s.ref] = s; });
+PROC_WPS.forEach(p => {
+  const s = SUBPROC_BY_REF[p.ref];
+  if (s) {
+    p.procNameCn = s.cn || "";
+    p.procNameEn = s.en || "";
+    p.tplCN = (s.tpl || []).some(v => ["CN", "BIL", "INTL_CN"].indexOf(v) >= 0);
+    p.tplEN = (s.tpl || []).some(v => ["EN", "BIL", "INTL_EN", "US"].indexOf(v) >= 0);
+    p.name = s.en || s.cn;
+  } else {
+    const m = String(p.name || "").match(/\(([^()]+)\)\s*$/);
+    p.procNameEn = m ? m[1].trim() : (p.name || "");
+    p.procNameCn = m ? String(p.name).slice(0, m.index).trim() : "";
+    p.name = p.procNameEn || p.procNameCn;
+  }
+});
+function procLangName(p, lang) {
+  if (!p) return "";
+  const cn = p.procNameCn || "", en = p.procNameEn || p.name || "";
+  return (lang === "zh" || lang === "CN") ? (cn || en) : (en || cn);
+}
+
+/* refs are compared with spaces / underscores / a leading "TT" removed */
+function normRef(x) { return String(x || "").toUpperCase().replace(/[\s_]/g, "").replace(/^TT/, ""); }
+
+/* template variants -> prototype attachment languages; a bilingual (BIL) file is
+   registered once for CN and once for EN, matching the admin language config */
+const TPL_LANGS = { CN: ["CN"], BIL: ["CN", "EN"], INTL_CN: ["CN"], EN: ["EN"], INTL_EN: ["EN"], US: ["EN"] };
+function tplAttachments(seed, rec) {
+  const people = ["Chen, Alex (SH/AQPP)", "Guo, Iris (BJ/AQPP)", "Wu, Henry (SH/AQPP)", "Xu, Nancy (BJ/AQPP)", "Lin, Grace (SH/AQPP)"];
+  const pad = n => String(n).padStart(2, "0");
+  const out = [];
+  let k = 0;
+  (rec.tpl || []).forEach(v => {
+    (TPL_LANGS[v] || ["CN"]).forEach(lang => {
+      out.push({
+        file: rec.ref + "_" + v + "_2026.xlsx",
+        year: 2026,
+        lang: lang,
+        by: people[(seed + k) % people.length],
+        at: "2026/11/" + pad(4 + ((seed + k) % 13)) + " " + pad(9 + ((seed + k) % 8)) + ":" + pad((seed * 7 + k * 13) % 60)
+      });
+      k++;
+    });
+  });
+  return out;
+}
+
+const SPR_MASTER_RULES = SUBPROC_SEED.map((p, i) => ({
   id: "spr" + i,
   rule: "SPR-" + String(i + 1).padStart(4, "0"),
-  name: p.name,
+  name: p.en || p.cn,
+  pnameCn: p.cn || "",
+  pnameEn: p.en || "",
   sec: p.sec,
   ref: p.ref,
-  pname: p.name,
-  rmmId: ["232.3.15a", "100.2.02", "115.2.02", "205.1.04"][i % 4],
-  rmmDesc: [
-    "对所有者的分配未恰当分类和准确确认，未发生或未确认于正确的会计期间。",
-    "与购买商品或服务有关的费用未被准确确认或尚未发生。",
-    "收入在报告期内未按准则要求确认。",
-    "固定资产的折旧计提不准确或未在正确期间计提。"
-  ][i % 4],
-  attachments: seedAttachments(i + 3, p),
-  active: i % 6 !== 4
-})).concat(EXTRA_SPR.map((x, k) => {
-  const i = 12 + k;
-  return {
-    id: "spr" + i,
-    rule: "SPR-" + String(i + 1).padStart(4, "0"),
-    name: x.name,
-    sec: x.sec,
-    ref: x.ref,
-    pname: x.name,
-    rmmId: ["232.3.15a", "100.2.02", "115.2.02", "205.1.04"][i % 4],
-    rmmDesc: [
-      "对所有者的分配未恰当分类和准确确认，未发生或未确认于正确的会计期间。",
-      "与购买商品或服务有关的费用未被准确确认或尚未发生。",
-      "收入在报告期内未按准则要求确认。",
-      "固定资产的折旧计提不准确或未在正确期间计提。"
-    ][i % 4],
-    attachments: seedAttachments(i + 3, x),
-    active: i % 6 !== 4
-  };
-})).concat(TAIL_SPR.map((x, k) => {
-  const i = 12 + EXTRA_SPR.length + k;
-  return {
-    id: "spr" + i,
-    rule: "SPR-" + String(i + 1).padStart(4, "0"),
-    name: x.name,
-    sec: x.sec,
-    ref: x.ref || "",
-    pname: x.pname || "",
-    rmmId: x.rmmId || "",
-    rmmDesc: x.rmmDesc || "",
-    applyAll: !!x.applyAll,
-    attachments: seedAttachments(i + 3, x),
-    active: true
-  };
-})).concat(LINKED_SPR.map((x, j) => {
-  const i = 12 + EXTRA_SPR.length + TAIL_SPR.length + j;
-  return {
-    id: "spr" + i,
-    rule: "SPR-" + String(i + 1).padStart(4, "0"),
-    name: x.name,
-    sec: x.sec,
-    ref: x.ref,
-    pname: x.pname,
-    rmmId: "",
-    rmmDesc: "",
-    applyAll: false,
-    attachments: seedAttachments(i + 3, x),
-    active: true
-  };
+  attachments: tplAttachments(i + 3, p),
+  active: true
+}));
+const SPR_KEPT_RULES = KEPT_SPR_SEED.map((p, j) => ({
+  id: "sprk" + j,
+  rule: "SPR-" + String(SUBPROC_SEED.length + j + 1).padStart(4, "0"),
+  name: p.en || p.cn,
+  pnameCn: p.cn || "",
+  pnameEn: p.en || "",
+  sec: p.sec,
+  ref: p.ref,
+  attachments: tplAttachments(80 + j, p),
+  active: true
+}));
+const SPR_APPLYALL_RULES = [
+  { id: "spra0", sysType: "Financial Statements Reconciliation and/or Formatting",
+    name: "Financial Statements Reconciliation and/or Formatting", pnameCn: "", pnameEn: "Financial Statements Reconciliation and/or Formatting", sec: "req.gp",
+    ref: "", applyAll: true, attachments: [], active: true },
+  { id: "spra1", sysType: "Journal Entries Testing",
+    name: "Journal Entries Testing", pnameCn: "", pnameEn: "Journal Entries Testing", sec: "pr.je",
+    ref: "", applyAll: true, attachments: [], active: true }
+].map((r, j) => Object.assign(r, { rule: "SPR-" + String(SUBPROC_SEED.length + KEPT_SPR_SEED.length + j + 1).padStart(4, "0") }));
+
+const SPR_RULES = SPR_MASTER_RULES.concat(SPR_KEPT_RULES, SPR_APPLYALL_RULES);
+
+/* language-aware procedure name: admin follows the UI language, the project view
+   follows the KCw file / Language filter (both pass "zh"/"CN" or "en"/"EN") */
+function sprName(r, lang) {
+  if (!r) return "";
+  const cn = r.pnameCn || "", en = r.pnameEn || "";
+  return (lang === "zh" || lang === "CN") ? (cn || en || r.name || "") : (en || cn || r.name || "");
+}
+
+/* AAP Procedure Type / Sub Category master data — exact v1.1 option text */
+PTYPE_SEED = [];
+SUBSYS_MAP.forEach(m => {
+  let t = PTYPE_SEED.find(x => x.name === m.ptype);
+  if (!t) { t = { name: m.ptype, subs: [] }; PTYPE_SEED.push(t); }
+  if (m.subcat && t.subs.indexOf(m.subcat) < 0) t.subs.push(m.subcat);
+});
+PTYPE_RULES = PTYPE_SEED.map((t, i) => ({
+  id: "pt" + (i + 1),
+  rule: "PT-" + String(i + 1).padStart(4, "0"),
+  name: t.name,
+  subcats: t.subs.map((s, j) => ({ id: "pt" + (i + 1) + "s" + (j + 1), name: s, active: true })),
+  active: true,
+  updatedBy: "Wang, Simons (KDiNJ/TECH)",
+  updatedAt: "2026/11/19 10:00"
 }));
 
-/* SBR rules reference SPR rules */
-/* 2026-11-18 按 Subsystem & Substantive Procedure 映射表重建：一条规则 = 一个 Procedure Type × ProcedureCategory 组合 */
-const SBR_RULES = [
-  /* Financial Statements Reconciliation and/or Formatting — 5 个类别，均走「适用于全部项目」规则 */
-  { id: "sbr0",  rule: "SBR-0001", ptype: "Financial Statements Reconciliation and/or Formatting", subcat: "Reconciliation", sprRule: "SPR-0040", active: true },
-  { id: "sbr1",  rule: "SBR-0002", ptype: "Financial Statements Reconciliation and/or Formatting", subcat: "Audit Opinion Only", sprRule: "SPR-0040", active: true },
-  { id: "sbr2",  rule: "SBR-0003", ptype: "Financial Statements Reconciliation and/or Formatting", subcat: "Reconciliation and FS preparation assistance", sprRule: "SPR-0040", active: true },
-  { id: "sbr3",  rule: "SBR-0004", ptype: "Financial Statements Reconciliation and/or Formatting", subcat: "Reconciliation and FS preparation assistance & translation", sprRule: "SPR-0040", active: true },
-  { id: "sbr4",  rule: "SBR-0005", ptype: "Financial Statements Reconciliation and/or Formatting", subcat: "Reconciliation and FS word processing and/or translation", sprRule: "SPR-0040", active: true },
-  /* 无子类别的子系统 */
-  { id: "sbr5",  rule: "SBR-0006", ptype: "KDC Service on Cash at Bank Work Paper", subcat: "", sprRule: "SPR-0042", active: true },
-  { id: "sbr6",  rule: "SBR-0007", ptype: "KDC Service on Audit Confirmations", subcat: "", sprRule: "SPR-0020", active: true },
-  { id: "sbr7",  rule: "SBR-0008", ptype: "Credit Review", subcat: "", sprRule: "SPR-0023", active: false },
-  { id: "sbr8",  rule: "SBR-0009", ptype: "Alteryx D&A Service", subcat: "Alteryx D&A Routines - Sales Three-way Match Item Matching", sprRule: "SPR-0002", active: true },
-  { id: "sbr9",  rule: "SBR-0010", ptype: "Alteryx D&A Service", subcat: "Alteryx D&A Routines - Trade Purchase Three-Way Match Item Matching", sprRule: "SPR-0015", active: true },
-  { id: "sbr10", rule: "SBR-0011", ptype: "Alteryx D&A Service", subcat: "Alteryx D&A Routines - Revenue to Cash Item Matching", sprRule: "SPR-0003", active: true },
-  { id: "sbr11", rule: "SBR-0012", ptype: "Alteryx D&A Service", subcat: "Alteryx D&A Routines - Contract Liability to Cash Item Matching", sprRule: "SPR-0016", active: true },
-  { id: "sbr12", rule: "SBR-0013", ptype: "Journal Entries Testing", subcat: "", sprRule: "SPR-0039", active: true },
-  { id: "sbr13", rule: "SBR-0014", ptype: "Lease recalculation", subcat: "", sprRule: "SPR-0037", sprRules: ["SPR-0037", "SPR-0038"], active: true },
-  { id: "sbr14", rule: "SBR-0015", ptype: "Group Audit", subcat: "", sprRule: "SPR-0024", active: true },
-  /* Physical attendance procedures */
-  { id: "sbr15", rule: "SBR-0016", ptype: "Physical attendance procedures", subcat: "Inventory observations", sprRule: "SPR-0041", active: true },
-  { id: "sbr16", rule: "SBR-0017", ptype: "Physical attendance procedures", subcat: "On-site visit", sprRule: "SPR-0017", active: true },
-  /* Vouching — 17 个类别 */
-  { id: "sbr17", rule: "SBR-0018", ptype: "Vouching", subcat: "Sales cut-off test (GOSPD1030)", sprRule: "SPR-0032", active: true },
-  { id: "sbr18", rule: "SBR-0019", ptype: "Vouching", subcat: "Purchases cut-off test (SPD02006)", sprRule: "SPR-0018", active: true },
-  { id: "sbr19", rule: "SBR-0020", ptype: "Vouching", subcat: "Revenue throughout the period – Inspect, vouch and evaluate(GOSPD01010)", sprRule: "SPR-0014", active: true },
-  { id: "sbr20", rule: "SBR-0021", ptype: "Vouching", subcat: "Purchase throughout the period (Actual cost method) – Vouch and evaluate(CNSP112)", sprRule: "SPR-0043", active: true },
-  { id: "sbr21", rule: "SBR-0022", ptype: "Vouching", subcat: "Expense - vouch (SPD02013)", sprRule: "SPR-0025", active: true },
-  { id: "sbr22", rule: "SBR-0023", ptype: "Vouching", subcat: "Trade receivables – vouch to relevant documentation(GOSPD01003)", sprRule: "SPR-0044", active: true },
-  { id: "sbr23", rule: "SBR-0024", ptype: "Vouching", subcat: "PPE additions – vouch (SPD05001)", sprRule: "SPR-0002", active: true },
-  { id: "sbr24", rule: "SBR-0025", ptype: "Vouching", subcat: "PPE disposals and retirements – vouch (GOSPD05009)", sprRule: "SPR-0004", active: true },
-  { id: "sbr25", rule: "SBR-0026", ptype: "Vouching", subcat: "Intangible assets disposals or retirements – vouch (TT GOSPT15004)", sprRule: "SPR-0011", active: true },
-  { id: "sbr26", rule: "SBR-0027", ptype: "Vouching", subcat: "Cost of goods sold – vouch (SPD03025)", sprRule: "SPR-0045", active: true },
-  { id: "sbr27", rule: "SBR-0028", ptype: "Vouching", subcat: "Share capital issuance – vouch(GOSPD10009)", sprRule: "SPR-0020", active: true },
-  { id: "sbr28", rule: "SBR-0029", ptype: "Vouching", subcat: "Lease liabilities – vouch lease payments(TT GOSPT14018)", sprRule: "SPR-0046", active: true },
-  { id: "sbr29", rule: "SBR-0030", ptype: "Vouching", subcat: "Short term lease expenses – vouch(TT GOSPT14013)", sprRule: "SPR-0047", active: true },
-  { id: "sbr30", rule: "SBR-0031", ptype: "Vouching", subcat: "Search for unrecorded liabilities(SPD02007)", sprRule: "SPR-0015", active: true },
-  { id: "sbr31", rule: "SBR-0032", ptype: "Vouching", subcat: "Full customisation (customise your own tests)", sprRule: "", active: true },
-  { id: "sbr32", rule: "SBR-0033", ptype: "Vouching", subcat: "Individual income tax certificate(GOSPT09004)", sprRule: "SPR-0048", active: true },
-  { id: "sbr33", rule: "SBR-0034", ptype: "Vouching", subcat: "Value added tax payment certificate(CNSP47)", sprRule: "SPR-0049", active: true }
-];
-/* one SBR rule may reference several SPR rules — the list is authoritative, sprRule keeps the first for legacy reads */
-SBR_RULES.forEach(s => {
-  if (!s.sprRules) s.sprRules = s.sprRule ? [s.sprRule] : [];
-  s.sprRule = s.sprRules[0] || "";
+/* one SBR rule = one AAP Procedure Type × Sub Category combination, referencing
+   one or more SPR rules resolved from the v1.1 API-proc mapping table */
+const REF_ALIAS = { "GOSPD1030": "GOSPD01030" };
+const SPR_CODE_BY_REF = {};
+SPR_RULES.forEach(r => { if (!r.applyAll && r.ref) SPR_CODE_BY_REF[normRef(r.ref)] = r.rule; });
+const APPLYALL_CODE_BY_TYPE = {};
+SPR_APPLYALL_RULES.forEach(r => { APPLYALL_CODE_BY_TYPE[r.sysType] = r.rule; });
+function sprCodeForRef(ref) {
+  const q = REF_ALIAS[ref] || ref;
+  return SPR_CODE_BY_REF[normRef(q)] || "";
+}
+const SBR_RULES = SUBSYS_MAP.map((m, i) => {
+  let codes = [];
+  if (m.mandatory) {
+    const c = APPLYALL_CODE_BY_TYPE[m.ptype];
+    if (c) codes = [c];
+  } else {
+    m.refs.forEach(ref => {
+      const c = sprCodeForRef(ref);
+      if (c && codes.indexOf(c) < 0) codes.push(c);
+    });
+  }
+  return {
+    id: "sbr" + i,
+    rule: "SBR-" + String(i + 1).padStart(4, "0"),
+    ptype: m.ptype,
+    subcat: m.subcat,
+    sprRules: codes,
+    sprRule: codes[0] || "",
+    active: m.ptype !== "Credit Review"
+  };
 });
+/* one SBR rule may reference several SPR rules — the list is authoritative, sprRule keeps the first for legacy reads */
 function sbrRulesOf(s) {
   if (!s) return [];
   if (s.sprRules && s.sprRules.length) return s.sprRules;
@@ -2072,7 +2053,7 @@ function applyAllProcRows() {
       row = APPLYALL_ROWS[r.rule] = {
         id: "pa_" + r.rule,
         applyAll: true,
-        ref: "", procName: "", ptype: "", rmmId: "", rmmDesc: "",
+        ref: "", procName: "", ptype: "", rmms: [],
         sampling: "N/A", samples: null,
         status: "none", by: "", at: "", ver: 0, file: "", history: []
       };
@@ -2376,7 +2357,7 @@ function tplCell(w, kind) {
   }
   /* an apply-for-all row has no procedure-level data at all: every placeholder is a dash */
   if (w.applyAll) return `<span class="hint">—</span>`;
-  if (!w.tplCN && !w.tplEN) return `<span class="hint">N/A</span>`;
+  if (!w.tplCN && !w.tplEN) return `<span class="hint">—</span>`;
   /* Specialist workpapers expose both languages; project-team tables follow the Language filter. */
   if (kind === "specialist") {
     const parts = [];
@@ -2384,10 +2365,18 @@ function tplCell(w, kind) {
     if (w.tplEN) parts.push(`<button class="btn-link tpl-link" onclick="downloadTpl('EN','${esc(w.name)}')">${ico("i-download", "ico-sm")}<span>EN</span></button>`);
     return `<span class="tpl-langs">${parts.join('<span class="hint">/</span>')}</span>`;
   }
+  /* substantive procedures follow the KCw file language strictly: only the
+     template registered for that language is offered (no cross-language fallback) */
+  if (kind === "proc") {
+    const lang = state.templateLang === "CN" ? "CN" : "EN";
+    const has = lang === "CN" ? w.tplCN : w.tplEN;
+    if (!has) return `<span class="hint">—</span>`;
+    return `<button class="btn-link tpl-link" onclick="downloadTpl('${lang}','${esc(w.name)}')">${ico("i-download", "ico-sm")}<span>${lang}</span></button>`;
+  }
   const want = state.templateLang === "CN" ? "CN" : "EN";
   const lang = want === "CN" ? (w.tplCN ? "CN" : (w.tplEN ? "EN" : null))
                              : (w.tplEN ? "EN" : (w.tplCN ? "CN" : null));
-  if (!lang) return `<span class="hint">N/A</span>`;
+  if (!lang) return `<span class="hint">—</span>`;
   return `<button class="btn-link tpl-link" onclick="downloadTpl('${lang}','${esc(w.name)}')">${ico("i-download", "ico-sm")}<span>${lang}</span></button>`;
 }
 function uploadBtn(kind, id) {
@@ -2445,9 +2434,9 @@ const COLS = {
     status: { en: "Review Status",  cn: "审核状态", sort: true,  filter: true,  get: w => t("st." + w.status) }
   },
   proc: {
-    wp:       { en: "Workpaper Name", cn: "底稿名称", sort: true, filter: false, get: p => p.name },
-    proc:     { en: "Procedure",      cn: "实质性程序", sort: true, filter: false, get: p => p.ref },
-    rmm:      { en: "RMM",            cn: "RMM",     sort: true, filter: false, get: p => p.rmmId || "" },
+    /* v1.1: the workpaper-name column was removed — the table starts with Procedure */
+    proc:     { en: "Substantive Procedure", cn: "实质性程序", sort: true, filter: false, get: p => p.ref },
+    rmm:      { en: "RMM",            cn: "RMM",     sort: true, filter: false, get: p => (p.rmms || []).map(x => x.id).join(", ") },
     ref:      { en: "Procedure Ref",  cn: "程序编号", sort: true, filter: false, get: p => p.ref },
     name:     { en: "Procedure Name", cn: "程序名称", sort: true, filter: false, get: p => p.name },
     ptype:    { en: "Procedure Type", cn: "程序类别", sort: true, filter: true,  get: p => p.ptype },
@@ -2477,12 +2466,10 @@ const COLS = {
   },
   spr: {
     rule:       { en: "Rule Name",         cn: "规则名称", sort: true, filter: false, get: r => r.rule },
-    name:       { en: "Workpaper Name",    cn: "底稿名称", sort: true, filter: false, get: r => r.name },
     sec:        { en: "Section",           cn: "类别",     sort: true, filter: true,  get: r => secLabel(r.sec) },
-    ref:        { en: "Procedure Ref",     cn: "程序编号", sort: true, filter: false, get: r => r.ref },
-    pname:      { en: "Procedure Name",    cn: "程序名称", sort: true, filter: false, get: r => r.pname },
-    rmmId:      { en: "RMM ID",            cn: "RMM ID",   sort: true, filter: false, get: r => r.rmmId },
-    rmmDesc:    { en: "RMM Description",   cn: "RMM 描述", sort: true, filter: false, get: r => r.rmmDesc },
+    ref:        { en: "Procedure Ref",     cn: "程序编号", sort: true, filter: false, get: r => r.ref || "" },
+    pnameCn:    { en: "Procedure Name (CN)", cn: "程序名称（中文）", sort: true, filter: false, get: r => r.pnameCn || "" },
+    pnameEn:    { en: "Procedure Name (EN)", cn: "程序名称（英文）", sort: true, filter: false, get: r => r.pnameEn || "" },
     attachments:{ en: "Attachments",       cn: "附件",     sort: true, filter: false, get: r => (r.attachments || []).length },
     status:     { en: "Status",            cn: "状态",     sort: true, filter: true,  get: r => t(r.active ? "admin.active" : "admin.inactive") }
   },
@@ -2503,7 +2490,6 @@ const COLS = {
   },
   /* SBR master data: AAP Procedure Type / Sub Category option values */
   ptc: {
-    rule:    { en: "Rule Name",          cn: "规则名称",   sort: true, filter: false, get: r => r.rule },
     name:    { en: "AAP Procedure Type", cn: "AAP 程序类别", sort: true, filter: false, get: r => r.name },
     subcats: { en: "Sub Category",       cn: "子类别",     sort: true, filter: false, get: r => (r.subcats || []).map(s => s.name).join(" / ") },
     status:  { en: "Status",             cn: "状态",       sort: true, filter: true,  get: r => t(r.active ? "admin.active" : "admin.inactive") }
@@ -2999,9 +2985,10 @@ function openHistory(kind, id) {
       <div class="timeline">${items.join("")}</div>
     </div>`;
 
+  const histName = kind === "proc" ? procLangName(w, state.templateLang) : (w.name || "");
   openDrawer({
     title: t("drawer.history"),
-    sub: w.name.length > 52 ? w.name.slice(0, 50) + "…" : w.name,
+    sub: histName.length > 52 ? histName.slice(0, 50) + "…" : histName,
     body,
     narrow: true,
     foot: `<button class="btn" onclick="closeDrawer()">${t("act.close")}</button>`
@@ -3340,15 +3327,20 @@ function procRow(p) {
     : (p.sampling === "N/A"
       ? `<span class="hint">—</span>`
       : `<input class="input sm" style="width:64px" type="number" min="1" value="${p.samples || 1}" onchange="setSamples('${p.id}',this.value)">`);
+  /* RMM comes from the API; one procedure may map to several RMMs — every pair
+     is rendered as an ID line followed by its description line */
+  const rmmHTML = (p.rmms && p.rmms.length)
+    ? `<div class="stack-cell">${p.rmms.map(x => `<div class="sc-l1" title="${esc(x.id)}">${esc(x.id)}</div>${x.desc ? `<div class="sc-l2" title="${esc(x.desc)}">${esc(x.desc)}</div>` : ""}`).join("")}</div>`
+    : '<span class="hint">—</span>';
+  const procDispName = procLangName(p, state.templateLang);
   const main = `<tr class="${open ? "row-selected" : ""}">
     <td class="col-idx sticky-l1">${sysCount ? `<button class="expander ${open ? "open" : ""}" title="${esc(state.lang === "zh" ? "展开子系统任务" : "Expand subsystem tasks")}" onclick="toggleProc('${p.id}')"><span class="tri"></span></button>` : ""}</td>
-    <td class="sticky-l2"><span class="cell-name" title="${esc(p.name)}">${esc(p.name)}</span></td>
-    ${state.groupProc === "sec" ? "" : `<td>${secPill(p.sec)}</td>`}
-    <td>${p.ref || p.procName
-      ? `<div class="stack-cell"><div class="sc-l1" title="${esc(p.ref)}">${p.ref ? esc(p.ref) : '<span class="hint">—</span>'}</div>${p.procName ? `<div class="sc-l2" title="${esc(p.procName)}">${esc(p.procName)}</div>` : ""}</div>`
+    <td class="sticky-l2">${p.ref || procDispName
+      ? `<div class="stack-cell"><div class="sc-l1" title="${esc(p.ref)}">${p.ref ? esc(p.ref) : '<span class="hint">—</span>'}</div>${procDispName ? `<div class="sc-l2" title="${esc(procDispName)}">${esc(procDispName)}</div>` : ""}</div>`
       : '<span class="hint">—</span>'}</td>
+    ${state.groupProc === "sec" ? "" : `<td>${secPill(p.sec)}</td>`}
     <td>${p.ptype ? `<span class="tag tag-xs ${p.ptype === "TOD" ? "tag-info" : "tag-soft"}">${esc(p.ptype)}</span>` : '<span class="hint">—</span>'}</td>
-    <td><div class="stack-cell"><div class="sc-l1" title="${esc(p.rmmId || "")}">${p.rmmId ? esc(p.rmmId) : '<span class="hint">—</span>'}</div>${p.rmmDesc ? `<div class="sc-l2" title="${esc(p.rmmDesc)}">${esc(p.rmmDesc)}</div>` : ""}</div></td>
+    <td>${rmmHTML}</td>
     <td>${tplCell(p, "proc")}</td>
     <td class="cell-upload">${uploadBtn("proc", p.id)}</td>
     <td>${uploadInfoCell(p)}</td>
@@ -3388,7 +3380,7 @@ function procRow(p) {
   }
 
   /* the Section column is dropped when grouping by Section, so the detail row must match the live column count */
-  const detail = `<tr class="sub-row"><td colspan="${state.groupProc === "sec" ? 12 : 13}" style="padding:0;background:#fff">
+  const detail = `<tr class="sub-row"><td colspan="${state.groupProc === "sec" ? 11 : 12}" style="padding:0;background:#fff">
     <div class="sub-hold"><table class="subdt">
       <thead><tr>
         <th style="width:230px">${esc(state.lang === "zh" ? "关联系统" : "Related System")}</th>
@@ -3427,7 +3419,8 @@ function renderProjectTeam() {
   const stdGrouped = state.groupStd !== "none";
   /* when grouped, paging is delegated to each group (see groupRenderer) so a group never splits across pages */
   const stdRows = stdGrouped ? stdFiltered : stdFiltered.slice((stdPage - 1) * PAGE_SIZE, stdPage * PAGE_SIZE);
-  const procFiltered = applyColState(lists.proc.filter(p => !state.qProc || p.name.toLowerCase().includes(state.qProc.toLowerCase())), "proc");
+  const procQ = state.qProc.toLowerCase();
+  const procFiltered = applyColState(lists.proc.filter(p => !procQ || [p.name, p.procNameCn, p.procNameEn, p.ref].join(" ").toLowerCase().includes(procQ)), "proc");
   const procPages = Math.max(1, Math.ceil(procFiltered.length / PAGE_SIZE));
   const procPage = Math.min(state.pageProc || 1, procPages);
   const procGrouped = state.groupProc !== "none";
@@ -3531,7 +3524,7 @@ function renderProjectTeam() {
     </div>
     <div class="card-body flush">
       <div class="table-bar">
-        <span class="attr-lead">${esc(state.lang === "zh" ? "基于 EMLC 数据挖掘结果（含全部项目适用规则）" : "Based on EMLC data mining results (apply-for-all rules always included)")}</span>
+        <span class="attr-lead">${esc(state.lang === "zh" ? "基于 EMLC 数据挖掘结果（必需程序始终列出）" : "Based on EMLC data mining results (mandatory procedures are always listed)")}</span>
         <span class="spacer"></span>
         <span class="muted">${esc(t("group.by"))}</span>
         ${groupSelect(state.groupProc, "setGroup('proc', this.value)", ["none", "sec"])}
@@ -3540,9 +3533,8 @@ function renderProjectTeam() {
         <table class="dt compact proc-dt">
           <thead><tr>
             <th class="col-idx sticky-l1" style="width:28px"></th>
-            ${thCol("proc", "wp", 'class="sticky-l2"')}
+            ${thCol("proc", "proc", 'class="sticky-l2" style="width:360px"')}
             ${state.groupProc === "sec" ? "" : thCol("proc", "sec", 'style="width:112px"')}
-            ${thCol("proc", "proc", 'style="width:235px"')}
             ${thCol("proc", "ptype", 'style="width:104px"')}
             ${thCol("proc", "rmm", 'style="width:235px"')}
             ${th("Workpaper Template", "底稿模版", 'style="width:88px"')}
@@ -3557,8 +3549,8 @@ function renderProjectTeam() {
             ${procRows.length ? groupRenderer(procRows, state.groupProc,
               p => p.sec,
               k => secLabel(k),
-              "proc", procRow, state.groupProc === "none" ? 13 : 12, k => secColor(k))
-              : `<tbody><tr><td colspan="${state.groupProc === "none" ? 13 : 12}"><div class="empty">${ico("i-empty", "ei")}<div class="empty-title">${esc(t("empty.notitle"))}</div><div class="empty-desc">${esc(t("empty.nodesc"))}</div></div></td></tr></tbody>`}
+              "proc", procRow, state.groupProc === "none" ? 12 : 11, k => secColor(k))
+              : `<tbody><tr><td colspan="${state.groupProc === "none" ? 12 : 11}"><div class="empty">${ico("i-empty", "ei")}<div class="empty-title">${esc(t("empty.notitle"))}</div><div class="empty-desc">${esc(t("empty.nodesc"))}</div></div></td></tr></tbody>`}
         </table>
       </div>
       ${procGrouped
@@ -3704,7 +3696,7 @@ function draftRow(d) {
         onkeydown="if(event.key==='Enter'){commitNonStd()}else if(event.key==='Escape'){cancelNonStd()}">
       <button class="icon-btn draft-ok" title="${esc(state.lang === "zh" ? "确认添加" : "Confirm")}" onclick="commitNonStd()">${ico("i-check", "ico-sm")}</button>
     </div></td>
-    <td><span class="hint">N/A</span></td>
+    <td><span class="hint">—</span></td>
     <td><button class="btn btn-xs" title="${esc(state.lang === "zh" ? "确认名称后即可上传底稿" : "Save the name first, then upload")}" onclick="commitNonStd(true)">${ico("i-upload", "ico-sm")}<span>${esc(t("act.upload"))}</span></button></td>
     <td><span class="hint">—</span></td>
     <td>${statusPill("none")}</td>
@@ -3761,7 +3753,8 @@ function adminRows(tab) {
   const key = ADMIN_META[tab].storeKey;
   let rows = store[key].slice();
   const q = state.adminQ[tab].trim().toLowerCase();
-  if (q) rows = rows.filter(r => (r.name || "").toLowerCase().includes(q) || (r.rule || "").toLowerCase().includes(q)
+  if (q) rows = rows.filter(r => (r.name || "").toLowerCase().includes(q) || (r.pname || "").toLowerCase().includes(q)
+    || (r.pnameCn || "").toLowerCase().includes(q) || (r.pnameEn || "").toLowerCase().includes(q) || (r.rule || "").toLowerCase().includes(q)
     || (r.ref || "").toLowerCase().includes(q) || (r.subcat || "").toLowerCase().includes(q)
     || (r.ptype || "").toLowerCase().includes(q) || (r.type || "").toLowerCase().includes(q)
     || sbrRulesOf(r).join(" ").toLowerCase().includes(q)
@@ -3811,20 +3804,20 @@ function adminTableHTML(tab, rows) {
       <td>${statusTag(r)}</td>
       <td class="col-act">${actCell(tab, r)}</td></tr>`;
   } else if (tab === "spr") {
-    head = `<tr>${thCol("spr","rule",'style="width:106px"')}${thCol("spr","name")}${thCol("spr","sec",'style="width:206px"')}${thCol("spr","ref",'style="width:124px"')}${thCol("spr","pname",'style="width:186px"')}${thCol("spr","rmmId",'style="width:88px"')}${thCol("spr","rmmDesc",'style="width:200px"')}${thCol("spr","attachments",'style="width:120px"')}${thCol("spr","status",'style="width:84px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
+    /* v1.1: Workpaper Name / RMM ID / RMM Description removed from the master data */
+    head = `<tr>${thCol("spr","rule",'style="width:106px"')}${thCol("spr","sec",'style="width:200px"')}${thCol("spr","ref",'style="width:120px"')}${thCol("spr","pnameCn",'style="width:320px"')}${thCol("spr","pnameEn",'style="width:320px"')}${thCol("spr","attachments",'style="width:120px"')}${thCol("spr","status",'style="width:84px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
     bodyFn = r => `<tr>
       <td><span class="ref-code">${esc(r.rule)}</span></td>
-      <td><span class="cell-name" title="${esc(r.name)}">${esc(r.name)}</span></td>
       <td>${secPill(r.sec)}</td>
-      <td>${r.applyAll ? '<span class="hint">—</span>' : `<span class="ref-code">${esc(r.ref)}</span>`}</td>
-      <td>${r.applyAll ? '<span class="hint">—</span>' : `<span class="cell-tight" title="${esc(r.pname)}">${esc(r.pname)}</span>`}</td>
-      <td>${r.applyAll ? '<span class="hint">—</span>' : `<span class="ref-code">${esc(r.rmmId)}</span>`}</td>
-      <td>${r.applyAll ? '<span class="hint">—</span>' : `<span class="cell-tight" title="${esc(r.rmmDesc)}">${esc(r.rmmDesc)}</span>`}</td>
+      <td>${r.applyAll || !r.ref ? '<span class="hint">—</span>' : `<span class="ref-code">${esc(r.ref)}</span>`}</td>
+      <td><span class="cell-tight cell-wide" title="${esc(r.pnameCn || "")}">${esc(r.pnameCn || "")}</span></td>
+      <td><span class="cell-tight cell-wide" title="${esc(r.pnameEn || "")}">${esc(r.pnameEn || "")}</span></td>
       <td>${attCell(r)}</td>
       <td>${statusTag(r)}</td>
       <td class="col-act">${actCell(tab, r)}</td></tr>`;
   } else if (tab === "sbr") {
-    head = `<tr>${thCol("sbr","rule",'style="width:106px"')}${thCol("sbr","ptype",'style="width:300px"')}${thCol("sbr","subcat",'style="width:220px"')}${thCol("sbr","sprRule",'style="width:186px"')}${thCol("sbr","status",'style="width:78px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
+    /* AAP Procedure Type : Sub Category = 1 : 2 (316 / 632 at the 1336px table width) */
+    head = `<tr>${thCol("sbr","rule",'style="width:106px"')}${thCol("sbr","ptype",'style="width:316px"')}${thCol("sbr","subcat",'style="width:632px"')}${thCol("sbr","sprRule",'style="width:140px"')}${thCol("sbr","status",'style="width:78px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
     bodyFn = r => `<tr>
       <td><span class="ref-code">${esc(r.rule)}</span></td>
       <td><span class="cell-strong" title="${esc(r.ptype)}">${esc(r.ptype)}</span></td>
@@ -3835,7 +3828,7 @@ function adminTableHTML(tab, rows) {
       <td>${statusTag(r)}</td>
       <td class="col-act">${actCell(tab, r)}</td></tr>`;
   } else if (tab === "ptc") {
-    head = `<tr>${thCol("ptc","rule",'style="width:106px"')}${thCol("ptc","name",'style="width:380px"')}${thCol("ptc","subcats")}${thCol("ptc","status",'style="width:84px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
+    head = `<tr>${thCol("ptc","name",'style="width:360px"')}${thCol("ptc","subcats")}${thCol("ptc","status",'style="width:84px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
     const zh = state.lang === "zh";
     bodyFn = r => {
       const subs = r.subcats || [];
@@ -3846,9 +3839,8 @@ function adminTableHTML(tab, rows) {
       const preview = names.slice(0, 1).join(" · ") + (names.length > 1 ? ` · +${names.length - 1}` : "");
       const chips = subs.map(s => `<span class="tag tag-xs ${s.active === false ? "tag-neutral ptc-off" : "tag-soft"}" title="${esc(s.name)}">${esc(s.name)}${s.active === false ? esc(zh ? " （停用）" : " (inactive)") : ""}</span>`).join("");
       /* the expanded block sits exactly under the Sub Category column (same left / right edges) */
-      const exp = `<tr class="ptc-exp"><td></td><td></td><td class="ptc-exp-td"><div class="ptc-chips">${chips || `<span class="hint">${esc(zh ? "暂无子类别" : "No sub category")}</span>`}</div></td><td></td><td></td></tr>`;
+      const exp = `<tr class="ptc-exp"><td></td><td class="ptc-exp-td"><div class="ptc-chips">${chips || `<span class="hint">${esc(zh ? "暂无子类别" : "No sub category")}</span>`}</div></td><td></td><td></td></tr>`;
       return `<tr class="${open ? "ptc-row-open" : ""}">
-        <td><span class="ref-code">${esc(r.rule)}</span></td>
         <td><span class="cell-name" title="${esc(r.name)}">${esc(r.name)}</span></td>
         <td><div class="ptc-subcell">
           ${subs.length ? `<button class="icon-btn ptc-exp-btn ${open ? "open" : ""}" title="${esc(zh ? "展开 / 收起子类别" : "Expand / collapse sub categories")}" onclick="togglePtcOpen('${r.id}')">${ico("i-tri-right", "ico-sm")}</button>` : ""}
@@ -3894,7 +3886,8 @@ function renderAdmin() {
   const titleKey = tab === "ptc" ? "admin.ptcTitle" : "admin." + tab;
   const searchPh = tab === "ptc"
     ? (zh ? "搜索类别或子类别" : "Search type / sub category")
-    : t("admin.search");
+    : (tab === "spr" ? (zh ? "搜索规则编号 / 程序编号 / 名称" : "Search rule / ref / name")
+      : (tab === "sbr" ? (zh ? "搜索类别 / 子类别 / 规则编号" : "Search type / sub category / rule") : t("admin.search")));
   const newLabel = tab === "ptc" ? (zh ? "新增 AAP 程序类别" : "New AAP Procedure Type") : t("act.newRule");
   return `
   <div class="card">
@@ -4031,13 +4024,13 @@ function openRuleDrawer(tab, id) {
     draft.ms.exchange = base ? base.exchange.slice() : [];
     draft.atts = base ? JSON.parse(JSON.stringify(base.attachments)) : [];
   } else if (tab === "spr") {
-    draft.name = base ? base.name : "";
-    draft.sec = base ? base.sec : "h.ppe";
+    draft.pnameCn = base ? (base.pnameCn || base.pname || "") : "";
+    draft.pnameEn = base ? (base.pnameEn || base.pname || "") : "";
+    draft.pname = draft.pnameEn || draft.pnameCn;
+    draft.name = draft.pnameEn || draft.pnameCn;
+    draft.sec = base ? base.sec : "tod";
     draft.applyAll = base ? !!base.applyAll : false;
     draft.ref = base ? base.ref : "";
-    draft.pname = base ? base.pname : "";
-    draft.rmmId = base ? base.rmmId : "";
-    draft.rmmDesc = base ? base.rmmDesc : "";
     draft.atts = base ? JSON.parse(JSON.stringify(base.attachments)) : [];
   } else if (tab === "sbr") {
     draft.ptype = base ? base.ptype : "";
@@ -4062,19 +4055,77 @@ function openRuleDrawer(tab, id) {
 /* ---------- SBR: one subsystem may map to several substantive procedure rules ---------- */
 function sbrRuleRowsHTML() {
   const zh = state.lang === "zh";
-  return draft.sprRules.map((v, i) => `<div class="rule-pick" style="display:flex;gap:4px;${i ? "margin-top:6px" : ""}">
-      <select class="select" style="flex:1;min-width:0" onchange="setSprRule(${i},this.value)">
-        <option value="" ${v === "" ? "selected" : ""}>—</option>
-        ${store.spr.map(r => `<option value="${esc(r.rule)}" ${v === r.rule ? "selected" : ""}>${esc(sprRuleOptionLabel(r))}</option>`).join("")}
-      </select>
+  const ph = zh ? "搜索规则编号 / 程序编号 / 名称" : "Search rule / ref / name";
+  return draft.sprRules.map((v, i) => {
+    const cur = v ? store.spr.find(r => r.rule === v) : null;
+    return `<div class="rule-pick" style="display:flex;gap:4px;${i ? "margin-top:6px" : ""}">
+      <div class="spr-combo">
+        <input class="input spr-combo-input" id="sprPick_${i}" autocomplete="off" placeholder="${esc(ph)}"
+          value="${cur ? esc(sprRuleOptionLabel(cur)) : ""}"
+          onfocus="openSprCombo(${i}, this)" oninput="filterSprCombo(this)" onkeydown="sprComboKey(event, ${i})">
+        <div class="spr-combo-panel" id="sprPanel_${i}">
+          ${store.spr.map(r => `<button type="button" class="spr-opt ${v === r.rule ? "sel" : ""}" data-code="${esc(r.rule)}" data-q="${esc((r.rule + " " + (r.ref || "") + " " + (r.pnameCn || "") + " " + (r.pnameEn || "") + " " + (r.name || "")).toLowerCase())}" onclick="pickSprRule(${i}, '${esc(r.rule)}')"><span class="code">${esc(r.rule)}</span><span class="meta">${esc(r.ref || "")}</span>${esc(sprName(r, state.lang).slice(0, 56))}${r.applyAll ? esc(zh ? "（全部项目适用）" : " (All engagements)") : ""}</button>`).join("")}
+          <div class="spr-empty" hidden>${esc(zh ? "没有匹配的规则" : "No matching rule")}</div>
+        </div>
+      </div>
       ${i > 0 ? `<button class="icon-btn" title="${esc(zh ? "移除" : "Remove")}" onclick="removeSprRuleRow(${i})">${ico("i-close", "ico-sm")}</button>` : ""}
       <button class="icon-btn" title="${esc(zh ? "继续添加实质性程序规则" : "Add another rule")}" onclick="addSprRuleRow()">${ico("i-plus", "ico-sm")}</button>
-    </div>`).join("");
+    </div>`;
+  }).join("");
 }
 function sprRuleOptionLabel(r) {
-  const nm = r.name.length > 40 ? r.name.slice(0, 38) + "…" : r.name;
-  return r.rule + " · " + nm + (r.applyAll ? (state.lang === "zh" ? "（全部项目适用）" : " (All engagements)") : "");
+  if (!r) return "";
+  const nm = sprName(r, state.lang);
+  const short = nm.length > 56 ? nm.slice(0, 54) + "…" : nm;
+  const ref = r.ref ? r.ref + " · " : "";
+  return r.rule + " · " + ref + short + (r.applyAll ? (state.lang === "zh" ? "（全部项目适用）" : " (All engagements)") : "");
 }
+function openSprCombo(i, input) {
+  document.querySelectorAll(".spr-combo.open").forEach(el => { if (el !== input.closest(".spr-combo")) el.classList.remove("open"); });
+  input.closest(".spr-combo").classList.add("open");
+  input.select();
+}
+function closeSprCombos() {
+  document.querySelectorAll(".spr-combo.open").forEach(el => el.classList.remove("open"));
+}
+function filterSprCombo(input) {
+  const combo = input.closest(".spr-combo");
+  const panel = combo.querySelector(".spr-combo-panel");
+  const q = input.value.trim().toLowerCase();
+  let n = 0;
+  panel.querySelectorAll(".spr-opt").forEach(b => {
+    const hit = !q || b.dataset.q.indexOf(q) >= 0;
+    b.hidden = !hit;
+    if (hit) n++;
+  });
+  const empty = panel.querySelector(".spr-empty");
+  if (empty) empty.hidden = n > 0;
+  combo.classList.add("open");
+}
+function sprComboKey(ev, i) {
+  if (ev.key === "Escape") { closeSprCombos(); ev.stopPropagation(); return; }
+  if (ev.key === "Enter") {
+    const pane = document.getElementById("sprPanel_" + i);
+    const first = pane && Array.from(pane.querySelectorAll(".spr-opt")).find(b => !b.hidden);
+    if (first) { ev.preventDefault(); pickSprRule(i, first.dataset.code); }
+  }
+}
+function pickSprRule(i, code) {
+  if (code && draft.sprRules.some((x, j) => j !== i && x === code)) {
+    toast(state.lang === "zh" ? "该实质性程序规则已选择" : "This rule is already selected", "error");
+    return;
+  }
+  draft.sprRules[i] = code;
+  const inp = document.getElementById("sprPick_" + i);
+  const r = store.spr.find(x => x.rule === code);
+  if (inp && r) inp.value = sprRuleOptionLabel(r);
+  const pane = document.getElementById("sprPanel_" + i);
+  if (pane) pane.querySelectorAll(".spr-opt").forEach(b => b.classList.toggle("sel", b.dataset.code === code));
+  closeSprCombos();
+}
+document.addEventListener("click", e => {
+  if (!e.target.closest(".spr-combo")) closeSprCombos();
+});
 function setSprRule(i, v) {
   if (v && draft.sprRules.some((x, j) => j !== i && x === v)) {
     toast(state.lang === "zh" ? "该实质性程序规则已选择" : "This rule is already selected", "error");
@@ -4218,10 +4269,8 @@ function renderRuleDrawer() {
           <div class="field-row">
             <div class="field"><span class="field-label">${fl("Rule Name","规则名称")}</span><input class="input" readonly value="${esc(draft.id ? (store.spr.find(r => r.id === draft.id) || {}).rule : nextRuleNo("spr"))}"></div>
           </div>
-          <div class="field"><span class="field-label">${fl("Workpaper Name","底稿名称")} <span class="req">*</span></span>
-            <input class="input" id="f_name" placeholder="${esc(state.lang === "zh" ? "输入底稿名称" : "Enter the workpaper name")}" value="${esc(draft.name)}" oninput="draft.name=this.value"></div>
           <div class="field"><span class="field-label">${fl("Section","类别")}</span>
-            <select class="select" onchange="draft.sec=this.value">${secOpts(["h.ppe","i.inv","j.intang","k.stock","l.litig","m.cash","o.other","p.payroll","q.tax","r.equity","s.sales","t.purchase","u.lease","pr.je","pr.rpt","pr.prov","pr.deriv","pr.grp","pr.lessor","pr.securities","pr.deposit","pr.bank","req.gp"])}</select></div>
+            <select class="select" onchange="draft.sec=this.value">${secOpts(["h.ppe","i.inv","j.intang","k.stock","l.litig","m.cash","o.other","p.payroll","q.tax","r.equity","s.sales","t.purchase","u.lease","tod","sap","pr.je","pr.prov","pr.lessor","pr.deposit","pr.bank","req.gp"])}</select></div>
         </div>
       </div>
       <div class="drawer-section">
@@ -4233,17 +4282,13 @@ function renderRuleDrawer() {
           </label>
           ${draft.applyAll
             ? `<div class="field-help">${esc(state.lang === "zh"
-                ? "勾选后该规则对所有项目生效，不依赖 Data Mining 匹配结果；已填写的 Procedure / RMM 信息保留在规则中但不再参与匹配，列表与用户端均不展示（留空）。"
-                : "The rule applies to every engagement regardless of the data mining result. Any Procedure / RMM values already entered are kept but ignored for matching, and are not shown in the lists.")}</div>`
-            : `<div class="field-help">${esc(state.lang === "zh" ? "Data Mining 结果中 Procedure ID 与 Procedure Name 命中其一即为匹配。" : "A match on either Procedure ID or Procedure Name triggers the rule.")}</div>
-          <div class="field-row">
-            <div class="field"><span class="field-label">${fl("Procedure Ref","程序编号")}</span><input class="input" value="${esc(draft.ref)}" oninput="draft.ref=this.value" placeholder="GOSPD10004"></div>
-            <div class="field"><span class="field-label">${fl("Procedure Name","程序名称")}</span><input class="input" value="${esc(draft.pname)}" oninput="draft.pname=this.value" placeholder="Distribution to owners - vouch"></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><span class="field-label">${fl("RMM ID","RMM ID")} <span class="opt">${esc(state.lang === "zh" ? "仅反显" : "display only")}</span></span><input class="input" value="${esc(draft.rmmId)}" oninput="draft.rmmId=this.value"></div>
-            <div class="field"><span class="field-label">${fl("RMM Description","RMM 描述")} <span class="opt">${esc(state.lang === "zh" ? "仅反显" : "display only")}</span></span><input class="input" value="${esc(draft.rmmDesc)}" oninput="draft.rmmDesc=this.value"></div>
-          </div>`}
+                ? "勾选后该规则对所有项目生效，不依赖 Data Mining 匹配结果；Procedure 信息保留在规则中但不再参与匹配，列表与用户端均不展示（留空）。"
+                : "The rule applies to every engagement regardless of the data mining result. Procedure values already entered are kept but ignored for matching, and are not shown in the lists.")}</div>`
+            : `<div class="field-help">${esc(state.lang === "zh" ? "Data Mining 结果中 Procedure ID 与 Procedure Name 命中其一即为匹配；RMM 由接口返回，一条程序可对应多个 RMM。" : "A match on either Procedure ID or Procedure Name triggers the rule. RMM values come from the API and one procedure may map to several RMMs.")}</div>
+          <div class="field"><span class="field-label">${fl("Procedure Ref","程序编号")}</span><input class="input" value="${esc(draft.ref)}" oninput="draft.ref=this.value" placeholder="GOSPD10004"></div>
+          <div class="field"><span class="field-label">${fl("Procedure Name (CN)","程序名称（中文）")}</span><input class="input" value="${esc(draft.pnameCn)}" oninput="draft.pnameCn=this.value" placeholder="对所有者的分配 — 检查并重新计算"></div>
+          <div class="field"><span class="field-label">${fl("Procedure Name (EN)","程序名称（英文）")}</span><input class="input" value="${esc(draft.pnameEn)}" oninput="draft.pnameEn=this.value" placeholder="Distributions to owners - vouch and recalculate"></div>
+          <div class="field-help">${esc(state.lang === "zh" ? "中英文名称至少填写一项；项目组视图按 KCw 文档的语言显示对应名称。" : "At least one language is required; the project view shows the name matching the KCw file language.")}</div>`}
         </div>
       </div>
       <div class="drawer-section">
@@ -4275,7 +4320,7 @@ function renderRuleDrawer() {
           <div class="field"><span class="field-label">${fl("Substantive Procedure Rule Name","实质性程序规则名称")} <span class="req">*</span></span>
             ${sbrRuleRowsHTML()}
           </div>
-          <div class="field-help">${esc(state.lang === "zh" ? "一个子系统可对应多条实质性程序规则（如 Lease recalculation 同时对应租赁负债与使用权资产两张底稿），点击 + 继续添加；用户端展示时，子系统 procedure 合并到实质性程序模块，按树形折叠展示：一条实质性程序可对应多个 ProcedureRunId，一个 ProcedureRunId 可对应多个底稿文件。" : "One subsystem may map to several substantive procedure rules — click + to add more. In the user view, subsystem procedures are merged into the substantive procedure module and rendered as a tree.")}</div>
+          <div class="field-help">${esc(state.lang === "zh" ? "一个子系统可对应多条实质性程序规则（如 Lease recalculation 对应 ROU 资产起租日、重新计量、新增与租赁负债后续计量 4 条），输入编号 / 程序编号 / 名称可即时过滤，点击 + 继续添加；用户端展示时，子系统 procedure 合并到实质性程序模块，按树形折叠展示：一条实质性程序可对应多个 ProcedureRunId，一个 ProcedureRunId 可对应多个底稿文件。" : "One subsystem may map to several substantive procedure rules — type a rule code / procedure ref / name to filter, then click + to add more. In the user view, subsystem procedures are merged into the substantive procedure module and rendered as a tree.")}</div>
         </div>
       </div>`;
   } else if (tab === "ptc") {
@@ -4284,9 +4329,6 @@ function renderRuleDrawer() {
       <div class="drawer-section">
         <div class="drawer-section-head">${esc(t("drawer.basic"))}</div>
         <div class="stack">
-          <div class="field-row">
-            <div class="field"><span class="field-label">${fl("Rule Name","规则名称")}</span><input class="input" readonly value="${esc(draft.id ? (store.ptc.find(r => r.id === draft.id) || {}).rule : nextRuleNo("ptc"))}"></div>
-          </div>
           <div class="field"><span class="field-label">${fl("AAP Procedure Type","AAP 程序类别")} <span class="req">*</span></span>
             <input class="input" id="f_name" placeholder="${esc(zh ? "输入 AAP 程序类别名称" : "Enter the AAP procedure type")}" value="${esc(draft.name)}" oninput="draft.name=this.value"></div>
           <div class="field-help">${esc(zh
@@ -4389,15 +4431,17 @@ function saveRule() {
       store.enr.push({ id: "enr" + Date.now(), rule: nextRuleNo("enr"), name: nm, sec: draft.sec, standards: draft.ms.standards.slice(), workflow: draft.ms.workflow.slice(), entityType: draft.ms.entityType.slice(), exchange: draft.ms.exchange.slice(), req: req, attachments: draft.atts.slice(), active: true });
     }
   } else if (tab === "spr") {
-    const nameEl = $("#f_name");
-    const nm = (nameEl ? nameEl.value : draft.name).trim();
-    if (!nm) { toast(state.lang === "zh" ? "请填写底稿名称" : "Workpaper name is required", "error"); return; }
-    /* an apply-for-all rule keeps any procedure / RMM values already entered —
-       they are simply ignored for matching and not shown in the lists */
+    const cn = (draft.pnameCn || "").trim();
+    const en = (draft.pnameEn || "").trim();
+    if (!draft.applyAll && !cn && !en) { toast(state.lang === "zh" ? "请填写中文或英文程序名称" : "Enter the procedure name in Chinese or English", "error"); return; }
+    /* v1.1: the rule has no workpaper name / RMM fields. `name` is kept as an
+       internal display label (history drawer, SBR picker) and mirrors the EN name. */
+    const baseName = editing && editing.name ? editing.name : "";
+    const displayName = en || cn || baseName || (state.lang === "zh" ? "全部项目适用规则" : "All-engagements rule");
     const fields = {
-      name: nm, sec: draft.sec, applyAll: !!draft.applyAll,
-      ref: draft.ref, pname: draft.pname, rmmId: draft.rmmId, rmmDesc: draft.rmmDesc,
-      attachments: draft.atts.slice()
+      name: displayName, pname: en || cn, pnameCn: cn, pnameEn: en,
+      sec: draft.sec, applyAll: !!draft.applyAll,
+      ref: (draft.ref || "").trim(), attachments: draft.atts.slice()
     };
     if (editing) Object.assign(editing, fields);
     else store.spr.push(Object.assign({ id: "spr" + Date.now(), rule: nextRuleNo("spr"), active: true }, fields));
@@ -4527,7 +4571,7 @@ function syncSubHold() {
     const wrap = el.closest(".table-wrap");
     if (wrap) el.style.width = Math.max(520, wrap.clientWidth - 2) + "px";
   });
-  /* Related System column ends exactly where the frozen Workpaper Name column ends */
+  /* Related System column ends exactly where the frozen Procedure column ends */
   const wpTh = document.querySelector("table.proc-dt thead th.sticky-l2");
   if (wpTh) {
     const wpRight = wpTh.getBoundingClientRect().right;

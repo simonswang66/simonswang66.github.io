@@ -2633,7 +2633,7 @@ const COLS = {
     status:  { en: "Status",            cn: "状态",         sort: true, filter: true,  get: r => r.status },
     updated: { en: "Last Updated By / Date Time", cn: "更新人 / 时间", sort: true, filter: false, twoLine: true, get: r => r.updatedAt },
     oak:     { en: "OAK Number",        cn: "OAK 编号",     sort: true, filter: false, get: r => r.oak || "" },
-    proc:    { en: "Substantive Procedure", cn: "实质性程序", sort: true, filter: false, get: r => (r.procs || []).map(x => x.ref).filter(Boolean).join(", ") }
+    proc:    { en: "Relevant Substantive Procedure", cn: "相关实质性程序", sort: true, filter: false, get: r => (r.procs || []).map(x => x.ref).filter(Boolean).join(", ") }
   }
 };
 function colOptions(table, key) {

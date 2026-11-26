@@ -472,6 +472,40 @@ tr.ptc-exp > td.ptc-exp-td{padding:0 8px 8px}
 .btn-danger:hover{background:#c94a75;border-color:#c94a75;color:#fff}
 .btn-danger-ghost{background:#fff6f9;border-color:#f3c2d3;color:#be185d}
 .btn-danger-ghost:hover{background:#ffe9f1;border-color:#eaa2bc;color:#9d174d}
+/* ---------- audit procedure modal: wide container only; charts / tables / group rows reuse the page classes ---------- */
+.modal-card.wide{width:1360px;max-width:calc(100vw - 80px);padding:0;display:flex;flex-direction:column;max-height:calc(100vh - 56px);overflow:hidden}
+.ap-head{display:flex;align-items:flex-start;gap:8px;padding:15px 20px 11px;border-bottom:1px solid var(--border-light)}
+.ap-head-title{font-size:14px;font-weight:700;color:var(--color-gray-800);line-height:1.3}
+.ap-head .ap-close{margin-left:auto;flex:0 0 auto}
+.ap-entry{margin-left:8px}
+.ap-body{padding:13px 20px 8px;overflow:auto;flex:1 1 auto;min-height:0}
+.ap-section + .ap-section{margin-top:15px}
+.ap-section-title{font-size:12px;font-weight:700;color:var(--color-gray-700);margin:0 0 8px;display:flex;align-items:center;gap:6px}
+.kpi-row.ap-two{grid-template-columns:1fr 1fr}
+.ap-chart .rs-body{margin-top:8px}
+.ap-chart-split .rs-body{width:60%}
+.ap-chart .rs-left{border-right:0;padding-right:0}
+.ap-body .table-wrap{max-height:none;border:1px solid var(--border-light);border-radius:6px}
+.ap-toolbar{display:flex;align-items:center;gap:8px;margin:0 0 8px;flex-wrap:wrap}
+.ap-toolbar .spacer{flex:1}
+.ap-toolbar .muted{font-size:11px;color:var(--text-hint)}
+.ap-section-title .spacer{flex:1}
+.ap-nick{font-size:10.5px;color:var(--text-hint);margin-top:2px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
+.ap-radio-row{display:flex;align-items:center;gap:18px;min-height:24px}
+.ap-procs{display:flex;flex-direction:column;gap:4px}
+.more-link{font-size:10.5px;margin-top:2px}
+.ap-status-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px 8px;font-size:9.5px;color:var(--text-secondary);border-top:1px solid var(--border-light);margin-top:10px;padding-top:8px}
+.ap-sg-item{display:grid;grid-template-columns:minmax(0,1fr) 54px;align-items:baseline;column-gap:4px;min-width:0;white-space:nowrap;line-height:1.3}
+.ap-sg-name{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:9px;color:var(--text-secondary);text-align:left}
+.ap-sg-pct{font-size:9px;text-align:left;white-space:nowrap}
+.ap-sg-item b{font-weight:700;font-variant-numeric:tabular-nums}
+.ap-sg-ok{color:#0f766e}
+.ap-sg-prog{color:#b45309}
+.ap-sg-sep{color:var(--text-hint);margin:0 1px}
+/* drawer opened from a modal must paint above the modal overlay */
+.drawer-backdrop.drawer-top{z-index:calc(var(--z-modal) + 1)}
+.drawer.drawer-top{z-index:calc(var(--z-modal) + 2)}
+.ap-oak{font-variant-numeric:tabular-nums}
 .sec-legend{display:flex;align-items:center;gap:16px;flex-wrap:wrap;min-width:0}
 .sec-legend-item{display:inline-flex;align-items:center;gap:6px;min-width:0}
 .sec-legend-desc{font-size:10.5px;color:var(--text-hint);white-space:nowrap}
@@ -644,6 +678,8 @@ table.dt tr.group-row.sticky-on td{box-shadow:inset 0 -1px 0 var(--border-light)
 .group-count{font-weight:500;color:#64748b;margin-left:4px}
 
 .sub-row > td{background:#fff !important;font-size:11px;height:26px;color:#42536b;overflow:visible !important}
+.sysrow .sys-add{opacity:0;pointer-events:none;margin-left:10px;font-size:10.5px;transition:opacity .12s ease}
+.sysrow:hover .sys-add{opacity:1;pointer-events:auto}
 .task-row td{background:#fcfdff !important;font-size:11px;height:26px}
 .indent-1{padding-left:28px !important}
 .indent-2{padding-left:52px !important}
@@ -1070,6 +1106,7 @@ table.dt td.cell-upload{text-overflow:clip}
     <symbol id="i-funnel" viewBox="0 0 16 16"><path d="M2 2.6h12L9.7 7.7v5.2l-3.4-2V7.7L2 2.6Z" fill="currentColor"/></symbol>
     <symbol id="i-clip" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-link" viewBox="0 0 16 16"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l1.9-1.9a2.6 2.6 0 0 0-3.7-3.7l-.9.9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.8 8.5a2.6 2.6 0 0 0 3.7 3.7l.9-.9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></symbol>
+    <symbol id="i-external" viewBox="0 0 16 16"><path d="M6.8 3H3.7a.9.9 0 0 0-.9.9v8.4a.9.9 0 0 0 .9.9h8.4a.9.9 0 0 0 .9-.9V9.2" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M9.8 2.3h3.9v3.9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 2.5 7.2 8.8" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></symbol>
     <symbol id="i-users" viewBox="0 0 16 16"><circle cx="6" cy="5.4" r="2.2" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M2.2 13c0-2.1 1.7-3.4 3.8-3.4S9.8 10.9 9.8 13" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M10.6 4a2 2 0 0 1 0 3.9M11.6 9.9c1.3.4 2.2 1.5 2.2 3.1" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></symbol>
     <symbol id="i-eyes" viewBox="0 0 16 16"><path d="M1.4 8S3.7 4.2 8 4.2 14.6 8 14.6 8 12.3 11.8 8 11.8 1.4 8 1.4 8Z" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.7" fill="none" stroke="currentColor" stroke-width="1.25"/></symbol>
     <symbol id="i-empty" viewBox="0 0 32 32"><path d="M5 11.5 16 5l11 6.5v9L16 27 5 20.5v-9Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5 11.5 16 18l11-6.5M16 18v9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></symbol>
@@ -1264,6 +1301,27 @@ const I18N = {
     "admin.total": "条规则",
     "admin.planningMemo": "Planning memo 允许空容器",
     "spec.unassigned": "当前账号未关联该 Engagement 的专家工作",
+    "ap.btn": "Audit Procedure",
+    "ap.title": "Audit Procedure",
+    "ap.summary": "Summary",
+    "ap.progress": "Progress",
+    "ap.chartStatus": "程序状态",
+    "ap.chartSystem": "程序类型",
+    "ap.grouped": "按子系统分组",
+    "ap.empty": "暂无 Related System 任务",
+    "ap.createTask": "创建任务",
+    "ap.fPtype": "程序类型",
+    "ap.fSubcat": "子类别",
+    "ap.fEntity": "实体",
+    "ap.fKdc": "需要 KDC",
+    "ap.fNick": "任务昵称",
+    "ap.nickPh": "请输入任务昵称",
+    "ap.nickReq": "请填写任务昵称",
+    "ap.created": "任务已创建",
+    "ap.yes": "是",
+    "ap.no": "否",
+    "ap.tasks": "个任务",
+    "ap.completed": "已完成",
   },
   en: {
     "app.name": "Workpaper Station",
@@ -1367,6 +1425,27 @@ const I18N = {
     "admin.total": "rules",
     "admin.planningMemo": "Planning memo may be an empty container",
     "spec.unassigned": "This account has no specialist work on the engagement",
+    "ap.btn": "Audit Procedure",
+    "ap.title": "Audit Procedure",
+    "ap.summary": "Summary",
+    "ap.progress": "Progress",
+    "ap.chartStatus": "Procedure Status",
+    "ap.chartSystem": "Procedure types",
+    "ap.grouped": "Grouped",
+    "ap.empty": "No Related System task",
+    "ap.createTask": "Create Task",
+    "ap.fPtype": "Procedure Type",
+    "ap.fSubcat": "Sub Category",
+    "ap.fEntity": "Entity",
+    "ap.fKdc": "KDC Required",
+    "ap.fNick": "Task Nick Name",
+    "ap.nickPh": "Enter a task nick name",
+    "ap.nickReq": "Task nick name is required",
+    "ap.created": "Task created",
+    "ap.yes": "Yes",
+    "ap.no": "No",
+    "ap.tasks": "tasks",
+    "ap.completed": "completed",
   }
 };
 
@@ -1601,7 +1680,9 @@ const PROC_WPS = [
       { id: "R000000392302", status: "Completed", subcat: "" } ] },
     { system: "Alteryx D&A Service", tasks: [
       { id: "R000001106287", status: "Completed", subcat: "Alteryx D&A Routines - Sales Three-way Match Item Matching" },
-      { id: "R000001106288", status: "Completed", subcat: "Alteryx D&A Routines - Revenue to Cash Item Matching" } ] }
+      { id: "R000001106288", status: "Completed", subcat: "Alteryx D&A Routines - Revenue to Cash Item Matching" },
+      { id: "R000001106289", status: "Completed", subcat: "Alteryx D&A Routines - Trade Purchase Three-Way Match Item Matching" },
+      { id: "R000001106290", status: "In Progress", subcat: "Alteryx D&A Routines - Contract Liability to Cash Item Matching" } ] }
   ] }),
   proc({ id: "p02", ref: "SPD05001", name: "新增固定资产 — 检查 (PPE additions - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "MUS", samples: 40, status: "rejected", by: BY_FLORENCE, at: "2026/11/14 10:05:00", ver: 1, file: "SPD05001.PPE_additions.xlsx", history: [
     h("upload", BY_FLORENCE, "2026/11/14 10:05:00", { file: "SPD05001.PPE_additions.xlsx", ver: 1 }),
@@ -1613,34 +1694,76 @@ const PROC_WPS = [
       { id: "R000001000579", status: "In Progress", subcat: "PPE additions - vouch (SPD05001)" } ] }
   ] }),
   proc({ id: "p03", ref: "GOSPD05007", name: "固定资产 — 从系统检查至实物资产 (PPE - inspect from system to asset)", ptype: "TOD", sec: "h.ppe", sampling: "KSP", samples: 15, status: "none", systems: [
-    { system: "Vouching", tasks: [ { id: "R000001000580", status: "Completed", subcat: "PPE additions - vouch (SPD05001)" } ] }
+    { system: "Vouching", tasks: [
+      { id: "R000001000580", status: "Completed", subcat: "PPE additions - vouch (SPD05001)" },
+      { id: "R000001000581", status: "In Progress", subcat: "PPE additions - vouch (SPD05001)" } ] }
   ] }),
-  proc({ id: "p04", ref: "GOSPD05009", name: "固定资产处置与报废 — 检查 (PPE disposals and retirements - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "MUS", samples: 30, status: "none", systems: [] }),
-  proc({ id: "p05", ref: "SPD05006", name: "在建工程 — 从系统检查至实物资产 (PPE under construction - inspect from system to asset)", ptype: "TOD", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [] }),
-  proc({ id: "p06", ref: "SPD05004", name: "在建工程 — 评价分类 (PPE under construction - evaluate classification)", ptype: "TOD", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [] }),
-  proc({ id: "p07", ref: "SPD05008", name: "固定资产 — 识别 (PPE - identification)", ptype: "SAP", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [] }),
-  proc({ id: "p08", ref: "SPD05002", name: "资本化的固定资产内部成本 — 检查 (PPE internally capitalized costs - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "KSP", samples: 20, status: "none", systems: [] }),
-  proc({ id: "p09", ref: "SPO0701", name: "投资前推 (Investments roll-forward)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, tplCN: false, tplEN: true, status: "none", systems: [] }),
-  proc({ id: "p10", ref: "SPO0702", name: "投资明细账与总账的调节 (Investments sub-ledger to general ledger reconciliation)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, tplCN: false, tplEN: true, status: "none", systems: [] }),
-  proc({ id: "p11", ref: "TT GOSPT15004", name: "无形资产的处置或报废 — 检查 (Intangible assets disposals or retirements - vouch)", ptype: "TOD", sec: "j.intang", sampling: "MUS", samples: 12, status: "none", systems: [] }),
-  proc({ id: "p12", ref: "TT GOSPT15002", name: "单独取得的无形资产 — 评价初始确认和计量 (Separately acquired intangible assets)", ptype: "TOD", sec: "j.intang", sampling: "N/A", samples: null, status: "none", systems: [] }),
-  proc({ id: "p13", ref: "TT SPT15014", name: "无形资产的摊销费用 — 重新计算 (Intangible assets amortization expenses - recalculate)", ptype: "TOD", sec: "j.intang", sampling: "KSP", samples: 18, status: "none", systems: [] }),
+  proc({ id: "p04", ref: "GOSPD05009", name: "固定资产处置与报废 — 检查 (PPE disposals and retirements - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "MUS", samples: 30, status: "none", systems: [
+    { system: "Vouching", tasks: [
+      { id: "R000001000582", status: "Completed", subcat: "PPE disposals and retirements - vouch (GOSPD05009)" },
+      { id: "R000001000583", status: "In Progress", subcat: "PPE disposals and retirements - vouch (GOSPD05009)" } ] }
+  ] }),
+  proc({ id: "p05", ref: "SPD05006", name: "在建工程 — 从系统检查至实物资产 (PPE under construction - inspect from system to asset)", ptype: "TOD", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [
+    { system: "Vouching", tasks: [ { id: "R000001000584", status: "In Progress", subcat: "PPE under construction - inspect from system to asset (SPD05006)" } ] }
+  ] }),
+  proc({ id: "p06", ref: "SPD05004", name: "在建工程 — 评价分类 (PPE under construction - evaluate classification)", ptype: "TOD", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [
+    { system: "Vouching", tasks: [ { id: "R000001000585", status: "In Progress", subcat: "PPE under construction - evaluate classification (SPD05004)" } ] }
+  ] }),
+  proc({ id: "p07", ref: "SPD05008", name: "固定资产 — 识别 (PPE - identification)", ptype: "SAP", sec: "h.ppe", sampling: "N/A", samples: null, status: "none", systems: [
+    { system: "Journal Entries Testing", tasks: [ { id: "R000000861866", status: "Completed", subcat: "" } ] }
+  ] }),
+  proc({ id: "p08", ref: "SPD05002", name: "资本化的固定资产内部成本 — 检查 (PPE internally capitalized costs - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "KSP", samples: 20, status: "none", systems: [
+    { system: "Vouching", tasks: [
+      { id: "R000001000586", status: "Completed", subcat: "PPE internally capitalized costs - vouch (SPD05002)" },
+      { id: "R000001000587", status: "In Progress", subcat: "PPE internally capitalized costs - vouch (SPD05002)" } ] }
+  ] }),
+  proc({ id: "p09", ref: "SPO0701", name: "投资前推 (Investments roll-forward)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, tplCN: false, tplEN: true, status: "none", systems: [
+    { system: "Financial Statements Reconciliation and/or Formatting", tasks: [ { id: "R000000700121", status: "Completed", subcat: "Reconciliation" } ] }
+  ] }),
+  proc({ id: "p10", ref: "SPO0702", name: "投资明细账与总账的调节 (Investments sub-ledger to general ledger reconciliation)", ptype: "SAP", sec: "i.inv", sampling: "N/A", samples: null, tplCN: false, tplEN: true, status: "none", systems: [
+    { system: "Financial Statements Reconciliation and/or Formatting", tasks: [ { id: "R000000700122", status: "Completed", subcat: "Reconciliation" } ] }
+  ] }),
+  proc({ id: "p11", ref: "TT GOSPT15004", name: "无形资产的处置或报废 — 检查 (Intangible assets disposals or retirements - vouch)", ptype: "TOD", sec: "j.intang", sampling: "MUS", samples: 12, status: "none", systems: [
+    { system: "Vouching", tasks: [
+      { id: "R000001000588", status: "Completed", subcat: "Intangible assets disposals or retirements - vouch (TT GOSPT15004)" },
+      { id: "R000001000589", status: "In Progress", subcat: "Intangible assets disposals or retirements - vouch (TT GOSPT15004)" } ] }
+  ] }),
+  proc({ id: "p12", ref: "TT GOSPT15002", name: "单独取得的无形资产 — 评价初始确认和计量 (Separately acquired intangible assets)", ptype: "TOD", sec: "j.intang", sampling: "N/A", samples: null, status: "none", systems: [
+    { system: "Vouching", tasks: [ { id: "R000001000590", status: "In Progress", subcat: "Separately acquired intangible assets - evaluate initial recognition (TT GOSPT15002)" } ] }
+  ] }),
+  proc({ id: "p13", ref: "TT SPT15014", name: "无形资产的摊销费用 — 重新计算 (Intangible assets amortization expenses - recalculate)", ptype: "TOD", sec: "j.intang", sampling: "KSP", samples: 18, status: "none", systems: [
+    { system: "Vouching", tasks: [ { id: "R000001000591", status: "Completed", subcat: "Intangible assets amortization expenses - recalculate (TT SPT15014)" } ] }
+  ] }),
   proc({ id: "p14", ref: "SPD03001", name: "存货监盘 (Inventory observations)", ptype: "SAP", sec: "k.stock", sampling: "N/A", samples: null, status: "pending", by: BY_SIMONS, at: "2026/11/15 09:40:00", ver: 1, file: "SPD03001.Inventory_observations.xlsx", history: [
     h("upload", BY_SIMONS, "2026/11/15 09:40:00", { file: "SPD03001.Inventory_observations.xlsx", ver: 1 })
   ], systems: [
-    { system: "Physical attendance procedures", tasks: [ { id: "R000001123542", status: "Completed", subcat: "Inventory observations" } ] }
+    { system: "Physical attendance procedures", tasks: [
+      { id: "R000001123542", status: "Completed", subcat: "Inventory observations" },
+      { id: "R000001123543", status: "In Progress", subcat: "Inventory observations" } ] }
   ] }),
-  proc({ id: "p15", ref: "SPD03016", name: "盘点日存货截止 — 截止前 (Inventory cut-off at count date - before)", ptype: "TOD", sec: "k.stock", sampling: "KSP", samples: 35, status: "none", systems: [] }),
-  proc({ id: "p16", ref: "SPD03019", name: "存货截止性（期后）— 检查 (Inventory cut-off (after period end) - vouch)", ptype: "TOD", sec: "k.stock", sampling: "KSP", samples: 35, status: "none", systems: [] }),
-  proc({ id: "p17", ref: "SPD03025", name: "销售成本 — 检查 (Cost of goods sold - vouch)", ptype: "TOD", sec: "tod", sampling: "MUS", samples: 45, tplCN: false, tplEN: false, status: "none", systems: [] }),
+  proc({ id: "p15", ref: "SPD03016", name: "盘点日存货截止 — 截止前 (Inventory cut-off at count date - before)", ptype: "TOD", sec: "k.stock", sampling: "KSP", samples: 35, status: "none", systems: [
+    { system: "Vouching", tasks: [
+      { id: "R000001000592", status: "Completed", subcat: "Inventory cut-off at count date - before (SPD03016)" },
+      { id: "R000001000593", status: "In Progress", subcat: "Inventory cut-off at count date - before (SPD03016)" } ] }
+  ] }),
+  proc({ id: "p16", ref: "SPD03019", name: "存货截止性（期后）— 检查 (Inventory cut-off (after period end) - vouch)", ptype: "TOD", sec: "k.stock", sampling: "KSP", samples: 35, status: "none", systems: [
+    { system: "Vouching", tasks: [ { id: "R000001000594", status: "In Progress", subcat: "Inventory cut-off (after period end) - vouch (SPD03019)" } ] }
+  ] }),
+  proc({ id: "p17", ref: "SPD03025", name: "销售成本 — 检查 (Cost of goods sold - vouch)", ptype: "TOD", sec: "tod", sampling: "MUS", samples: 45, tplCN: false, tplEN: false, status: "none", systems: [
+    { system: "Vouching", tasks: [
+      { id: "R000001000595", status: "Completed", subcat: "Cost of goods sold - vouch (SPD03025)" },
+      { id: "R000001000596", status: "In Progress", subcat: "Cost of goods sold - vouch (SPD03025)" } ] }
+  ] }),
   proc({ id: "p18", ref: "GOSPD06004", name: "现金及现金等价物 — 银行存款余额调节表 (Cash and cash equivalents - bank reconciliation)", ptype: "SAP", sec: "m.cash", sampling: "N/A", samples: null, status: "modified", by: BY_SIMONS, at: "2026/11/13 16:15:00", ver: 2, file: "GOSPD06004.Bank_recon_v2.xlsx", history: [
     h("upload", BY_SIMONS, "2026/11/11 10:00:00", { file: "GOSPD06004.Bank_recon_v1.xlsx", ver: 1 }),
     h("review", "Zhou, Emily (SH/PTR)", "2026/11/12 14:20:00", { result: "reviewed" }),
     h("upload", BY_SIMONS, "2026/11/13 16:15:00", { file: "GOSPD06004.Bank_recon_v2.xlsx", ver: 2 })
   ], systems: [
-    { system: "KDC Service on Cash at Bank Work Paper", tasks: [ { id: "R000000392300", status: "Completed", subcat: "" } ] }
+    { system: "KDC Service on Cash at Bank Work Paper", tasks: [ { id: "R000000392304", status: "Completed", subcat: "" } ] }
   ] }),
-  proc({ id: "p19", ref: "GOSPD06403", name: "借款利息费用 — 重新计算 (Interest expense from borrowings - recalculate)", ptype: "TOD", sec: "m.cash", sampling: "KSP", samples: 10, status: "none", systems: [] }),
+  proc({ id: "p19", ref: "GOSPD06403", name: "借款利息费用 — 重新计算 (Interest expense from borrowings - recalculate)", ptype: "TOD", sec: "m.cash", sampling: "KSP", samples: 10, status: "none", systems: [
+    { system: "Journal Entries Testing", tasks: [ { id: "R000000861867", status: "In Progress", subcat: "" } ] }
+  ] }),
   proc({ id: "p20", ref: "GOSPD06008", name: "银行函证.大陆 (Bank confirmations.mainland)", ptype: "SAP", sec: "m.cash", sampling: "N/A", samples: null, status: "none", systems: [
     { system: "KDC Service on Audit Confirmations", tasks: [
       { id: "R000000392300", status: "Completed", subcat: "" },
@@ -2046,6 +2169,7 @@ const store = {
    Procedure Ref / Name and RMM stay blank because no procedure is matched. */
 const APPLYALL_ROWS = {};
 const APPLYALL_TASK = {};
+const APPLYALL_EXTRA = {};
 function applyAllProcRows() {
   return store.spr.filter(r => r.applyAll && r.active).map(r => {
     let row = APPLYALL_ROWS[r.rule];
@@ -2075,6 +2199,9 @@ function applyAllSystems(r) {
       APPLYALL_TASK[s.id] = "R" + String(900100000 + n).padStart(12, "0");
     }
     sys.tasks.push({ id: APPLYALL_TASK[s.id], status: "Completed", subcat: s.subcat || "" });
+  });
+  out.forEach(sys => {
+    (APPLYALL_EXTRA[r.rule + "|" + sys.system] || []).forEach(t => sys.tasks.push(t));
   });
   return out;
 }
@@ -2183,6 +2310,7 @@ const state = {
   collapsed: {},
   expandedProc: {},
   expandedSys: {},
+  expandedRmm: {},
   page: { enr: 1, spr: 1, sbr: 1, spw: 1, ptc: 1 },
   adminQ: { enr: "", spr: "", sbr: "", spw: "", ptc: "" },
   adminSec: { enr: "", spr: "", sbr: "", spw: "", ptc: "" },
@@ -2199,8 +2327,8 @@ const state = {
   wpflowDemo: null,
   autoExpandDone: false,
   ptcOpen: {},
-  colSort: { std: null, proc: null, spec: null, enr: null, spr: null, sbr: null, spw: null, ptc: null },
-  colFilter: { std: {}, proc: {}, spec: {}, enr: {}, spr: {}, sbr: {}, spw: {}, ptc: {} },
+  colSort: { std: null, proc: null, spec: null, enr: null, spr: null, sbr: null, spw: null, ptc: null, ap: null },
+  colFilter: { std: {}, proc: {}, spec: {}, enr: {}, spr: {}, sbr: {}, spw: {}, ptc: {}, ap: {} },
   showTree: false,
   langEditing: false,
   pageStd: 1,
@@ -2309,12 +2437,14 @@ function openDrawer(opts) {
   $("#drawerFoot").innerHTML = (opts.footMeta ? `<div class="drawer-foot-meta">${opts.footMeta}</div>` : "")
     + (opts.foot || `<button class="btn" onclick="closeDrawer()">${t("act.cancel")}</button>`);
   $("#drawer").classList.toggle("narrow", !!opts.narrow);
+  $("#drawer").classList.toggle("drawer-top", !!opts.top);
+  $("#drawerBackdrop").classList.toggle("drawer-top", !!opts.top);
   $("#drawerBackdrop").classList.add("show");
   $("#drawer").classList.add("show");
 }
 function closeDrawer() {
-  $("#drawer").classList.remove("show");
-  $("#drawerBackdrop").classList.remove("show");
+  $("#drawer").classList.remove("show", "drawer-top");
+  $("#drawerBackdrop").classList.remove("show", "drawer-top");
   draft = null;
   state.creating = null;
 }
@@ -2493,11 +2623,22 @@ const COLS = {
     name:    { en: "AAP Procedure Type", cn: "AAP 程序类别", sort: true, filter: false, get: r => r.name },
     subcats: { en: "Sub Category",       cn: "子类别",     sort: true, filter: false, get: r => (r.subcats || []).map(s => s.name).join(" / ") },
     status:  { en: "Status",             cn: "状态",       sort: true, filter: true,  get: r => t(r.active ? "admin.active" : "admin.inactive") }
+  },
+  /* Audit Procedure modal — Related System task table */
+  ap: {
+    taskId:  { en: "Procedure Task ID", cn: "子系统任务 ID", sort: true, filter: false, get: r => r.taskId },
+    system:  { en: "Procedure Type",    cn: "程序类型",     sort: true, filter: true,  get: r => r.system },
+    subcat:  { en: "Sub Category",      cn: "子类别",       sort: true, filter: true,  get: r => r.subcat || "" },
+    created: { en: "Created By / Date Time",      cn: "创建人 / 时间", sort: true, filter: false, twoLine: true, get: r => r.createdAt },
+    status:  { en: "Status",            cn: "状态",         sort: true, filter: true,  get: r => r.status },
+    updated: { en: "Last Updated By / Date Time", cn: "更新人 / 时间", sort: true, filter: false, twoLine: true, get: r => r.updatedAt },
+    oak:     { en: "OAK Number",        cn: "OAK 编号",     sort: true, filter: false, get: r => r.oak || "" },
+    proc:    { en: "Substantive Procedure", cn: "实质性程序", sort: true, filter: false, get: r => (r.procs || []).map(x => x.ref).filter(Boolean).join(", ") }
   }
 };
 function colOptions(table, key) {
   const set = new Set();
-  const SRC = { std: store.standard, proc: store.proc, spec: store.specialist, enr: store.enr, spr: store.spr, sbr: store.sbr, spw: store.spw, ptc: store.ptc };
+  const SRC = { std: store.standard, proc: store.proc, spec: store.specialist, enr: store.enr, spr: store.spr, sbr: store.sbr, spw: store.spw, ptc: store.ptc, ap: apState.rows };
   const src = SRC[table] || store.specialist;
   src.forEach(r => set.add(String(COLS[table][key].get(r))));
   return Array.from(set).sort((a, b) => a.localeCompare(b, state.lang === "zh" ? "zh" : "en", { numeric: true }));
@@ -2522,37 +2663,44 @@ function applyColState(rows, table) {
   }
   return out;
 }
-function thCol(table, key, extra) {
+function thCol(table, key, extra, menuFn) {
   const c = COLS[table][key];
   const sort = state.colSort[table];
   const isSorted = sort && sort.k === key;
   const filtered = (state.colFilter[table][key] || []).length > 0;
   const cls = "col-btn" + (isSorted ? " sorted-" + sort.dir : "") + (filtered ? " filtered" : "");
-  return `<th ${extra || ""}><span class="th-cell"><span class="th-txt">${esc(state.lang === "zh" ? c.cn : c.en)}</span><button class="${cls}" title="${esc(state.lang === "zh" ? "筛选 / 排序" : "Filter / sort")}" onclick="event.stopPropagation();openColMenu('${table}','${key}',this)"><span class="tris"><i class="tu">▲</i><i class="td">▼</i></span><span class="funnel">${ico("i-funnel", "ico-xs")}</span></button></span></th>`;
+  const label = state.lang === "zh" ? c.cn : c.en;
+  const i = c.twoLine ? label.indexOf(" / ") : -1;
+  const labelHTML = i >= 0 ? `${esc(label.slice(0, i + 2))}<br>${esc(label.slice(i + 3))}` : esc(label);
+  return `<th ${extra || ""}><span class="th-cell"><span class="th-txt">${labelHTML}</span><button class="${cls}" title="${esc(state.lang === "zh" ? "筛选 / 排序" : "Filter / sort")}" onclick="event.stopPropagation();${menuFn || "openColMenu"}('${table}','${key}',this)"><span class="tris"><i class="tu">▲</i><i class="td">▼</i></span><span class="funnel">${ico("i-funnel", "ico-xs")}</span></button></span></th>`;
 }
-function openColMenu(table, key, btn) {
+function openColMenu(table, key, btn, opts) {
   closeColMenu();
+  const o = opts || {};
+  const sortFn = o.sortFn || "setColSort";
+  const filterFn = o.filterFn || "applyColFilter";
+  const clearFn = o.clearFn || "clearColFilter";
   const c = COLS[table][key];
   const rect = btn.getBoundingClientRect();
   const cur = state.colFilter[table][key] || [];
   const sort = state.colSort[table];
-  const opts = c.filter ? colOptions(table, key) : [];
+  const options = c.filter ? colOptions(table, key) : [];
   const box = document.createElement("div");
   box.className = "col-menu";
   box.id = "colMenu";
   box.style.left = Math.min(rect.left, window.innerWidth - 240) + "px";
   box.style.top = (rect.bottom + 4) + "px";
   box.innerHTML = `
-    ${c.sort ? `<div class="col-menu-row" onclick="setColSort('${table}','${key}','asc')"><span>↑</span>${esc(state.lang === "zh" ? "升序排列" : "Sort ascending")}</div>
-               <div class="col-menu-row" onclick="setColSort('${table}','${key}','desc')"><span>↓</span>${esc(state.lang === "zh" ? "降序排列" : "Sort descending")}</div>
-               ${sort && sort.k === key ? `<div class="col-menu-row muted" onclick="setColSort('${table}','${key}','none')"><span>×</span>${esc(state.lang === "zh" ? "取消排序" : "Clear sort")}</div>` : ""}` : ""}
+    ${c.sort ? `<div class="col-menu-row" onclick="${sortFn}('${table}','${key}','asc')"><span>↑</span>${esc(state.lang === "zh" ? "升序排列" : "Sort ascending")}</div>
+               <div class="col-menu-row" onclick="${sortFn}('${table}','${key}','desc')"><span>↓</span>${esc(state.lang === "zh" ? "降序排列" : "Sort descending")}</div>
+               ${sort && sort.k === key ? `<div class="col-menu-row muted" onclick="${sortFn}('${table}','${key}','none')"><span>×</span>${esc(state.lang === "zh" ? "取消排序" : "Clear sort")}</div>` : ""}` : ""}
     ${c.filter ? `<div class="col-menu-sep"></div>
       <div class="col-menu-list">
-        ${opts.map(o => `<label class="col-menu-item"><input type="checkbox" value="${esc(o)}" ${cur.length === 0 || cur.indexOf(o) >= 0 ? "checked" : ""}>${esc(o)}</label>`).join("")}
+        ${options.map(o => `<label class="col-menu-item"><input type="checkbox" value="${esc(o)}" ${cur.length === 0 || cur.indexOf(o) >= 0 ? "checked" : ""}>${esc(o)}</label>`).join("")}
       </div>
       <div class="col-menu-foot">
-        <button class="btn btn-xs" onclick="clearColFilter('${table}','${key}')">${esc(state.lang === "zh" ? "清除" : "Clear")}</button>
-        <button class="btn btn-primary btn-xs" onclick="applyColFilter('${table}','${key}')">${esc(state.lang === "zh" ? "确定" : "Apply")}</button>
+        <button class="btn btn-xs" onclick="${clearFn}('${table}','${key}')">${esc(state.lang === "zh" ? "清除" : "Clear")}</button>
+        <button class="btn btn-primary btn-xs" onclick="${filterFn}('${table}','${key}')">${esc(state.lang === "zh" ? "确定" : "Apply")}</button>
       </div>` : ""}`;
   document.body.appendChild(box);
   box.addEventListener("click", e => e.stopPropagation());
@@ -2625,7 +2773,12 @@ function closeModal() {
   /* covers both the replace-confirm modal and the reject dialog */
   document.querySelectorAll(".modal-overlay").forEach(el => el.remove());
 }
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  /* when a drawer sits on top of a modal, Escape closes the drawer first */
+  if ($("#drawer").classList.contains("show")) { closeDrawer(); return; }
+  closeModal();
+});
 
 function pickFile(kind, id) {
   state.pendingUpload = { kind, id };
@@ -3260,17 +3413,22 @@ function groupSelect(val, fn, keys) {
     </select>`;
 }
 const GROUP_PAGE = 10;
-function groupPagerHTML(gid, total, page, pages) {
+function groupPagerHTML(gid, total, page, pages, pageFn) {
   const escGid = gid.replace(/'/g, "\\'");
+  const fn = pageFn || "setGroupPage";
   /* antd-style simple pager:  ‹ 1 / 3 ›  */
   return `<span class="simple-pager">
-    <button class="sp-btn" ${page <= 1 ? "disabled" : ""} onclick="event.stopPropagation();setGroupPage('${escGid}',${page - 1})">‹</button>
+    <button class="sp-btn" ${page <= 1 ? "disabled" : ""} onclick="event.stopPropagation();${fn}('${escGid}',${page - 1})">‹</button>
     <span class="sp-page"><b>${page}</b> / ${pages}</span>
-    <button class="sp-btn" ${page >= pages ? "disabled" : ""} onclick="event.stopPropagation();setGroupPage('${escGid}',${page + 1})">›</button>
+    <button class="sp-btn" ${page >= pages ? "disabled" : ""} onclick="event.stopPropagation();${fn}('${escGid}',${page + 1})">›</button>
   </span>`;
 }
 function setGroupPage(gid, p) { state.groupPage[gid] = p; render(); }
-function groupRenderer(rows, groupBy, keyFn, labelFn, prefix, rowFn, span, pillCls) {
+function groupRenderer(rows, groupBy, keyFn, labelFn, prefix, rowFn, span, pillCls, opts) {
+  const o = opts || {};
+  const st = o.groupState || state;
+  const toggleFn = o.toggleFn || "toggleGroup";
+  const pageFn = o.pageFn || "setGroupPage";
   if (groupBy === "none") return `<tbody>${rows.map(rowFn).join("")}</tbody>`;
   const order = [], map = {};
   rows.forEach(r => {
@@ -3280,16 +3438,16 @@ function groupRenderer(rows, groupBy, keyFn, labelFn, prefix, rowFn, span, pillC
   });
   return order.map(k => {
     const gid = prefix + ":" + k;
-    const closed = !!state.collapsed[gid];
+    const closed = !!st.collapsed[gid];
     const label = labelFn(k);
     const all = map[k];
     const pages = Math.max(1, Math.ceil(all.length / GROUP_PAGE));
-    const page = Math.min(state.groupPage[gid] || 1, pages);
+    const page = Math.min(st.groupPage[gid] || 1, pages);
     const shown = all.slice((page - 1) * GROUP_PAGE, page * GROUP_PAGE);
     let html = `<tbody class="grp-body"><tr class="group-row ${closed ? "closed" : ""}"><td colspan="${span || 1}">
         <div class="group-head-row">
-          <span class="g-toggle" onclick="toggleGroup('${gid.replace(/'/g, "\\'")}')"><span class="car">▾</span><span class="tag tag-xs ${pillCls ? pillCls(k) : "tag-info"} gtag"><span>${esc(label)}</span></span><span class="group-count">(${all.length})</span></span>
-          ${closed ? "" : groupPagerHTML(gid, all.length, page, pages)}
+          <span class="g-toggle" onclick="${toggleFn}('${gid.replace(/'/g, "\\'")}')"><span class="car">▾</span><span class="tag tag-xs ${pillCls ? pillCls(k) : "tag-info"} gtag"><span>${esc(label)}</span></span><span class="group-count">(${all.length})</span></span>
+          ${closed ? "" : groupPagerHTML(gid, all.length, page, pages, pageFn)}
         </div>
       </td></tr>`;
     if (!closed) html += shown.map(rowFn).join("");
@@ -3329,8 +3487,11 @@ function procRow(p) {
       : `<input class="input sm" style="width:64px" type="number" min="1" value="${p.samples || 1}" onchange="setSamples('${p.id}',this.value)">`);
   /* RMM comes from the API; one procedure may map to several RMMs — every pair
      is rendered as an ID line followed by its description line */
-  const rmmHTML = (p.rmms && p.rmms.length)
-    ? `<div class="stack-cell">${p.rmms.map(x => `<div class="sc-l1" title="${esc(x.id)}">${esc(x.id)}</div>${x.desc ? `<div class="sc-l2" title="${esc(x.desc)}">${esc(x.desc)}</div>` : ""}`).join("")}</div>`
+  const rmmList = p.rmms || [];
+  const rmmOpen = !!state.expandedRmm[p.id];
+  const rmmShown = rmmOpen ? rmmList : rmmList.slice(0, 1);
+  const rmmHTML = rmmList.length
+    ? `<div class="stack-cell">${rmmShown.map(x => `<div class="sc-l1" title="${esc(x.id)}">${esc(x.id)}</div>${x.desc ? `<div class="sc-l2" title="${esc(x.desc)}">${esc(x.desc)}</div>` : ""}`).join("")}</div>${rmmList.length > 1 ? `<button class="btn-link more-link" onclick="toggleRmm('${p.id}')">${esc(rmmOpen ? (state.lang === "zh" ? "收起" : "less") : (state.lang === "zh" ? `展开 +${rmmList.length - 1}` : `+${rmmList.length - 1} more`))}</button>` : ""}`
     : '<span class="hint">—</span>';
   const procDispName = procLangName(p, state.templateLang);
   const main = `<tr class="${open ? "row-selected" : ""}">
@@ -3361,7 +3522,7 @@ function procRow(p) {
             <td><span class="ind"><button class="expander ${sysOpen ? "open" : ""}" onclick="toggleSys('${sid}')"><span class="tri"></span></button>
               <span class="sys-name">${esc(s.system)}</span></span></td>
             <td></td>
-            <td><span class="muted">${tasks.length} ${state.lang === "zh" ? "个任务实例" : "task instance(s)"}</span></td>
+            <td><span class="muted">${tasks.length} ${state.lang === "zh" ? "个任务实例" : "task instance(s)"}</span><button class="btn-link sys-add" onclick="openCreateTask('${esc(s.system)}','${p.id}')">${ico("i-plus", "ico-xs")}<span>${esc(t("ap.createTask"))}</span></button></td>
             <td></td>
           </tr>`;
       if (sysOpen) {
@@ -3392,6 +3553,414 @@ function procRow(p) {
     </table></div>
   </td></tr>`;
   return main + detail;
+}
+
+/* =========================================================================
+   AUDIT PROCEDURE MODAL — Related System task detail (reuses kpi/rs-*,
+   dt table and group-row visuals from the Project Team View)
+   ========================================================================= */
+const AP_TAG_HUES = [0,138,275,53,190,328,105,243,20,158,295,73,210,348,125,263,40,178,315,93,230,8,145,283,60,198,335,113,250,28,165,303,80,218,355,133,270,48,185,323];
+const AP_NAME_POOL = [BY_SIMONS, BY_VIVIEN, BY_FLORENCE, BY_KEVIN, BY_SH2, BY_BJ2, BY_BJ4, BY_BJ3];
+const AP_UPD_POOL = AP_NAME_POOL.concat(["Zhou, Emily (SH/PTR)", "Yang, David (BJ/PTR)"]);
+/* create-task drawer: Related System list and its sub categories come from the subsystem map */
+const AP_PTYPES = Array.from(new Set(SUBSYS_MAP.map(x => x.ptype)));
+const AP_SUBCATS = AP_PTYPES.reduce((m, p) => {
+  m[p] = Array.from(new Set(SUBSYS_MAP.filter(x => x.ptype === p).map(x => x.subcat)));
+  return m;
+}, {});
+/* per v1.1 API-proc rules: one subsystem type + category can map to several substantive procedures */
+const AP_PROC_MAP = SUBSYS_MAP.reduce((m, x) => {
+  if (!x.refs || !x.refs.length) return m;
+  m[x.ptype + "|" + (x.subcat || "")] = x.refs.map(ref => {
+    const spr = store.spr.find(s => s.ref === ref);
+    return { ref: ref, name: spr ? (spr.name || spr.pnameEn || spr.pnameCn || "") : "" };
+  });
+  return m;
+}, {});
+let apState = { grouped: true, collapsed: {}, page: {}, listPage: 1, expandedProcs: {}, rows: [] };
+let apNewSeq = 0;
+let apCreatedTasks = [];
+
+function apHash(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+/* same hue family as the tag-cN pill palette, mid-tone for the donut slices */
+function apSysIndex(key) { return apHash(key) % AP_TAG_HUES.length; }
+/* short labels used in the Summary cards */
+function apSysLabel(name) {
+  if (name === "Journal Entries Testing") return "JE Testing";
+  if (name === "Financial Statements Reconciliation and/or Formatting") return "FS Reconciliation";
+  if (name === "Physical attendance procedures") return "Physical attendance";
+  if (name === "KDC Service on Audit Confirmations") return "Confirmations";
+  if (name === "KDC Service on Cash at Bank Work Paper") return "Cash at bank";
+  if (name === "Alteryx D&A Service") return "D&A Service";
+  return name;
+}
+function apSysColor(key) { return `hsl(${AP_TAG_HUES[apSysIndex(key)]},45%,45%)`; }
+function apSysPill(key) { return "tag-c" + (apSysIndex(key) + 1); }
+function apPad(n) { return String(n).padStart(2, "0"); }
+function apFmtDate(d) {
+  return `${d.getFullYear()}/${apPad(d.getMonth() + 1)}/${apPad(d.getDate())} ${apPad(d.getHours())}:${apPad(d.getMinutes())}:00`;
+}
+function auditProcRows() {
+  const byId = new Map();
+  store.proc.forEach(p => {
+    (p.systems || []).forEach(s => {
+      (s.tasks || []).forEach(tk => {
+        let row = byId.get(tk.id);
+        if (!row) {
+          const h = apHash(tk.id);
+          const created = new Date(2026, 9, 24 + (h % 28), 9 + ((h >>> 8) % 9), (h >>> 16) % 60, 0);
+          let updated = new Date(created.getTime() + ((h >>> 20) % 4) * 86400000 + ((h >>> 25) % 7) * 3600000);
+          const cap = new Date(2026, 10, 21, 18, 0, 0);
+          if (updated > cap) updated = cap;
+          row = {
+            taskId: tk.id, system: s.system, subcat: tk.subcat || "", status: tk.status,
+            procs: [], nickname: tk.nickname || "", entity: tk.entity || "", kdc: !!tk.kdc,
+            createdBy: AP_NAME_POOL[h % AP_NAME_POOL.length],
+            createdAt: apFmtDate(created),
+            updatedBy: AP_UPD_POOL[(h >>> 12) % AP_UPD_POOL.length],
+            updatedAt: apFmtDate(updated),
+            oak: null
+          };
+          byId.set(tk.id, row);
+        }
+        if (p.ref && !row.procs.some(x => x.ref === p.ref)) row.procs.push({ ref: p.ref, name: p.name || "" });
+      });
+    });
+  });
+  /* tasks created from the drawer persist for the session */
+  apCreatedTasks.forEach(r => { if (!byId.has(r.taskId)) byId.set(r.taskId, r); });
+  const rows = Array.from(byId.values());
+  /* v1.1 rule: the link is by subsystem type + category, so one task can serve several procedures */
+  rows.forEach(r => {
+    const mapped = AP_PROC_MAP[r.system + "|" + (r.subcat || "")];
+    if (mapped && mapped.length) r.procs = mapped.map(x => ({ ref: x.ref, name: x.name }));
+    if (!r.procs || !r.procs.length) r.procs = [{ ref: r.procRef || "", name: r.procName || "" }];
+    r.procRef = r.procs[0].ref || "";
+    r.procName = r.procs[0].name || "";
+  });
+  /* OAK Number: completed rows only, running 5-digit sequence per creation date */
+  const byDate = {};
+  rows.filter(r => r.status === "Completed").forEach(r => {
+    const k = r.createdAt.slice(0, 10).replace(/\//g, "");
+    (byDate[k] = byDate[k] || []).push(r);
+  });
+  Object.keys(byDate).forEach(k => {
+    byDate[k].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    byDate[k].forEach((r, i) => { r.oak = k + String(i + 1).padStart(5, "0"); });
+  });
+  return rows;
+}
+
+function apRingHTML(dist, holeBold, holeLabel, rightHTML) {
+  const total = dist.reduce((s, d) => s + d.n, 0) || 1;
+  let acc = 0;
+  const stops = dist.filter(d => d.n).map(d => {
+    const from = (acc / total) * 100; acc += d.n;
+    return `${d.color} ${from}% ${(acc / total) * 100}%`;
+  }).join(", ");
+  const legend = dist.map(d => `<span class="lg"><span class="dot" style="background:${d.color}"></span><span class="name" title="${esc(d.name)}">${esc(d.name)}</span><b>${d.n}</b><span class="rs-frac">${Math.round((d.n / total) * 100)}%</span></span>`).join("");
+  return `<div class="rs-body"><div class="rs-left">
+      <span class="rs-ring" style="background:conic-gradient(${stops || "#e7eef7 0 100%"})"><span class="rs-hole"><b>${holeBold}</b><i>${esc(holeLabel)}</i></span></span>
+      <div class="rs-legend">${legend}</div>
+    </div>${rightHTML ? `<div class="rs-right ap-status-nums">${rightHTML}</div>` : ""}</div>`;
+}
+function apSummaryHTML() {
+  const rows = apState.rows;
+  if (!rows.length) return `<div class="empty"><div class="empty-desc">${esc(t("ap.empty"))}</div></div>`;
+  const completed = rows.filter(r => r.status === "Completed").length;
+  const statusDist = [
+    { name: "In Progress", color: "#dd8b22", n: rows.length - completed },
+    { name: "Completed", color: "#2aa99a", n: completed }
+  ].filter(d => d.n);
+  const sysOrder = [], sysMap = {};
+  rows.forEach(r => { if (!sysMap[r.system]) { sysMap[r.system] = 0; sysOrder.push(r.system); } sysMap[r.system]++; });
+  const sysDist = sysOrder.map(s => ({ name: s, color: apSysColor(s), n: sysMap[s] })).sort((a, b) => b.n - a.n);
+  /* per procedure type status percentages — numbers only, two rows under the chart */
+  const statusGrid = `<div class="ap-status-grid">` + sysDist.map(d => {
+    const list = rows.filter(r => r.system === d.name);
+    const c = list.filter(r => r.status === "Completed").length;
+    const cp = list.length ? Math.round((c / list.length) * 100) : 0;
+    return `<span class="ap-sg-item" title="${esc(d.name)}"><span class="ap-sg-name">${esc(apSysLabel(d.name))}</span><span class="ap-sg-pct">(<b class="ap-sg-prog">${100 - cp}%</b><span class="ap-sg-sep">/</span><b class="ap-sg-ok">${cp}%</b>)</span></span>`;
+  }).join("") + `</div>`;
+  return `<div class="kpi-row ap-two">
+    <div class="kpi k-ok ap-chart ap-chart-split">
+      <div class="kpi-label"><span>${esc(t("ap.chartStatus"))}</span></div>
+      ${apRingHTML(statusDist, rows.length, t("ap.tasks"))}
+      ${statusGrid}
+    </div>
+    <div class="kpi ap-chart">
+      <div class="kpi-label"><span>${esc(t("ap.chartSystem"))}</span></div>
+      ${apRingHTML(sysDist, sysDist.length, state.lang === "zh" ? "类子系统" : "systems")}
+    </div>
+  </div>`;
+}
+
+function apRow(r) {
+  const stack = (name, dt) => `<div class="stack-cell"><div class="sc-l1" title="${esc(name)}">${esc(name)}</div><div class="sc-l2" title="${esc(dt)}">${esc(dt)}</div></div>`;
+  return `<tr>
+    <td><a class="task-link" href="javascript:void(0)" title="${esc(state.lang === "zh" ? "跳转到子系统任务" : "Open subsystem task")}" onclick="toast('Opening subsystem task ${esc(r.taskId)}…','info')">${ico("i-link", "ico-sm")}<span>${esc(r.taskId)}</span></a>${r.nickname ? `<div class="ap-nick" title="${esc(r.nickname + (r.entity ? " · " + r.entity : "") + (r.kdc ? " · KDC" : ""))}">${esc(r.nickname)}${r.kdc ? " · KDC" : ""}</div>` : ""}</td>
+    ${apState.grouped ? "" : `<td>${esc(r.system)}</td>`}
+    <td><span class="cell-tight" style="max-width:300px" title="${esc(r.subcat)}">${r.subcat ? esc(r.subcat) : '<span class="hint">—</span>'}</span></td>
+    <td>${stack(r.createdBy, r.createdAt)}</td>
+    <td><span class="tag tag-xs ${r.status === "Completed" ? "tag-success" : "tag-warning"}">${esc(r.status)}</span></td>
+    <td>${stack(r.updatedBy, r.updatedAt)}</td>
+    <td>${r.oak ? `<span class="ap-oak">${esc(r.oak)}</span>` : '<span class="hint">—</span>'}</td>
+    <td>${(() => {
+      const procs = (r.procs || []).filter(x => x.ref || x.name);
+      if (!procs.length) return '<span class="hint">—</span>';
+      const open = !!apState.expandedProcs[r.taskId];
+      const shown = open ? procs : procs.slice(0, 1);
+      const more = procs.length > 1
+        ? `<button class="btn-link more-link" onclick="apToggleProcs('${esc(r.taskId)}')">${esc(open ? (state.lang === "zh" ? "收起" : "less") : (state.lang === "zh" ? `展开 +${procs.length - 1}` : `+${procs.length - 1} more`))}</button>`
+        : "";
+      return `<div class="ap-procs">${shown.map(x => `<div class="stack-cell"><div class="sc-l1" title="${esc(x.ref)}">${esc(x.ref || "—")}</div><div class="sc-l2" title="${esc(x.name)}">${esc(x.name)}</div></div>`).join("")}</div>${more}`;
+    })()}</td>
+  </tr>`;
+}
+function apTableHTML() {
+  const grouped = apState.grouped;
+  const span = grouped ? 7 : 8;
+  const rows = applyColState(apState.rows, "ap");
+  /* group order follows first appearance; without an explicit column sort, rows inside a group go newest first */
+  const order = [], map = {};
+  rows.forEach(r => { if (!map[r.system]) { map[r.system] = []; order.push(r.system); } map[r.system].push(r); });
+  if (!state.colSort.ap) order.forEach(k => map[k].sort((a, b) => b.createdAt.localeCompare(a.createdAt)));
+  const sorted = order.flatMap(k => map[k]);
+  const thead = `<thead><tr>
+    ${thCol("ap", "taskId", 'style="width:158px"', "apOpenColMenu")}
+    ${grouped ? "" : thCol("ap", "system", 'style="width:178px"', "apOpenColMenu")}
+    ${thCol("ap", "subcat", "", "apOpenColMenu")}
+    ${thCol("ap", "created", 'style="width:150px"', "apOpenColMenu")}
+    ${thCol("ap", "status", 'style="width:92px"', "apOpenColMenu")}
+    ${thCol("ap", "updated", 'style="width:150px"', "apOpenColMenu")}
+    ${thCol("ap", "oak", 'style="width:124px"', "apOpenColMenu")}
+    ${thCol("ap", "proc", 'style="width:260px"', "apOpenColMenu")}
+  </tr></thead>`;
+  let body;
+  if (!rows.length) {
+    body = `<tbody><tr><td colspan="${span}"><span class="hint">${esc(t("ap.empty"))}</span></td></tr></tbody>`;
+  } else if (grouped) {
+    body = groupRenderer(sorted, "sys", r => r.system, k => k, "ap", apRow, span, k => apSysPill(k), {
+      toggleFn: "apToggleGroup", pageFn: "apSetGroupPage",
+      groupState: { collapsed: apState.collapsed, groupPage: apState.page }
+    });
+  } else {
+    /* ungrouped: 10 rows per page */
+    const pages = Math.max(1, Math.ceil(sorted.length / GROUP_PAGE));
+    const page = Math.min(apState.listPage || 1, pages);
+    body = `<tbody>${sorted.slice((page - 1) * GROUP_PAGE, page * GROUP_PAGE).map(apRow).join("")}</tbody>`;
+  }
+  return `<table class="dt compact">${thead}${body}</table>`;
+}
+function apPagerHTML() {
+  const total = applyColState(apState.rows, "ap").length;
+  const pages = Math.max(1, Math.ceil(total / GROUP_PAGE));
+  const page = Math.min(apState.listPage || 1, pages);
+  return `<div class="pagination">
+      <span>${total} ${esc(state.lang === "zh" ? "条记录" : "records")}</span>
+      <span class="spacer"></span>
+      <span class="simple-pager">
+        <button class="sp-btn" ${page <= 1 ? "disabled" : ""} onclick="apSetPage(${page - 1})">‹</button>
+        <span class="sp-page"><b>${page}</b> / ${pages}</span>
+        <button class="sp-btn" ${page >= pages ? "disabled" : ""} onclick="apSetPage(${page + 1})">›</button>
+      </span>
+    </div>`;
+}
+function apProgressHTML() {
+  const rows = applyColState(apState.rows, "ap");
+  const completed = rows.filter(r => r.status === "Completed").length;
+  return `<div class="ap-toolbar">
+      <span class="muted">${esc(`${rows.length} ${t("ap.tasks")} · ${completed} ${t("ap.completed")}`)}</span>
+      <span class="spacer"></span>
+      <button class="btn btn-xs btn-primary" onclick="openCreateTask()">${ico("i-plus", "ico-sm")}<span>${esc(t("ap.createTask"))}</span></button>
+      <span class="muted">${esc(t("group.by"))}</span>
+      <select class="select sm" onchange="apSetGrouped(this.value === 'sys')">
+        <option value="sys" ${apState.grouped ? "selected" : ""}>${esc(t("ap.grouped"))}</option>
+        <option value="none" ${apState.grouped ? "" : "selected"}>${esc(t("group.none"))}</option>
+      </select>
+    </div>
+    <div class="table-wrap" id="apTableWrap">${apTableHTML()}</div>
+    <div id="apPager">${apState.grouped ? "" : apPagerHTML()}</div>`;
+}
+function apRefreshTable() {
+  const el = document.getElementById("apTableWrap");
+  if (el) el.innerHTML = apTableHTML();
+  const pager = document.getElementById("apPager");
+  if (pager) pager.innerHTML = apState.grouped ? "" : apPagerHTML();
+}
+function apSetGrouped(v) {
+  apState.grouped = v;
+  apState.listPage = 1;
+  const el = document.getElementById("apProgress");
+  if (el) el.innerHTML = apProgressHTML();
+}
+function apSetPage(p) { apState.listPage = p; apRefreshTable(); }
+/* column sort / filter: same menus as the page tables, but re-render only the modal */
+function apOpenColMenu(table, key, btn) {
+  openColMenu("ap", key, btn, { sortFn: "apSetColSort", filterFn: "apApplyColFilter", clearFn: "apClearColFilter" });
+}
+function apRerenderProgress() {
+  const el = document.getElementById("apProgress");
+  if (el) el.innerHTML = apProgressHTML();
+}
+function apSetColSort(table, key, dir) {
+  state.colSort.ap = dir === "none" ? null : { k: key, dir };
+  apState.listPage = 1;
+  closeColMenu();
+  apRerenderProgress();
+}
+function apApplyColFilter(table, key) {
+  const box = document.getElementById("colMenu");
+  const all = colOptions("ap", key);
+  const checked = box ? Array.from(box.querySelectorAll("input[type=checkbox]")).filter(i => i.checked).map(i => i.value) : [];
+  state.colFilter.ap[key] = checked.length === all.length ? [] : checked;
+  apState.listPage = 1;
+  closeColMenu();
+  apRerenderProgress();
+}
+function apClearColFilter(table, key) {
+  state.colFilter.ap[key] = [];
+  apState.listPage = 1;
+  closeColMenu();
+  apRerenderProgress();
+}
+
+/* ---------- create task drawer ---------- */
+function apSubcatOptions(ptype) {
+  const list = AP_SUBCATS[ptype] || [""];
+  return list.map(s => `<option value="${esc(s)}">${s ? esc(s) : "—"}</option>`).join("");
+}
+function apFillSubcats(ptype) {
+  const el = $("#apCreateSubcat");
+  if (el) el.innerHTML = apSubcatOptions(ptype);
+}
+function openCreateTask(fixedPtype, procId) {
+  const zh = state.lang === "zh";
+  const ptype0 = fixedPtype || AP_PTYPES[0];
+  const ptypeField = fixedPtype
+    ? `<div class="field"><span class="field-label">${esc(t("ap.fPtype"))} <span class="req">*</span></span>
+        <input class="input" id="apCreatePtype" readonly value="${esc(fixedPtype)}">
+      </div>`
+    : `<div class="field"><span class="field-label">${esc(t("ap.fPtype"))} <span class="req">*</span></span>
+        <select class="select" id="apCreatePtype" onchange="apFillSubcats(this.value)">
+          ${AP_PTYPES.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join("")}
+        </select>
+      </div>`;
+  const body = `<div class="stack">
+      ${ptypeField}
+      <input type="hidden" id="apCreateProc" value="${esc(procId || "")}">
+      <div class="field"><span class="field-label">${esc(t("ap.fSubcat"))}</span>
+        <select class="select" id="apCreateSubcat">${apSubcatOptions(ptype0)}</select>
+      </div>
+      <div class="field"><span class="field-label">${esc(t("ap.fEntity"))} <span class="req">*</span></span>
+        <select class="select" id="apCreateEntity">
+          ${OPINION_PROFILES.map(p => `<option value="${esc(p.entity)}">${esc(zh ? p.entityCn : p.entity)}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field"><span class="field-label">${esc(t("ap.fKdc"))}</span>
+        <div class="ap-radio-row">
+          <label class="check"><input type="radio" name="apKdc" value="no" checked>${esc(t("ap.no"))}</label>
+          <label class="check"><input type="radio" name="apKdc" value="yes">${esc(t("ap.yes"))}</label>
+        </div>
+      </div>
+      <div class="field"><span class="field-label">${esc(t("ap.fNick"))} <span class="req">*</span></span>
+        <input class="input" id="apCreateNick" maxlength="60" placeholder="${esc(t("ap.nickPh"))}">
+        <span class="field-help">${esc(zh ? "用于在任务列表中快速识别该子系统任务" : "Shown under the Procedure Task ID in the task list")}</span>
+      </div>
+    </div>`;
+  openDrawer({
+    title: esc(t("ap.createTask")),
+    body,
+    top: true,
+    foot: `<button class="btn" onclick="closeDrawer()">${esc(t("act.cancel"))}</button>
+           <button class="btn btn-primary" onclick="apCreateTaskSubmit()">${esc(t("ap.createTask"))}</button>`
+  });
+  setTimeout(() => { const el = $("#apCreateNick"); if (el) el.focus(); }, 30);
+}
+function apCreateTaskSubmit() {
+  const ptype = $("#apCreatePtype").value;
+  const subcat = $("#apCreateSubcat").value;
+  const entity = $("#apCreateEntity").value;
+  const kdcEl = document.querySelector('input[name="apKdc"]:checked');
+  const kdc = !!kdcEl && kdcEl.value === "yes";
+  const nick = ($("#apCreateNick").value || "").trim();
+  const procId = ($("#apCreateProc") || {}).value || "";
+  if (!nick) { toast(t("ap.nickReq"), "error"); $("#apCreateNick").focus(); return; }
+  apNewSeq += 1;
+  const ts = apFmtDate(new Date());
+  const user = currentRole().uploader || "Wang, Simons (KDiNJ/TECH)";
+  const newRow = {
+    taskId: "R0009" + String(apNewSeq).padStart(8, "0"),
+    system: ptype, subcat: subcat, status: "In Progress", procRef: "", procName: "",
+    createdBy: user, createdAt: ts, updatedBy: user, updatedAt: ts,
+    oak: null, nickname: nick, entity: entity, kdc: kdc
+  };
+  /* created from a Related System row: attach the task to that procedure's subsystem so the main table count updates */
+  let addedToStore = false;
+  if (procId) {
+    const taskObj = { id: newRow.taskId, status: "In Progress", subcat: subcat, nickname: nick, entity: entity, kdc: kdc };
+    if (procId.indexOf("pa_") === 0) {
+      const key = procId.slice(3) + "|" + ptype;
+      (APPLYALL_EXTRA[key] = APPLYALL_EXTRA[key] || []).push(taskObj);
+      addedToStore = true;
+    } else {
+      const p = store.proc.find(x => x.id === procId);
+      const sys = p && (p.systems || []).find(x => x.system === ptype);
+      if (sys) { sys.tasks.push(taskObj); addedToStore = true; }
+    }
+  }
+  if (!addedToStore) apCreatedTasks.push(newRow);
+  if (document.getElementById("apProgress")) apState.rows.unshift(newRow);
+  /* clear filters / collapse so the new row is visible right away */
+  state.colFilter.ap = {};
+  state.colSort.ap = null;
+  apState.collapsed = {};
+  apState.listPage = 1;
+  closeDrawer();
+  if (addedToStore) {
+    render();
+  } else {
+    const summary = document.getElementById("apSummary");
+    if (summary) summary.innerHTML = apSummaryHTML();
+    apRerenderProgress();
+  }
+  toast(t("ap.created"), "success");
+}
+function apToggleGroup(gid) { apState.collapsed[gid] = !apState.collapsed[gid]; apRefreshTable(); }
+function apToggleProcs(id) { apState.expandedProcs[id] = !apState.expandedProcs[id]; apRefreshTable(); }
+function apSetGroupPage(gid, p) { apState.page[gid] = p; apRefreshTable(); }
+
+function openAuditProcedure() {
+  closeModal();
+  apState = { grouped: true, collapsed: {}, page: {}, listPage: 1, expandedProcs: {}, rows: auditProcRows() };
+  const zh = state.lang === "zh";
+  const el = document.createElement("div");
+  el.className = "modal-overlay";
+  el.id = "auditProcedureModal";
+  el.onclick = e => { if (e.target === el) closeModal(); };
+  el.innerHTML = `<div class="modal-card wide" role="dialog" aria-modal="true">
+      <div class="ap-head">
+        <div>
+          <div class="ap-head-title">${esc(t("ap.title"))}</div>
+        </div>
+        <button class="icon-btn ap-close" title="${esc(zh ? "关闭" : "Close")}" onclick="closeModal()">${ico("i-close")}</button>
+      </div>
+      <div class="ap-body">
+        <div class="ap-section">
+          <div class="ap-section-title"><span>${esc(t("ap.summary"))}</span></div>
+          <div id="apSummary">${apSummaryHTML()}</div>
+        </div>
+        <div class="ap-section">
+          <div class="ap-section-title"><span>${esc(t("ap.progress"))}</span></div>
+          <div id="apProgress">${apProgressHTML()}</div>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(el);
 }
 
 function renderProjectTeam() {
@@ -3521,6 +4090,7 @@ function renderProjectTeam() {
   <div class="card">
     <div class="card-head">
       <div class="card-title"><span>${esc(t("card.proc"))}</span></div>
+      <button class="btn btn-xs ap-entry" onclick="openAuditProcedure()">${ico("i-external", "ico-sm")}<span>${esc(t("ap.btn"))}</span></button>
     </div>
     <div class="card-body flush">
       <div class="table-bar">
@@ -3661,9 +4231,6 @@ function renderSpecialist() {
   <div class="card">
     <div class="card-head">
       <div class="card-title"><span>${esc(state.lang === "zh" ? "专家底稿" : "Specialist Workpapers")}</span></div>
-      <div class="card-actions">
-        <span class="tag tag-neutral tag-xs">${rows.length}</span>
-      </div>
     </div>
     <div class="card-body flush">
       <div class="table-bar">
@@ -4647,6 +5214,7 @@ function setGroup(which, val) {
 }
 function toggleProc(id) { state.expandedProc[id] = !state.expandedProc[id]; render(); }
 function toggleSys(id) { state.expandedSys[id] = !state.expandedSys[id]; render(); }
+function toggleRmm(id) { state.expandedRmm[id] = !state.expandedRmm[id]; render(); }
 function selectOp(opId) {
   state.opId = opId;
   const op = OPINION_PROFILES.find(o => o.id === opId);

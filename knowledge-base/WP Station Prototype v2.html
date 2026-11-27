@@ -340,6 +340,19 @@ table.dt tbody tr:hover .upload-cell .reup{opacity:.6}
   background-repeat:no-repeat;background-position:right 7px center;
 }
 .input[readonly]{background:var(--bg-disabled);color:var(--color-gray-500)}
+/* KCw activity tree select (rule drawer): nested by activity numbering (1.1.1 under 1.1) */
+.kcw-menu{max-height:300px;padding:4px 0}
+.kcw-node>.kcw-children{display:none}
+.kcw-node.open>.kcw-children{display:block}
+.kcw-row{display:flex;align-items:flex-start;gap:6px;padding:4px 8px;font-size:11.5px;line-height:1.4;color:#475569}
+.kcw-row:hover{background:var(--bg-hover)}
+.kcw-tri{flex:0 0 auto;width:0;height:0;margin-top:5px;border-left:4px solid #94a3b8;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s ease;cursor:pointer}
+.kcw-tri-empty{visibility:hidden;cursor:default}
+.kcw-node.open>.kcw-row .kcw-tri{transform:rotate(90deg)}
+.kcw-row input{flex:0 0 auto;margin:2px 0 0}
+.kcw-label{min-width:0;overflow-wrap:anywhere}
+.kcw-container{font-weight:600;color:#334155;cursor:pointer}
+.kcw-count{font-weight:400;color:#94a3b8;font-size:10.5px;margin-left:auto;padding-left:6px;font-variant-numeric:tabular-nums}
 .input.sm,.select.sm{height:22px;font-size:11.5px}
 .field-help{font-size:10.5px;color:var(--text-hint);line-height:1.35}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -442,11 +455,12 @@ tr.ptc-exp > td.ptc-exp-td{padding:0 8px 8px}
 .st-pending{color:#b45309}
 .st-reviewed{color:#0f766e}
 .st-modified{color:#1d4ed8}
-.st-rejected{color:#be123c}
 .icon-btn.act-pass{color:var(--color-success)}
 .icon-btn.act-pass:hover:not(:disabled){background:#e9f7f3;color:var(--color-success)}
-.icon-btn.act-reject{color:var(--color-danger)}
-.icon-btn.act-reject:hover:not(:disabled){background:#fdf2f6;color:var(--color-danger)}
+.icon-btn.act-comment{color:#64748b}
+.icon-btn.act-comment:hover:not(:disabled){background:#eef4ff;color:#1d4ed8}
+.cmt-wrap{position:relative;display:inline-flex}
+.cmt-badge{position:absolute;top:-3px;right:-5px;min-width:12px;height:12px;border-radius:6px;background:#1d4ed8;color:#fff;font-size:9px;line-height:1;padding:0 2px;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;pointer-events:none;box-shadow:0 0 0 1.5px #fff}
 /* the Review column is narrow: keep the two action buttons inside it so no ellipsis is drawn */
 .col-act-review span{display:inline-flex;gap:0 !important}
 .col-act-review .icon-btn{width:20px;height:20px}
@@ -468,6 +482,14 @@ tr.ptc-exp > td.ptc-exp-td{padding:0 8px 8px}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
 .modal-textarea{width:100%;min-height:78px;resize:vertical;border:1px solid var(--border-default);border-radius:6px;padding:7px 9px;font:inherit;font-size:11.5px;line-height:1.55;color:var(--text-primary);margin-top:8px;outline:none}
 .modal-textarea:focus{border-color:var(--color-primary-hover);box-shadow:0 0 0 3px rgba(30,73,226,.10)}
+/* comment modal: read-only list + composer */
+.cmt-card{max-height:calc(100vh - 80px);display:flex;flex-direction:column}
+.cmt-list{max-height:300px;overflow:auto;border:1px solid var(--border-light);border-radius:6px;background:#fbfcfe;padding:8px 10px;margin:6px 0 2px}
+.cmt-empty{font-size:11.5px;color:var(--text-hint);padding:12px 0;text-align:center}
+.cmt-item + .cmt-item{margin-top:10px;padding-top:9px;border-top:1px dashed var(--border-light)}
+.cmt-head{display:flex;align-items:baseline;gap:8px;font-size:10.5px;color:var(--text-hint)}
+.cmt-head b{font-size:11px;font-weight:600;color:#334155}
+.cmt-text{font-size:11.5px;line-height:1.55;color:#334155;margin-top:2px;white-space:pre-wrap;overflow-wrap:anywhere}
 .btn-danger{background:var(--color-danger);border-color:var(--color-danger);color:#fff}
 .btn-danger:hover{background:#c94a75;border-color:#c94a75;color:#fff}
 .btn-danger-ghost{background:#fff6f9;border-color:#f3c2d3;color:#be185d}
@@ -515,7 +537,7 @@ tr.ptc-exp > td.ptc-exp-td{padding:0 8px 8px}
 .name-row .cell-name{flex:1 1 auto;min-width:0}
 .icon-btn.act-del{flex:0 0 auto;color:#94a3b8}
 .icon-btn.act-del:hover{background:#fdf2f6;color:var(--color-danger);border-color:#f6d5e2}
-.tl-comment{margin-top:5px;font-size:10.5px;line-height:1.55;color:#9f1d43;background:#fdf2f6;border:1px solid #f6d5e2;border-radius:5px;padding:5px 7px;white-space:pre-wrap}
+.tl-comment{margin-top:5px;font-size:10.5px;line-height:1.55;color:#5b21b6;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:5px;padding:5px 7px;white-space:pre-wrap}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes popIn{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
 .draft-name{display:flex;align-items:center;gap:4px;min-width:0}
@@ -882,9 +904,9 @@ table.dt tr.group-row.sticky-on td{box-shadow:inset 0 -1px 0 var(--border-light)
   background:#fff;border:2px solid #cbd5e1;z-index:1;
 }
 .tl-dot.ok{border-color:var(--color-success)}
-.tl-dot.err{border-color:var(--color-danger)}
 .tl-dot.wait{border-color:var(--color-warning)}
 .tl-dot.info{border-color:var(--color-primary-hover)}
+.tl-dot.cmt{border-color:#7c3aed}
 .tl-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .tl-title{font-size:11.5px;font-weight:600}
 .tl-time{font-size:10.5px;color:var(--text-hint);font-variant-numeric:tabular-nums}
@@ -976,6 +998,41 @@ table.dt tr.group-row.sticky-on td{box-shadow:inset 0 -1px 0 var(--border-light)
 .pg-btn.active{background:var(--color-primary-hover);border-color:var(--color-primary-hover);color:#fff;font-weight:700}
 .pg-btn:disabled{opacity:.45;cursor:not-allowed}
 
+/* Standard Workpapers: activity tree + table split (only when ungrouped) */
+.std-split{display:flex;align-items:stretch}
+.std-split>.table-wrap{flex:1 1 auto;min-width:0}
+/* keep the name column readable when the tree takes 260px — scroll the table instead of crushing it */
+.std-split>.table-wrap>table.dt{min-width:1060px}
+.act-pane{flex:0 0 260px;width:260px;display:flex;flex-direction:column;border-right:1px solid var(--border-light);background:#fff;max-height:calc(100vh - 330px);min-height:240px}
+.act-pane.collapsed{flex-basis:32px;width:32px;align-items:center;padding:6px 0;gap:6px}
+.act-head{display:flex;align-items:center;gap:6px;padding:6px 8px;border-bottom:1px solid var(--border-light)}
+.act-title{font-size:11.5px;font-weight:700;color:var(--color-gray-600);white-space:nowrap}
+/* header caret points left: the pane collapses to the left rail */
+.act-head>.act-collapse .ico{transform:rotate(90deg)}
+.act-reset.off{opacity:.35;pointer-events:none}
+.act-q{flex:1 1 auto;min-width:0;height:22px;font-size:11px}
+.act-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:2px 0}
+.act-foot{border-top:1px solid var(--border-light);background:#fbfcfe}
+.act-row{display:flex;align-items:center;gap:4px;padding:3px 8px;font-size:11.5px;color:#475569;cursor:pointer;white-space:nowrap}
+.act-row:hover{background:var(--bg-hover)}
+.act-row.sel{background:#eef4ff;color:#1d4ed8}
+.act-row.inpath{background:#f6f9ff}
+.act-tri{flex:0 0 auto;width:0;height:0;border-left:4px solid #94a3b8;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s ease;cursor:pointer}
+.act-tri-empty{visibility:hidden;cursor:default}
+.act-node.open>.act-row .act-tri{transform:rotate(90deg)}
+.act-dot{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:#94a3b8}
+.act-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.act-label.dim{color:#94a3b8}
+.act-label.zero{color:#b8c4d4}
+.act-label.hit{background:#fff3cd;border-radius:2px;box-shadow:0 0 0 1px #fde68a}
+.act-meta{flex:0 0 auto;font-size:10px;color:#94a3b8;font-variant-numeric:tabular-nums;white-space:nowrap}
+.act-meta b{color:#b45309;font-weight:600}
+.act-meta.zero{opacity:.7}
+.act-expand .ico{transform:rotate(-90deg)}
+.rail-name{writing-mode:vertical-rl;font-size:10.5px;color:#64748b;max-height:190px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rail-name.dim{color:#cbd5e1}
+.rail-x{margin-top:auto;margin-bottom:4px}
+
 /* admin specifics */
 .table-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 10px 8px;background:#fff}
 .table-bar .spacer{margin-left:auto}
@@ -1053,7 +1110,23 @@ table.dt.compact .input.sm{width:100% !important}
 table.dt.compact .btn-xs{padding:0 5px}
 /* Admin tables keep a readable Workpaper Name column on 1280 screens: scroll inside the card instead */
 table.dt.admin-dt{min-width:1330px}
+/* ENR gains the two Related KCw Activity columns: allow the extra width to scroll horizontally */
+table.dt.admin-dt.enr-dt{min-width:1780px}
+/* ENR frozen columns: Rule Name + Workpaper Name on the left, Actions on the right.
+   --enr-l1-w is measured from the rendered Rule Name column (syncEnrSticky) */
+table.dt.enr-dt th.sticky-l1,table.dt.enr-dt td.sticky-l1{position:sticky;left:0;background:#fff;z-index:2}
+table.dt.enr-dt th.sticky-l2,table.dt.enr-dt td.sticky-l2{position:sticky;left:var(--enr-l1-w,123px);background:#fff;z-index:2}
+table.dt.enr-dt th.sticky-r1,table.dt.enr-dt td.sticky-r1{position:sticky;right:0;background:#fff;z-index:2;box-shadow:-1px 0 0 var(--border-light)}
+table.dt.enr-dt th.sticky-r2,table.dt.enr-dt td.sticky-r2{position:sticky;right:var(--enr-r1-w,62px);background:#fff;z-index:2;box-shadow:-1px 0 0 var(--border-light)}
+table.dt.enr-dt thead th.sticky-l1,table.dt.enr-dt thead th.sticky-l2,
+table.dt.enr-dt thead th.sticky-r1,table.dt.enr-dt thead th.sticky-r2{background:var(--table-head-bg);z-index:5}
+table.dt.enr-dt tbody tr:hover td.sticky-l1,table.dt.enr-dt tbody tr:hover td.sticky-l2,
+table.dt.enr-dt tbody tr:hover td.sticky-r1,table.dt.enr-dt tbody tr:hover td.sticky-r2{background:var(--bg-hover)}
 table.dt.admin-dt .cell-name{max-width:100%}
+/* Related KCw Activity: one activity per line, a single activity never wraps — overflow ellipsis + title */
+.kcw-cell{display:block;max-width:208px;min-width:150px}
+.kcw-cell .kcw-line{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;line-height:1.35;color:#475569}
+.kcw-cell .kcw-line + .kcw-line{margin-top:1px}
 table.dt.proc-dt{width:100%;min-width:1700px}
 table.dt.proc-dt .cell-name{max-width:100%}
 /* frozen columns for the substantive procedure table: Procedure on the left, Review Status + Review on the right */
@@ -1061,8 +1134,8 @@ table.dt.proc-dt th.sticky-l1,table.dt.proc-dt td.sticky-l1{position:sticky;left
 /* the frozen column already has a 1px border-right; the extra box-shadow doubled
    that line and left a tiny dot at the row corners, so it is intentionally omitted */
 table.dt.proc-dt th.sticky-l2,table.dt.proc-dt td.sticky-l2{position:sticky;left:28px;background:#fff;z-index:2}
-table.dt.proc-dt th.sticky-r1,table.dt.proc-dt td.sticky-r1{position:sticky;right:0;background:#fff;z-index:2}
-table.dt.proc-dt th.sticky-r2,table.dt.proc-dt td.sticky-r2{position:sticky;right:58px;background:#fff;z-index:2;box-shadow:-1px 0 0 var(--border-light)}
+table.dt.proc-dt th.sticky-r1,table.dt.proc-dt td.sticky-r1{position:sticky;right:0;background:#fff;z-index:2;box-shadow:-1px 0 0 var(--border-light)}
+table.dt.proc-dt th.sticky-r2,table.dt.proc-dt td.sticky-r2{position:sticky;right:var(--proc-r1-w,58px);background:#fff;z-index:2;box-shadow:-1px 0 0 var(--border-light)}
 table.dt.proc-dt thead th.sticky-l1,table.dt.proc-dt thead th.sticky-l2,
 table.dt.proc-dt thead th.sticky-r1,table.dt.proc-dt thead th.sticky-r2{background:var(--table-head-bg);z-index:5}
 table.dt.proc-dt thead th.sticky-r1{background:#e3f4ee}
@@ -1110,9 +1183,11 @@ table.dt td.cell-upload{text-overflow:clip}
     <symbol id="i-check-fill" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7.4" fill="currentColor"/><path d="M4.6 8.3 6.9 10.6 11.5 5.6" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-clock-fill" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7.4" fill="currentColor"/><path d="M8 4.2V8.2l2.7 1.6" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-history" viewBox="0 0 16 16"><path d="M2.2 8a5.8 5.8 0 1 0 1.9-4.3" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M2 3.2v2.6h2.6" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 5.4V8l2 1.3" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 16 16"><path d="M2.2 8a5.8 5.8 0 1 0 1.9-4.3" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M2 3.2v2.6h2.6" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
     <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7.2" cy="7.2" r="4.4" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="m10.6 10.6 3 3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-comment" viewBox="0 0 16 16"><path d="M8 2.75c-3.17 0-5.75 2.18-5.75 4.88 0 1.54.85 2.9 2.18 3.8l-.62 2.32 2.72-1.42c.47.1.96.16 1.47.16 3.17 0 5.75-2.18 5.75-4.88C13.75 5.43 11.17 2.75 8 2.75z" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-funnel" viewBox="0 0 16 16"><path d="M2 2.6h12L9.7 7.7v5.2l-3.4-2V7.7L2 2.6Z" fill="currentColor"/></symbol>
     <symbol id="i-clip" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-link" viewBox="0 0 16 16"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l1.9-1.9a2.6 2.6 0 0 0-3.7-3.7l-.9.9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.8 8.5a2.6 2.6 0 0 0 3.7 3.7l.9-.9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></symbol>
@@ -1262,7 +1337,6 @@ const I18N = {
     "st.pending": "待审核",
     "st.reviewed": "已审核",
     "st.modified": "审核后修改",
-    "st.rejected": "已退回",
     "empty.notitle": "暂无数据",
     "empty.nodesc": "当前筛选条件下没有匹配的底稿，请调整 Opinion Profile 或 KCw file。",
     "empty.tree": "当前 Engagement 下无关联的 Opinion Profile。",
@@ -1386,7 +1460,6 @@ const I18N = {
     "st.pending": "Pending Review",
     "st.reviewed": "Reviewed",
     "st.modified": "Modified after Review",
-    "st.rejected": "Rejected",
     "empty.notitle": "No data",
     "empty.nodesc": "No workpaper matches the current filter. Adjust Opinion Profile or KCw file.",
     "empty.tree": "No Opinion Profile linked to this engagement.",
@@ -1515,8 +1588,7 @@ const STATUSES = {
   none:     { key: "none",     cls: "st-none",     tag: "tag-neutral" },
   pending:  { key: "pending",  cls: "st-pending",  tag: "tag-warning" },
   reviewed: { key: "reviewed", cls: "st-reviewed", tag: "tag-success" },
-  modified: { key: "modified", cls: "st-modified", tag: "tag-info" },
-  rejected: { key: "rejected", cls: "st-rejected", tag: "tag-danger" }
+  modified: { key: "modified", cls: "st-modified", tag: "tag-info" }
 };
 
 const ENGAGEMENT = {
@@ -1627,9 +1699,9 @@ const STANDARD_WPS = [
     h("upload", BY_SIMONS, "2026/11/13 12:00:00", { file: "Climate_Risks_WP_v2.xlsm", ver: 2 }),
     h("review", "Yang, David (BJ/PTR)", "2026/11/13 17:40:00", { result: "reviewed" })
   ] }),
-  wp({ id: "w02", name: "Inquiry Agenda", sec: "req.gp", req: "Required", status: "rejected", by: BY_SIMONS, at: "2026/11/13 10:12:00", ver: 1, file: "Inquiry_Agenda_2026.xlsx", history: [
+  wp({ id: "w02", name: "Inquiry Agenda", sec: "req.gp", req: "Required", status: "pending", by: BY_SIMONS, at: "2026/11/13 10:12:00", ver: 1, file: "Inquiry_Agenda_2026.xlsx", history: [
     h("upload", BY_SIMONS, "2026/11/13 10:12:00", { file: "Inquiry_Agenda_2026.xlsx", ver: 1 }),
-    h("reject", "Zhou, Emily (SH/PTR)", "2026/11/14 09:20:00", { comment: "议程未覆盖收入确认相关的舞弊风险提问，且缺少与治理层沟通的时间安排，请补充后重新上传。" })
+    h("comment", "Zhou, Emily (SH/PTR)", "2026/11/14 09:20:00", { text: "议程未覆盖收入确认相关的舞弊风险提问，且缺少与治理层沟通的时间安排，请补充后重新上传。" })
   ] }),
   wp({ id: "w03", name: "RAFD Agenda", sec: "req.gp", req: "Required", status: "none" }),
   wp({ id: "w04", name: "Fraud Risk Factors - Required Work Paper", sec: "req.gp", req: "Required", status: "reviewed", by: BY_BJ3, at: "2026/11/09 16:30:00", ver: 1, file: "Fraud_Risk_Factors.xlsx", history: [
@@ -1694,9 +1766,9 @@ const PROC_WPS = [
       { id: "R000001106289", status: "Completed", subcat: "Alteryx D&A Routines - Trade Purchase Three-Way Match Item Matching" },
       { id: "R000001106290", status: "In Progress", subcat: "Alteryx D&A Routines - Contract Liability to Cash Item Matching" } ] }
   ] }),
-  proc({ id: "p02", ref: "SPD05001", name: "新增固定资产 — 检查 (PPE additions - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "MUS", samples: 40, status: "rejected", by: BY_FLORENCE, at: "2026/11/14 10:05:00", ver: 1, file: "SPD05001.PPE_additions.xlsx", history: [
+  proc({ id: "p02", ref: "SPD05001", name: "新增固定资产 — 检查 (PPE additions - vouch)", ptype: "TOD", sec: "h.ppe", sampling: "MUS", samples: 40, status: "pending", by: BY_FLORENCE, at: "2026/11/14 10:05:00", ver: 1, file: "SPD05001.PPE_additions.xlsx", history: [
     h("upload", BY_FLORENCE, "2026/11/14 10:05:00", { file: "SPD05001.PPE_additions.xlsx", ver: 1 }),
-    h("reject", "Yang, David (BJ/PTR)", "2026/11/15 11:05:00", { comment: "抽样清单中 3 笔新增固定资产缺少验收单与发票的交叉索引，请补齐凭证编号后重新上传。" })
+    h("comment", "Yang, David (BJ/PTR)", "2026/11/15 11:05:00", { text: "抽样清单中 3 笔新增固定资产缺少验收单与发票的交叉索引，请补齐凭证编号后重新上传。" })
   ], systems: [
     { system: "Vouching", tasks: [
       { id: "R000001000577", status: "Completed", subcat: "PPE additions - vouch (SPD05001)" },
@@ -1810,9 +1882,9 @@ const SPECIALIST_WPS = [
   ] },
   { id: "s03", type: "Tax", sec: "dedicated", name: "Clearance memorandum", tplCN: true, tplEN: true, status: "none", by: "", at: "", ver: 0, history: [], file: "" },
   { id: "s04", type: "VM", sec: "system", name: "KPMG Specialist Involvement Agreement (Planning memo)-V&M", link: true, tplCN: false, tplEN: false, status: "none", by: "", at: "", ver: 0, history: [], file: "" },
-  { id: "s05", type: "VM", sec: "shared", name: "KPMG Specialist Deliverable", tplCN: true, tplEN: true, status: "rejected", by: BY_VIVIEN, at: "2026/11/14 11:20:00", ver: 1, file: "VM_Specialist_Deliverable_v1.docx", history: [
+  { id: "s05", type: "VM", sec: "shared", name: "KPMG Specialist Deliverable", tplCN: true, tplEN: true, status: "pending", by: BY_VIVIEN, at: "2026/11/14 11:20:00", ver: 1, file: "VM_Specialist_Deliverable_v1.docx", history: [
     h("upload", BY_VIVIEN, "2026/11/14 11:20:00", { file: "VM_Specialist_Deliverable_v1.docx", ver: 1 }),
-    h("reject", "Zhou, Emily (SH/PTR)", "2026/11/15 16:40:00", { comment: "估值模型的关键假设缺少与管理层讨论的记录，且敏感性分析区间与上年不一致，请补充说明。" })
+    h("comment", "Zhou, Emily (SH/PTR)", "2026/11/15 16:40:00", { text: "估值模型的关键假设缺少与管理层讨论的记录，且敏感性分析区间与上年不一致，请补充说明。" })
   ] },
   { id: "s06", type: "FRM", sec: "system", name: "KPMG Specialist Involvement Agreement (Planning memo)-FRM", link: true, tplCN: false, tplEN: false, status: "none", by: "", at: "", ver: 0, history: [], file: "" },
   { id: "s07", type: "FRM", sec: "shared", name: "KPMG Specialist Deliverable", tplCN: true, tplEN: true, status: "none", by: "", at: "", ver: 0, history: [], file: "" },
@@ -1909,6 +1981,719 @@ const EXTRA_ENR = [
   {"name": "Assessment of Training and Experience Work Paper", "sec": "req.group", "standards": ["HKSA", "ISA"], "workflow": ["Enhanced", "Standard"], "entityType": ["Listed", "PIE"], "exchange": ["MB", "GEM"], "req": "Required"},
   {"name": "Random Sample Tool", "sec": "opt.gp", "standards": ["HKSA", "ISA"], "workflow": ["Enhanced", "Standard"], "entityType": ["Listed", "PIE"], "exchange": ["MB", "GEM"], "req": "Optional"}
 ];
+/* KCw activity library for the drawer tree select (nested by activity numbering).
+   Built from 底稿模板-eng nature / RelatedKCwActivity: a value becomes the node when it is the
+   only activity on that number, otherwise the number is a container with the variants below it.
+   Numbered sub-nodes come first, un-numbered path strings last. */
+const KCW_TREE = [
+  { label: "1. Engagement management", value: null, children: [
+    { label: "1.1", value: null, children: [
+      { label: "1.1.1. Pre-engagement", value: "1.1.1. Pre-engagement", children: [
+      ] },
+      { label: "1.1.2 – Strategy and Audit Plan", value: "1.1.2 – Strategy and Audit Plan", children: [
+      ] },
+      { label: "1.1.3", value: null, children: [
+        { label: "1.1.3. Audit Plan", value: "1.1.3. Audit Plan", children: [
+        ] },
+        { label: "1.1.3. Audit plan OR 1.1.4. Plan revisions", value: "1.1.3. Audit plan OR 1.1.4. Plan revisions", children: [
+        ] }
+      ] },
+      { label: "1.1 Engagement management>Audit planning>1 Pre engagement", value: "1.1 Engagement management>Audit planning>1 Pre engagement", children: [
+      ] },
+      { label: "1.1 – Engagement Profile and Strategy", value: "1.1 – Engagement Profile and Strategy", children: [
+      ] },
+      { label: "1.1. Engagement profile > Engagement scope and scale", value: "1.1. Engagement profile > Engagement scope and scale", children: [
+      ] }
+    ] },
+    { label: "1.2 Independence module", value: "1.2 Independence module", children: [
+      { label: "1.2.1", value: null, children: [
+        { label: "1.2.1. Initial Independence", value: "1.2.1. Initial Independence", children: [
+        ] },
+        { label: "1.2.1. Initial Independence and Conclusion", value: "1.2.1. Initial Independence and Conclusion", children: [
+        ] }
+      ] },
+      { label: "1.2.2. SEC independence", value: "1.2.2. SEC independence", children: [
+      ] }
+    ] },
+    { label: "1.4 Communications, inquiries and minutes", value: "1.4 Communications, inquiries and minutes", children: [
+      { label: "1.4.1 Communication plan", value: "1.4.1 Communication plan", children: [
+      ] },
+      { label: "1.4.2. Communication results", value: "1.4.2. Communication results", children: [
+      ] }
+    ] },
+    { label: "1.5", value: null, children: [
+      { label: "1.5.2", value: null, children: [
+        { label: "1.5.2. Reporting", value: "1.5.2. Reporting", children: [
+        ] },
+        { label: "1.5.2. Reporting (component engagement file)", value: "1.5.2. Reporting (component engagement file)", children: [
+        ] }
+      ] }
+    ] },
+    { label: "1. Engagement management>4 Communication>1 Communication plan", value: "1. Engagement management>4 Communication>1 Communication plan", children: [
+    ] },
+    { label: "1. Engagement management>Audit planning>1 Pre engagement", value: "1. Engagement management>Audit planning>1 Pre engagement", children: [
+    ] },
+    { label: "1. Planning; 2. Review procedures; 3.Completion", value: "1. Planning; 2. Review procedures; 3.Completion", children: [
+    ] },
+    { label: "1. Understanding within the respective SP. Specialists", value: "1. Understanding within the respective SP. Specialists", children: [
+    ] },
+    { label: "1. Understanding within the respective Specialist sub-module", value: "1. Understanding within the respective Specialist sub-module", children: [
+    ] },
+    { label: "1.1.SP Specialists.1 Understanding", value: "1.1.SP Specialists.1 Understanding", children: [
+    ] },
+    { label: "1.1.SP Specialists.2 Evaluation", value: "1.1.SP Specialists.2 Evaluation", children: [
+    ] },
+    { label: "1.1.SP.Specialists", value: "1.1.SP.Specialists", children: [
+    ] },
+    { label: "1.SP Specialists.1 Understanding", value: "1.SP Specialists.1 Understanding", children: [
+    ] },
+    { label: "1.SP Specialists.2 Evaluation", value: "1.SP Specialists.2 Evaluation", children: [
+    ] },
+    { label: "1.SP.Specialists", value: "1.SP.Specialists", children: [
+    ] }
+  ] },
+  { label: "2. Entity-wide procedures", value: null, children: [
+    { label: "2.1. Risk assessment", value: "2.1. Risk assessment", children: [
+      { label: "2.1.4 Inquiries", value: "2.1.4 Inquiries", children: [
+      ] },
+      { label: "2.1.5 Business processes", value: "2.1.5 Business processes", children: [
+      ] },
+      { label: "2.1.6 RAPD", value: "2.1.6 RAPD", children: [
+      ] }
+    ] },
+    { label: "2.2", value: null, children: [
+      { label: "2.2.2. IT Understanding", value: "2.2.2. IT Understanding", children: [
+      ] },
+      { label: "2.2.3. Business processes", value: "2.2.3. Business processes", children: [
+      ] },
+      { label: "2.2.4 RAPD", value: "2.2.4 RAPD", children: [
+      ] }
+    ] },
+    { label: "2.3", value: null, children: [
+      { label: "2.3.1. Fraud risk assessment", value: "2.3.1. Fraud risk assessment", children: [
+      ] },
+      { label: "2.3.2. IT Understanding", value: "2.3.2. IT Understanding", children: [
+      ] }
+    ] },
+    { label: "2.4. Other procedures", value: "2.4. Other procedures", children: [
+      { label: "2.4.1", value: null, children: [
+        { label: "2.4.1. Fraud risk assessment and response", value: "2.4.1. Fraud risk assessment and response", children: [
+        ] },
+        { label: "2.4.1. Overall response", value: "2.4.1. Overall response", children: [
+        ] }
+      ] },
+      { label: "2.4.2. Going concern", value: "2.4.2. Going concern", children: [
+      ] }
+    ] },
+    { label: "2.5 Group audit", value: "2.5 Group audit", children: [
+      { label: "2.5.1", value: null, children: [
+        { label: "2.5.1. General in the Overall Response module", value: "2.5.1. General in the Overall Response module", children: [
+        ] },
+        { label: "2.5.1. Overall Response > General", value: "2.5.1. Overall Response > General", children: [
+        ] },
+        { label: "2.5.1. Risk assessment", value: "2.5.1. Risk assessment", children: [
+        ] }
+      ] },
+      { label: "2.5.2. Going concern", value: "2.5.2. Going concern", children: [
+      ] },
+      { label: "2.5.5. Understanding and involvement", value: "2.5.5. Understanding and involvement", children: [
+      ] }
+    ] },
+    { label: "2.8 Group audit", value: "2.8 Group audit", children: [
+    ] },
+    { label: "2. Entity wide procedures-> 5. Overall Response-> 2. Going concern", value: "2. Entity wide procedures-> 5. Overall Response-> 2. Going concern", children: [
+    ] },
+    { label: "2. Entity-wide procedures-> 4. Overall response-> 2. Going concern", value: "2. Entity-wide procedures-> 4. Overall response-> 2. Going concern", children: [
+    ] },
+    { label: "2. Evaluation within the respective SP. Specialists", value: "2. Evaluation within the respective SP. Specialists", children: [
+    ] },
+    { label: "2. Evaluation within the respective Specialist sub-module", value: "2. Evaluation within the respective Specialist sub-module", children: [
+    ] },
+    { label: "2.Entity-wide procedures>4 Inquiry", value: "2.Entity-wide procedures>4 Inquiry", children: [
+    ] },
+    { label: "2.Entity-wide procedures>4 Overall response", value: "2.Entity-wide procedures>4 Overall response", children: [
+    ] },
+    { label: "2.Entity-wide procedures>5 Group audit", value: "2.Entity-wide procedures>5 Group audit", children: [
+    ] }
+  ] },
+  { label: "3. Business processes", value: "3. Business processes", children: [
+    { label: "3.1 Communication", value: "3.1 Communication", children: [
+      { label: "3.1.1 SAM", value: "3.1.1 SAM", children: [
+      ] },
+      { label: "3.1.5", value: null, children: [
+        { label: "3.1.5.3. Segment information screen within Financial Reporting Business Process", value: "3.1.5.3. Segment information screen within Financial Reporting Business Process", children: [
+        ] }
+      ] },
+      { label: "3.1.6. Subsequent events", value: "3.1.6. Subsequent events", children: [
+      ] }
+    ] },
+    { label: "3.3. Completion", value: "3.3. Completion", children: [
+    ] },
+    { label: "3. Business processes > Consultation", value: "3. Business processes > Consultation", children: [
+    ] },
+    { label: "3. Business Processes > X. [Relevant Process] > EST.XXX.1 Understand the estimate", value: "3. Business Processes > X. [Relevant Process] > EST.XXX.1 Understand the estimate", children: [
+    ] },
+    { label: "3. Business Processes > X. [Relevant Process] > EST.XXX.3 Results", value: "3. Business Processes > X. [Relevant Process] > EST.XXX.3 Results", children: [
+    ] },
+    { label: "3. Business processes>Litigation, claims and assessments", value: "3. Business processes>Litigation, claims and assessments", children: [
+    ] },
+    { label: "3. Response within the respective 3. Business process", value: "3. Response within the respective 3. Business process", children: [
+    ] },
+    { label: "3.x.1 Understanding", value: "3.x.1 Understanding", children: [
+    ] },
+    { label: "3.X.2. Risk screen of the Tax business process or 2.1.5. if no business process has been identified", value: "3.X.2. Risk screen of the Tax business process or 2.1.5. if no business process has been identified", children: [
+    ] },
+    { label: "3.X.3. Response", value: "3.X.3. Response", children: [
+    ] },
+    { label: "Within the respective 3. Business process", value: "Within the respective 3. Business process", children: [
+    ] }
+  ] },
+  { label: "4. Conclusions and reporting", value: null, children: [
+    { label: "4.1", value: null, children: [
+      { label: "4.1.4", value: null, children: [
+        { label: "4.1.4 SAM", value: "4.1.4 SAM", children: [
+        ] },
+        { label: "4.1.4. Completion", value: "4.1.4. Completion", children: [
+        ] }
+      ] },
+      { label: "4.1.6. Completion", value: "4.1.6. Completion", children: [
+      ] }
+    ] },
+    { label: "4.2. Reporting > Audit report", value: "4.2. Reporting > Audit report", children: [
+      { label: "4.2.1", value: null, children: [
+        { label: "4.2.1. CAMs", value: "4.2.1. CAMs", children: [
+        ] },
+        { label: "4.2.1. Rep Letter and Report", value: "4.2.1. Rep Letter and Report", children: [
+        ] }
+      ] },
+      { label: "4.2.2. Rep Letter and Report", value: "4.2.2. Rep Letter and Report", children: [
+      ] }
+    ] },
+    { label: "4. Conclusions and reporting > 1. Evaluate audit results > Completion", value: "4. Conclusions and reporting > 1. Evaluate audit results > Completion", children: [
+    ] },
+    { label: "4. Conclusions and reporting > 1. Reporting>2 Rep letter and report", value: "4. Conclusions and reporting > 1. Reporting>2 Rep letter and report", children: [
+    ] },
+    { label: "4.Conclusions and reporting>2.Reporting", value: "4.Conclusions and reporting>2.Reporting", children: [
+    ] }
+  ] },
+  { label: "[IR]", value: null, children: [
+    { label: "1", value: null, children: [
+      { label: "1.3", value: null, children: [
+        { label: "[IR].1.3. Understanding the entity", value: "[IR].1.3. Understanding the entity", children: [
+        ] },
+        { label: "[IR].1.3. Understanding the entity (group engagement file)", value: "[IR].1.3. Understanding the entity (group engagement file)", children: [
+        ] }
+      ] }
+    ] },
+    { label: "2", value: null, children: [
+      { label: "[IR].2.1 Analytics", value: "[IR].2.1 Analytics", children: [
+      ] }
+    ] },
+    { label: "3", value: null, children: [
+      { label: "3.3", value: null, children: [
+        { label: "[IR].3.3.2 SRM", value: "[IR].3.3.2 SRM", children: [
+        ] },
+        { label: "[IR].3.3. Completion", value: "[IR].3.3. Completion", children: [
+        ] },
+        { label: "[IR].3.3. Completion (component engagement file)", value: "[IR].3.3. Completion (component engagement file)", children: [
+        ] }
+      ] }
+    ] }
+  ] },
+  { label: "Various", value: null, children: [
+    { label: "Various - attached to any activity where an end-user routine is used", value: "Various - attached to any activity where an end-user routine is used", children: [
+    ] },
+    { label: "Various - attached to any activity where KSP is used", value: "Various - attached to any activity where KSP is used", children: [
+    ] },
+    { label: "Various - attached to any activity where TOD is designed and performed", value: "Various - attached to any activity where TOD is designed and performed", children: [
+    ] }
+  ] },
+  { label: "Other", value: null, children: [
+    { label: "(3.1.1 Conclusions and Reporting for generic KCw file)", value: "(3.1.1 Conclusions and Reporting for generic KCw file)", children: [
+    ] },
+    { label: "Specialist or specific team member within 1.1. Engagement profile", value: "Specialist or specific team member within 1.1. Engagement profile", children: [
+    ] }
+  ] }
+];
+
+/* Per-workflow KCw activity trees for the Project Team View pane.
+   Membership comes from the sheet Workflow column + cell prefixes (Enhanced 77 / Standard 42). */
+const KCW_TREE_WF = {
+  Enhanced: [
+    { label: "1. Engagement management", value: null, children: [
+      { label: "1.1 Engagement management>Audit planning>1 Pre engagement", value: "1.1 Engagement management>Audit planning>1 Pre engagement", children: [
+        { label: "1.1.1. Pre-engagement", value: "1.1.1. Pre-engagement", children: [
+        ] },
+        { label: "1.1.3", value: null, children: [
+          { label: "1.1.3. Audit Plan", value: "1.1.3. Audit Plan", children: [
+          ] },
+          { label: "1.1.3. Audit plan OR 1.1.4. Plan revisions", value: "1.1.3. Audit plan OR 1.1.4. Plan revisions", children: [
+          ] }
+        ] }
+      ] },
+      { label: "1.2 Independence module", value: "1.2 Independence module", children: [
+        { label: "1.2.1. Initial Independence", value: "1.2.1. Initial Independence", children: [
+        ] },
+        { label: "1.2.2. SEC independence", value: "1.2.2. SEC independence", children: [
+        ] }
+      ] },
+      { label: "1.4", value: null, children: [
+        { label: "1.4.1 Communication plan", value: "1.4.1 Communication plan", children: [
+        ] },
+        { label: "1.4.2. Communication results", value: "1.4.2. Communication results", children: [
+        ] }
+      ] },
+      { label: "1.5", value: null, children: [
+        { label: "1.5.2", value: null, children: [
+          { label: "1.5.2. Reporting", value: "1.5.2. Reporting", children: [
+          ] },
+          { label: "1.5.2. Reporting (component engagement file)", value: "1.5.2. Reporting (component engagement file)", children: [
+          ] }
+        ] }
+      ] },
+      { label: "1. Engagement management>4 Communication>1 Communication plan", value: "1. Engagement management>4 Communication>1 Communication plan", children: [
+      ] },
+      { label: "1. Engagement management>Audit planning>1 Pre engagement", value: "1. Engagement management>Audit planning>1 Pre engagement", children: [
+      ] },
+      { label: "1. Planning; 2. Review procedures; 3.Completion", value: "1. Planning; 2. Review procedures; 3.Completion", children: [
+      ] },
+      { label: "1. Understanding within the respective SP. Specialists", value: "1. Understanding within the respective SP. Specialists", children: [
+      ] },
+      { label: "1. Understanding within the respective Specialist sub-module", value: "1. Understanding within the respective Specialist sub-module", children: [
+      ] },
+      { label: "1.1.SP Specialists.1 Understanding", value: "1.1.SP Specialists.1 Understanding", children: [
+      ] },
+      { label: "1.1.SP Specialists.2 Evaluation", value: "1.1.SP Specialists.2 Evaluation", children: [
+      ] },
+      { label: "1.1.SP.Specialists", value: "1.1.SP.Specialists", children: [
+      ] }
+    ] },
+    { label: "2. Entity-wide procedures", value: null, children: [
+      { label: "2.1. Risk assessment", value: "2.1. Risk assessment", children: [
+        { label: "2.1.4 Inquiries", value: "2.1.4 Inquiries", children: [
+        ] },
+        { label: "2.1.5 Business processes", value: "2.1.5 Business processes", children: [
+        ] },
+        { label: "2.1.6 RAPD", value: "2.1.6 RAPD", children: [
+        ] }
+      ] },
+      { label: "2.2", value: null, children: [
+        { label: "2.2.2. IT Understanding", value: "2.2.2. IT Understanding", children: [
+        ] }
+      ] },
+      { label: "2.3", value: null, children: [
+        { label: "2.3.1. Fraud risk assessment", value: "2.3.1. Fraud risk assessment", children: [
+        ] }
+      ] },
+      { label: "2.4. Other procedures", value: "2.4. Other procedures", children: [
+        { label: "2.4.1. Overall response", value: "2.4.1. Overall response", children: [
+        ] },
+        { label: "2.4.2. Going concern", value: "2.4.2. Going concern", children: [
+        ] }
+      ] },
+      { label: "2.5 Group audit", value: "2.5 Group audit", children: [
+        { label: "2.5.1. Risk assessment", value: "2.5.1. Risk assessment", children: [
+        ] },
+        { label: "2.5.5. Understanding and involvement", value: "2.5.5. Understanding and involvement", children: [
+        ] }
+      ] },
+      { label: "2. Entity wide procedures-> 5. Overall Response-> 2. Going concern", value: "2. Entity wide procedures-> 5. Overall Response-> 2. Going concern", children: [
+      ] },
+      { label: "2. Entity-wide procedures-> 4. Overall response-> 2. Going concern", value: "2. Entity-wide procedures-> 4. Overall response-> 2. Going concern", children: [
+      ] },
+      { label: "2. Evaluation within the respective SP. Specialists", value: "2. Evaluation within the respective SP. Specialists", children: [
+      ] },
+      { label: "2. Evaluation within the respective Specialist sub-module", value: "2. Evaluation within the respective Specialist sub-module", children: [
+      ] },
+      { label: "2.Entity-wide procedures>4 Inquiry", value: "2.Entity-wide procedures>4 Inquiry", children: [
+      ] },
+      { label: "2.Entity-wide procedures>4 Overall response", value: "2.Entity-wide procedures>4 Overall response", children: [
+      ] },
+      { label: "2.Entity-wide procedures>5 Group audit", value: "2.Entity-wide procedures>5 Group audit", children: [
+      ] }
+    ] },
+    { label: "3. Business processes", value: "3. Business processes", children: [
+      { label: "3.1 Communication", value: "3.1 Communication", children: [
+        { label: "3.1.1 SAM", value: "3.1.1 SAM", children: [
+        ] },
+        { label: "3.1.5", value: null, children: [
+          { label: "3.1.5.3. Segment information screen within Financial Reporting Business Process", value: "3.1.5.3. Segment information screen within Financial Reporting Business Process", children: [
+          ] }
+        ] },
+        { label: "3.1.6. Subsequent events", value: "3.1.6. Subsequent events", children: [
+        ] }
+      ] },
+      { label: "3.3. Completion", value: "3.3. Completion", children: [
+      ] },
+      { label: "3. Business processes > Consultation", value: "3. Business processes > Consultation", children: [
+      ] },
+      { label: "3. Business Processes > X. [Relevant Process] > EST.XXX.1 Understand the estimate", value: "3. Business Processes > X. [Relevant Process] > EST.XXX.1 Understand the estimate", children: [
+      ] },
+      { label: "3. Business Processes > X. [Relevant Process] > EST.XXX.3 Results", value: "3. Business Processes > X. [Relevant Process] > EST.XXX.3 Results", children: [
+      ] },
+      { label: "3. Business processes>Litigation, claims and assessments", value: "3. Business processes>Litigation, claims and assessments", children: [
+      ] },
+      { label: "3. Response within the respective 3. Business process", value: "3. Response within the respective 3. Business process", children: [
+      ] },
+      { label: "3.x.1 Understanding", value: "3.x.1 Understanding", children: [
+      ] },
+      { label: "3.X.2. Risk screen of the Tax business process or 2.1.5. if no business process has been identified", value: "3.X.2. Risk screen of the Tax business process or 2.1.5. if no business process has been identified", children: [
+      ] },
+      { label: "3.X.3. Response", value: "3.X.3. Response", children: [
+      ] }
+    ] },
+    { label: "4. Conclusions and reporting", value: null, children: [
+      { label: "4.1", value: null, children: [
+        { label: "4.1.4. Completion", value: "4.1.4. Completion", children: [
+        ] }
+      ] },
+      { label: "4.2", value: null, children: [
+        { label: "4.2.1. CAMs", value: "4.2.1. CAMs", children: [
+        ] },
+        { label: "4.2.2. Rep Letter and Report", value: "4.2.2. Rep Letter and Report", children: [
+        ] }
+      ] },
+      { label: "4. Conclusions and reporting > 1. Evaluate audit results > Completion", value: "4. Conclusions and reporting > 1. Evaluate audit results > Completion", children: [
+      ] },
+      { label: "4. Conclusions and reporting > 1. Reporting>2 Rep letter and report", value: "4. Conclusions and reporting > 1. Reporting>2 Rep letter and report", children: [
+      ] },
+      { label: "4.Conclusions and reporting>2.Reporting", value: "4.Conclusions and reporting>2.Reporting", children: [
+      ] }
+    ] },
+    { label: "[IR]", value: null, children: [
+      { label: "1", value: null, children: [
+        { label: "1.3", value: null, children: [
+          { label: "[IR].1.3. Understanding the entity", value: "[IR].1.3. Understanding the entity", children: [
+          ] },
+          { label: "[IR].1.3. Understanding the entity (group engagement file)", value: "[IR].1.3. Understanding the entity (group engagement file)", children: [
+          ] }
+        ] }
+      ] },
+      { label: "2", value: null, children: [
+        { label: "[IR].2.1 Analytics", value: "[IR].2.1 Analytics", children: [
+        ] }
+      ] },
+      { label: "3", value: null, children: [
+        { label: "3.3", value: null, children: [
+          { label: "[IR].3.3.2 SRM", value: "[IR].3.3.2 SRM", children: [
+          ] },
+          { label: "[IR].3.3. Completion", value: "[IR].3.3. Completion", children: [
+          ] },
+          { label: "[IR].3.3. Completion (component engagement file)", value: "[IR].3.3. Completion (component engagement file)", children: [
+          ] }
+        ] }
+      ] }
+    ] },
+    { label: "Various", value: null, children: [
+      { label: "Various - attached to any activity where an end-user routine is used", value: "Various - attached to any activity where an end-user routine is used", children: [
+      ] },
+      { label: "Various - attached to any activity where KSP is used", value: "Various - attached to any activity where KSP is used", children: [
+      ] },
+      { label: "Various - attached to any activity where TOD is designed and performed", value: "Various - attached to any activity where TOD is designed and performed", children: [
+      ] }
+    ] },
+    { label: "Other", value: null, children: [
+      { label: "(3.1.1 Conclusions and Reporting for generic KCw file)", value: "(3.1.1 Conclusions and Reporting for generic KCw file)", children: [
+      ] }
+    ] }
+  ],
+  Standard: [
+    { label: "1. Engagement management", value: null, children: [
+      { label: "1.1", value: null, children: [
+        { label: "1.1.2 – Strategy and Audit Plan", value: "1.1.2 – Strategy and Audit Plan", children: [
+        ] },
+        { label: "1.1 Engagement management>Audit planning>1 Pre engagement", value: "1.1 Engagement management>Audit planning>1 Pre engagement", children: [
+        ] },
+        { label: "1.1. Engagement profile & Strategy", value: "1.1. Engagement profile & Strategy", children: [
+        ] }
+      ] },
+      { label: "1.2 Independence module", value: "1.2 Independence module", children: [
+        { label: "1.2.1. Initial Independence and Conclusion", value: "1.2.1. Initial Independence and Conclusion", children: [
+        ] }
+      ] },
+      { label: "1.4 Communications, inquiries and minutes", value: "1.4 Communications, inquiries and minutes", children: [
+      ] },
+      { label: "1. Engagement management>Audit planning>1 Pre engagement", value: "1. Engagement management>Audit planning>1 Pre engagement", children: [
+      ] },
+      { label: "1. Planning; 2. Review procedures; 3.Completion", value: "1. Planning; 2. Review procedures; 3.Completion", children: [
+      ] },
+      { label: "1. Understanding within the respective Specialist sub-module", value: "1. Understanding within the respective Specialist sub-module", children: [
+      ] },
+      { label: "1.SP Specialists.1 Understanding", value: "1.SP Specialists.1 Understanding", children: [
+      ] },
+      { label: "1.SP Specialists.2 Evaluation", value: "1.SP Specialists.2 Evaluation", children: [
+      ] },
+      { label: "1.SP.Specialists", value: "1.SP.Specialists", children: [
+      ] }
+    ] },
+    { label: "2. Entity-wide procedures", value: null, children: [
+      { label: "2.1. Risk assessment", value: "2.1. Risk assessment", children: [
+      ] },
+      { label: "2.2", value: null, children: [
+        { label: "2.2.3. Business processes", value: "2.2.3. Business processes", children: [
+        ] },
+        { label: "2.2.4 RAPD", value: "2.2.4 RAPD", children: [
+        ] }
+      ] },
+      { label: "2.3", value: null, children: [
+        { label: "2.3.2. IT Understanding", value: "2.3.2. IT Understanding", children: [
+        ] }
+      ] },
+      { label: "2.4", value: null, children: [
+        { label: "2.4.1. Fraud risk assessment and response", value: "2.4.1. Fraud risk assessment and response", children: [
+        ] }
+      ] },
+      { label: "2.5", value: null, children: [
+        { label: "2.5.1", value: null, children: [
+          { label: "2.5.1. General in the Overall Response module", value: "2.5.1. General in the Overall Response module", children: [
+          ] },
+          { label: "2.5.1. Overall Response > General", value: "2.5.1. Overall Response > General", children: [
+          ] }
+        ] },
+        { label: "2.5.2. Going concern", value: "2.5.2. Going concern", children: [
+        ] }
+      ] },
+      { label: "2.8 Group audit", value: "2.8 Group audit", children: [
+      ] },
+      { label: "2. Entity wide procedures-> 5. Overall Response-> 2. Going concern", value: "2. Entity wide procedures-> 5. Overall Response-> 2. Going concern", children: [
+      ] },
+      { label: "2. Entity-wide procedures-> 4. Overall response-> 2. Going concern", value: "2. Entity-wide procedures-> 4. Overall response-> 2. Going concern", children: [
+      ] },
+      { label: "2. Evaluation within the respective Specialist sub-module", value: "2. Evaluation within the respective Specialist sub-module", children: [
+      ] },
+      { label: "2.Entity-wide procedures>4 Overall response", value: "2.Entity-wide procedures>4 Overall response", children: [
+      ] }
+    ] },
+    { label: "3. Business processes", value: "3. Business processes", children: [
+      { label: "3. Business processes > Consultation", value: "3. Business processes > Consultation", children: [
+      ] },
+      { label: "3. Business Processes > X. [Relevant Process] > EST.XXX.1 Understand the estimate", value: "3. Business Processes > X. [Relevant Process] > EST.XXX.1 Understand the estimate", children: [
+      ] },
+      { label: "3. Business Processes > X. [Relevant Process] > EST.XXX.3 Results", value: "3. Business Processes > X. [Relevant Process] > EST.XXX.3 Results", children: [
+      ] },
+      { label: "3. Business processes>Litigation, claims and assessments", value: "3. Business processes>Litigation, claims and assessments", children: [
+      ] },
+      { label: "Within the respective 3. Business process", value: "Within the respective 3. Business process", children: [
+      ] }
+    ] },
+    { label: "4. Conclusions and reporting", value: null, children: [
+      { label: "4.1", value: null, children: [
+        { label: "4.1.4 SAM", value: "4.1.4 SAM", children: [
+        ] },
+        { label: "4.1.6. Completion", value: "4.1.6. Completion", children: [
+        ] }
+      ] },
+      { label: "4.2", value: null, children: [
+        { label: "4.2.1. Rep Letter and Report", value: "4.2.1. Rep Letter and Report", children: [
+        ] }
+      ] },
+      { label: "4. Conclusions and reporting > 1. Evaluate audit results > Completion", value: "4. Conclusions and reporting > 1. Evaluate audit results > Completion", children: [
+      ] },
+      { label: "4. Conclusions and reporting > 1. Reporting>2 Rep letter and report", value: "4. Conclusions and reporting > 1. Reporting>2 Rep letter and report", children: [
+      ] },
+      { label: "4.Conclusions and reporting>2.Reporting", value: "4.Conclusions and reporting>2.Reporting", children: [
+      ] }
+    ] },
+    { label: "Various", value: null, children: [
+      { label: "Various - attached to any activity where an end-user routine is used", value: "Various - attached to any activity where an end-user routine is used", children: [
+      ] },
+      { label: "Various - attached to any activity where KSP is used", value: "Various - attached to any activity where KSP is used", children: [
+      ] },
+      { label: "Various - attached to any activity where TOD is designed and performed", value: "Various - attached to any activity where TOD is designed and performed", children: [
+      ] }
+    ] }
+  ]
+};
+
+/* Related KCw Activity (Enhanced / Standard), parsed from
+   Workpaper Station字段整理 v1.1.xlsx — 底稿模板-eng nature / RelatedKCwActivity.
+   Values without an Enhanced/Standard prefix take the row's Workflow column. */
+const ENR_KCW = {
+  "Climate-Related Risks in an Audit of Financial Statements Work Paper": {"enh": ["2.1. Risk assessment"], "std": ["2.1. Risk assessment"]},
+  "Inquiry Agenda": {"enh": ["2.1.4 Inquiries"], "std": ["1.4 Communications, inquiries and minutes"]},
+  "RAFD Agenda": {"enh": [], "std": []},
+  "Fraud Risk Factors - Required Work Paper": {"enh": ["2.3.1. Fraud risk assessment"], "std": []},
+  "Fraud: Stand-back - Required Work Paper": {"enh": [], "std": ["2.4.1. Fraud risk assessment and response"]},
+  "Going Concern - Identification of Events or Conditions": {"enh": ["2.4.1. Overall response"], "std": ["2.5.1. Overall Response > General"]},
+  "Going Concern - Prospective Financial Information": {"enh": ["2.4.2. Going concern"], "std": ["2.5.2. Going concern"]},
+  "Understanding and Involvement of Internal Audit": {"enh": [], "std": ["2.5.1. General in the Overall Response module"]},
+  "Inventory Work Paper": {"enh": ["3. Response within the respective 3. Business process", "1.1.3. Audit Plan"], "std": ["Within the respective 3. Business process", "2.2.3. Business processes"]},
+  "Memorandum on Documentation Assembly and Retention": {"enh": ["4.2.2. Rep Letter and Report", "[IR].3.3. Completion"], "std": ["4.2.1. Rep Letter and Report"]},
+  "Independence Work Paper on Fees-related required work paper": {"enh": ["1.2 Independence module"], "std": ["1.2 Independence module"]},
+  "Summary of Audit Misstatements": {"enh": ["3.1.1 SAM"], "std": ["4.1.4 SAM"]},
+  "Summary of Review Misstatements": {"enh": ["[IR].3.3.2 SRM"], "std": []},
+  "KPMG Sampling Plan (KSP) in Excel": {"enh": ["Various - attached to any activity where KSP is used"], "std": ["Various - attached to any activity where KSP is used"]},
+  "Subpopulation Performance Materiality (SPM)": {"enh": ["Various - attached to any activity where TOD is designed and performed"], "std": ["Various - attached to any activity where TOD is designed and performed"]},
+  "Independence Work Paper for Non-PIEs": {"enh": ["1.2.1. Initial Independence"], "std": ["1.2.1. Initial Independence and Conclusion"]},
+  "Example Pre-engagement Confirmation": {"enh": ["1.1.1. Pre-engagement"], "std": ["1.1. Engagement profile & Strategy"]},
+  "ISRE 2400 (revised) Review Engagements Work Paper - A. Scope and Resources": {"enh": ["1. Planning; 2. Review procedures; 3.Completion"], "std": ["1. Planning; 2. Review procedures; 3.Completion"]},
+  "ISRE 2400 (revised) Review Engagements Work Paper - B. Materiality": {"enh": ["1. Planning; 2. Review procedures; 3.Completion"], "std": ["1. Planning; 2. Review procedures; 3.Completion"]},
+  "ISRE 2400 (revised) Review Engagements Work Paper - C. Understanding the Entity": {"enh": ["1. Planning; 2. Review procedures; 3.Completion"], "std": ["1. Planning; 2. Review procedures; 3.Completion"]},
+  "Guide to annual financial statements - IFRS Disclosure checklists": {"enh": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"], "std": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"]},
+  "Management representation letter (audit)": {"enh": ["4.2.2. Rep letter and Report"], "std": []},
+  "Management representation letter (interim review)": {"enh": ["3.3. Completion"], "std": []},
+  "Communication with AC regarding material weaknesses (MW)": {"enh": ["4.2.2. Rep letter and Report", "3.3. Completion"], "std": []},
+  "IT criticality checklist": {"enh": ["1.1.3 – Audit Plan"], "std": ["1.1.2 – Strategy and Audit Plan"]},
+  "3526 Letter to Audit Committee (\"AC\") regarding independence prior to engagement acceptance (applicable for IPO and first year audit engagement)": {"enh": ["1.1.1. Pre-engagement"], "std": []},
+  "ISRE 2400 (revised) Review Engagements Work Papers - Purpose, applicability and table of contents": {"enh": ["1. Planning; 2. Review procedures; 3.Completion"], "std": ["1. Planning; 2. Review procedures; 3.Completion"]},
+  "Engagement letters - KPMG HK": {"enh": ["1.1 Engagement management>Audit planning>1 Pre engagement"], "std": ["1.1 Engagement management>Audit planning>1 Pre engagement"]},
+  "Guide to annual financial statements - IFRS Disclosure Checklists": {"enh": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"], "std": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"]},
+  "Representation letters - KPMG HK": {"enh": ["4. Conclusions and reporting > 1. Reporting>2 Rep letter and report"], "std": ["4. Conclusions and reporting > 1. Reporting>2 Rep letter and report"]},
+  "Statement on the summary of listed companies' funding transactions with the controlling shareholder and other related parties for companies listed on the Shanghai Stock exchange (年度非经营性资金占用及其他关联资金往来的专项说明-上交所)": {"enh": ["4.Conclusions and reporting>2.Reporting"], "std": []},
+  "RAPD Agenda": {"enh": ["2.1.6 RAPD"], "std": ["2.2.4 RAPD"]},
+  "Group Audit Instructions for KPMG Component Auditors": {"enh": ["2.5 Group audit"], "std": ["2.8 Group audit"]},
+  "CAATs Document": {"enh": ["3. Response within the respective 3. Business process"], "std": ["Within the respective 3. Business process"]},
+  "Audit Committee Reporting - Audit Plan": {"enh": ["1. Engagement management>4 Communication>1 Communication plan"], "std": []},
+  "Returned confirmations - sent by mail/courier": {"enh": ["3. Business processes"], "std": ["3. Business processes"]},
+  "Agenda for planning meeting with EQC reviewer": {"enh": ["2.1.6 RAPD"], "std": ["2.2.4 RAPD"]},
+  "IRM specialists - Planning memorandum": {"enh": ["1.1.SP.Specialists"], "std": ["1.SP.Specialists"]},
+  "Sample of 3526(b) Communication memorandum": {"enh": ["1.2.2. SEC independence"], "std": []},
+  "ISRE 2400 (revised) Review Engagements Work Papers - Engagement scope, resources and other considerations": {"enh": ["1. Planning; 2. Review procedures; 3.Completion"], "std": ["1. Planning; 2. Review procedures; 3.Completion"]},
+  "Engagement letters - KPMG Huazhen": {"enh": ["1.1 Engagement management>Audit planning>1 Pre engagement"], "std": ["1.1 Engagement management>Audit planning>1 Pre engagement"]},
+  "PM33 - Checklist - Disclosure in financial statements under Hong Kong Financial Reporting Standards (HKFRSs)": {"enh": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"], "std": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"]},
+  "Representation letters - KPMG Huazhen": {"enh": ["4. Conclusions and reporting > 1. Reporting>2 Rep letter and report"], "std": ["4. Conclusions and reporting > 1. Reporting>2 Rep letter and report"]},
+  "Statement on the summary of listed companies' funding transactions with the controlling shareholder and other related parties for companies listed on the Shenzhen Stock exchange (年度非经营性资金占用及其他关联资金往来的专项说明-深交所)": {"enh": ["4.Conclusions and reporting>2.Reporting"], "std": []},
+  "Going Concern - Identification of Events or Conditions - Required Work Paper": {"enh": ["2.4.1. Overall response"], "std": ["2.5.1. Overall Response > General"]},
+  "Group Audit Instructions for Non-KPMG Component Auditors": {"enh": ["2.5 Group audit"], "std": ["2.8 Group audit"]},
+  "End-user Routine - Work Paper": {"enh": ["Various - attached to any activity where an end-user routine is used"], "std": ["Various - attached to any activity where an end-user routine is used"]},
+  "Audit Committee Reporting - Year End": {"enh": ["2.Entity-wide procedures>4 Inquiry"], "std": []},
+  "Returned confirmations - collected by hand": {"enh": ["3. Business processes"], "std": ["3. Business processes"]},
+  "EQCR involvement milestones and actions log": {"enh": [], "std": []},
+  "Tax criticality checklist - HK Tax specialists": {"enh": ["1.1.3 – Audit Plan"], "std": ["1.1.2 – Strategy and Audit Plan"]},
+  "Ethics and Independence Confirmation": {"enh": ["1.2.1. Initial independence"], "std": []},
+  "ISRE 2400 (revised) Review Engagements Work Papers - Materiality": {"enh": ["1. Planning; 2. Review procedures; 3.Completion"], "std": ["1. Planning; 2. Review procedures; 3.Completion"]},
+  "PRC 6-1 业务约定书模板-适用于对中国企业按照国际财务报告准则(IFRS)编制的财务报表执行的审计业务（Specimen engagement letter for non-statutory audits of financial statements prepared under International Financial Reporting Standards for PRC entities)）": {"enh": ["1.1 Engagement management>Audit planning>1 Pre engagement"], "std": ["1.1 Engagement management>Audit planning>1 Pre engagement"]},
+  "PM33A - Checklist for Annual Reports of Companies Listed on the Main Board of the Stock Exchange of Hong Kong": {"enh": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"], "std": []},
+  "PRC4A - 管理层声明书示例 - 适用于对采用企业会计制度编制的财务报表的法定审计（PRC4A - SPECIMEN MANAGEMENT REPRESENTATION LETTER - for statutory audits of financial statements prepared under Old PRC GAAP）": {"enh": ["4.Conclusions and reporting>2.Reporting"], "std": ["4.Conclusions and reporting>2.Reporting"]},
+  "Assurance Report on the summary of listed companies' funding transactions with the controlling shareholder and other related parties for companies listed on the Shanghai Stock exchange (年度非经营性资金占用及其他关联资金往来的鉴证报告-上交所)": {"enh": ["4.Conclusions and reporting>2.Reporting"], "std": []},
+  "Going Concern - Prospective Financial Information - Required Work Paper": {"enh": ["2.4.2. Going concern"], "std": ["2.5.2. Going concern"]},
+  "Assessment of Training and Experience Work Paper": {"enh": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"], "std": ["4. Conclusions and reporting > 1. Evaluate audit results > Completion"]},
+  "Random Sample Tool": {"enh": ["3. Response within the respective 3. Business process"], "std": ["Within the respective 3. Business process"]}
+};
+
+/* --- Related KCw Activity picker (tree select, multi-select) ---------------
+   Values are compared on a normalised key so the labels imported from the sheet
+   (which differ in dots / dashes / case) still tick the right tree node. */
+function kcwKey(s) {
+  return String(s).toLowerCase().replace(/[–—]/g, "-").replace(/&/g, "and")
+    .replace(/(\d)\.(?=\s|$)/g, "$1").replace(/\s+-\s+/g, " ")
+    .replace(/\s+/g, " ").trim();
+}
+const KCW_CANON = (() => {
+  const m = {};
+  (function walk(list) {
+    list.forEach(n => {
+      if (n.value) { const k = kcwKey(n.value); if (!(k in m)) m[k] = n.value; }
+      walk(n.children || []);
+    });
+  })(KCW_TREE);
+  return m;
+})();
+function kcwCanon(v) { return KCW_CANON[kcwKey(v)] || v; }
+function kcwSelText(sel) {
+  if (!sel.length) return "—";
+  return sel.length === 1 ? sel[0] : sel[0] + " +" + (sel.length - 1);
+}
+/* a node stays open when the selection lives somewhere below it */
+function kcwHasSel(n, on) {
+  if (n.value && on[kcwKey(n.value)]) return true;
+  return (n.children || []).some(c => kcwHasSel(c, on));
+}
+/* every activity under a node (own + descendants) — a container selects its whole branch */
+function kcwNodeValues(n) {
+  const out = [];
+  (function walk(x) {
+    if (x.value) out.push(x.value);
+    (x.children || []).forEach(walk);
+  })(n);
+  return out;
+}
+/* key -> node map, matching the keys used by the renderer */
+const KCW_INDEX = (() => {
+  const m = {};
+  (function walk(list, parentKey) {
+    list.forEach(n => {
+      const key = parentKey ? parentKey + "/" + n.label : n.label;
+      m[key] = n;
+      walk(n.children || [], key);
+    });
+  })(KCW_TREE, "");
+  return m;
+})();
+function kcwNodeHTML(n, depth, field, on, parentKey) {
+  const kids = n.children || [];
+  const key = parentKey ? parentKey + "/" + n.label : n.label;
+  const vals = kcwNodeValues(n);
+  const selCount = vals.reduce((c, v) => c + (on[kcwKey(v)] ? 1 : 0), 0);
+  /* a node with its own activity selects just that activity; a pure container selects its branch */
+  const checked = n.value ? !!on[kcwKey(n.value)] : (vals.length > 0 && selCount === vals.length);
+  const part = !n.value && selCount > 0 && selCount < vals.length;
+  const open = kids.length && kcwHasSel(n, on);
+  return `<div class="kcw-node${open ? " open" : ""}">
+    <div class="kcw-row" style="padding-left:${8 + depth * 14}px">
+      ${kids.length
+        ? `<span class="kcw-tri" onclick="toggleKcwNode(event,this)"></span>`
+        : `<span class="kcw-tri kcw-tri-empty"></span>`}
+      <input type="checkbox" data-key="${esc(key)}" ${checked ? "checked" : ""}${part ? ' data-part="1"' : ""} onchange="onKcwPickNode('${field}',this)" onclick="event.stopPropagation()">
+      <span class="kcw-label${n.value ? "" : " kcw-container"}" title="${esc(n.label)}"${kids.length ? ` onclick="toggleKcwNode(event,this)"` : ""}>${esc(n.label)}</span>
+    </div>
+    ${kids.length ? `<div class="kcw-children">${kids.map(c => kcwNodeHTML(c, depth + 1, field, on, key)).join("")}</div>` : ""}
+  </div>`;
+}
+function kcwTreeHTML(field, on) {
+  return KCW_TREE.map(n => kcwNodeHTML(n, 0, field, on, "")).join("");
+}
+function kcwSelHTML(field, selected) {
+  const sel = selected || [];
+  const on = {};
+  sel.forEach(v => { on[kcwKey(v)] = 1; });
+  return `<div class="ms kcw-ms" id="kcw_${field}">
+    <button type="button" class="ms-trigger" onclick="toggleKcwMs('${field}',event)"><span class="${sel.length ? "" : "ph"}">${esc(kcwSelText(sel))}</span></button>
+    <div class="ms-menu kcw-menu" id="kcwMenu_${field}" onclick="event.stopPropagation()">${kcwTreeHTML(field, on)}</div>
+  </div>`;
+}
+function toggleKcwMs(field, ev) {
+  if (ev) ev.stopPropagation();
+  const el = $("#kcw_" + field);
+  const wasOpen = el && el.classList.contains("open");
+  document.querySelectorAll(".ms.open").forEach(x => x.classList.remove("open"));
+  if (el && !wasOpen) el.classList.add("open");
+}
+function toggleKcwNode(ev, el) {
+  if (ev) ev.stopPropagation();
+  const node = el.closest(".kcw-node");
+  if (node) node.classList.toggle("open");
+}
+function kcwSetTrigger(field) {
+  const arr = draft[field];
+  const trig = $("#kcw_" + field + " .ms-trigger span");
+  if (trig) { trig.textContent = kcwSelText(arr); trig.className = arr.length ? "" : "ph"; }
+}
+/* native checkboxes only show the dash when `indeterminate` is set in JS */
+function syncKcwIndeterminate(root) {
+  (root || document).querySelectorAll('.kcw-row input[data-part="1"]').forEach(cb => { cb.indeterminate = true; });
+}
+function refreshKcwMenu(field) {
+  const menu = document.getElementById("kcwMenu_" + field);
+  if (!menu) return;
+  const top = menu.scrollTop;
+  const on = {};
+  (draft[field] || []).forEach(v => { on[kcwKey(v)] = 1; });
+  menu.innerHTML = kcwTreeHTML(field, on);
+  menu.scrollTop = top;
+  syncKcwIndeterminate(menu);
+}
+function onKcwPickNode(field, cb) {
+  const n = KCW_INDEX[cb.dataset.key];
+  if (!n) return;
+  const arr = draft[field];
+  const vals = n.value ? [n.value] : kcwNodeValues(n);
+  if (cb.checked) vals.forEach(v => { if (arr.indexOf(v) < 0) arr.push(v); });
+  else vals.forEach(v => { const i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); });
+  refreshKcwMenu(field);
+  kcwSetTrigger(field);
+}
+
 const ENR_RULES = STANDARD_WPS.slice(0, 24).map((w, i) => {
   const pool = [
     ["HKSA", "PCAOB"], ["ISA"], ["CSA"], ["HKSA"], ["ISA", "CSA"],
@@ -1924,6 +2709,8 @@ const ENR_RULES = STANDARD_WPS.slice(0, 24).map((w, i) => {
     entityType: i % 4 === 0 ? ["Listed"] : (i % 4 === 1 ? ["Listed", "PIE"] : ["Non-PIE"]),
     exchange: i % 5 === 0 ? ["MB", "GEM"] : (i % 5 === 1 ? ["US"] : (i % 5 === 2 ? ["A Share"] : ["NA"])),
     req: w.req,
+    kcwEnh: (ENR_KCW[w.name] || {}).enh || [],
+    kcwStd: (ENR_KCW[w.name] || {}).std || [],
     attachments: seedAttachments(i, w),
     active: i % 7 !== 5
   };
@@ -1939,6 +2726,8 @@ const ENR_RULES = STANDARD_WPS.slice(0, 24).map((w, i) => {
     entityType: x.entityType.slice(),
     exchange: x.exchange.slice(),
     req: x.req,
+    kcwEnh: (ENR_KCW[x.name] || {}).enh || [],
+    kcwStd: (ENR_KCW[x.name] || {}).std || [],
     attachments: seedAttachments(i, x),
     active: i % 7 !== 5
   };
@@ -2206,13 +2995,14 @@ function applyAllSystems(r) {
 (function enrichMockRows() {
   const REVS = ["Zhou, Emily (SH/PTR)", "Yang, David (BJ/PTR)"];
   const UPS = [BY_SH2, BY_BJ2, BY_SIMONS, BY_FLORENCE, BY_BJ4, BY_KEVIN, BY_BJ3, BY_VIVIEN];
-  const REJ = [
+  const CMT = [
     "底稿未包含抽样方法的说明，无法判断样本是否具有代表性，请补充后重新上传。",
     "明细表中 4 笔样本缺少与凭证的交叉索引，请补齐凭证编号后重新上传。",
     "结论段与正文分析不一致，且未记录与管理层讨论的过程，请修正后重新上传。",
     "文件为扫描件且部分页面无法辨认，请提供可编辑版本及清晰扫描件。"
   ];
-  const SEQ = ["pending", "reviewed", "modified", "rejected"];
+  /* "commented" is a mock stage only: the record stays Pending Review with one comment */
+  const SEQ = ["pending", "reviewed", "modified", "commented"];
   const pad = n => String(n).padStart(2, "0");
   const stamp = (day, i) => `2026/11/${pad(day)} ${pad(9 + (i % 9))}:${pad((i * 13) % 60)}:00`;
   function fileName(w, v) {
@@ -2233,7 +3023,7 @@ function applyAllSystems(r) {
       const d2 = stamp(11 + (i % 4), i + 1);
       const d3 = stamp(14 + (i % 3), i + 2);
       const f1 = fileName(w, 1), f2 = fileName(w, 2);
-      w.by = by; w.at = d1; w.ver = 1; w.file = f1; w.status = st;
+      w.by = by; w.at = d1; w.ver = 1; w.file = f1; w.status = st === "commented" ? "pending" : st;
       if (st === "pending") {
         w.history = [h("upload", by, d1, { file: f1, ver: 1 })];
       } else if (st === "reviewed") {
@@ -2244,7 +3034,7 @@ function applyAllSystems(r) {
         w.history = [h("upload", by, d1, { file: f1, ver: 1 }), h("review", rev, d2, { result: "reviewed" }), h("upload", by, d3, { file: f2, ver: 2 })];
       } else {
         w.at = d2;
-        w.history = [h("upload", by, d1, { file: f1, ver: 1 }), h("reject", rev, d2, { comment: REJ[i % REJ.length] })];
+        w.history = [h("upload", by, d1, { file: f1, ver: 1 }), h("comment", rev, d2, { text: CMT[i % CMT.length] })];
       }
     });
   }
@@ -2264,6 +3054,8 @@ const ico = (id, cls) => `<svg class="ico ${cls || ""}"><use href="#${id}"/></sv
 /* Header always shows the demo operator; the role switcher only changes permissions.
    Upload / review actions are recorded against role-appropriate mock identities. */
 const CURRENT_USER = "Wang, Simons";
+/* full identity used for comment authorship (matches the Admin operator identity) */
+const CURRENT_USER_FULL = "Wang, Simons (KDiNJ/TECH)";
 
 const ROLES = [
   { key: "admin",    label: "role.admin",    kind: "admin",      uploader: "Chen, Alex (SH/CP1)",  reviewer: "Zhou, Emily (SH/PTR)" },
@@ -2287,10 +3079,15 @@ const state = {
   opId: "R000001757099",
   fileId: "f12",
   templateLang: "EN",
-  groupStd: "req",
+  groupStd: "none",
   groupProc: "none",
   qStd: "",
   qProc: "",
+  /* Standard Workpapers activity tree pane */
+  actSel: null,        // selected node key (null = all workpapers)
+  actTreeQ: "",        // tree search
+  actOpen: {},         // node key -> expanded
+  actPaneOpen: true,   // left pane expanded / collapsed rail
   collapsed: {},
   expandedProc: {},
   expandedSys: {},
@@ -2402,7 +3199,7 @@ function isUploaded(w) { return w.status !== "none"; }
 /* Pre-check = entered the review queue and not yet finally passed (Pending Review / Modified after Review).
    Review-passed items are counted by the pass rate instead, so the three rates partition the population:
    upload = pre-check in progress + review passed. */
-function isPrechecked(w) { return w.status === "pending" || w.status === "modified" || w.status === "rejected"; }
+function isPrechecked(w) { return w.status === "pending" || w.status === "modified"; }
 function isReviewed(w) { return w.status === "reviewed"; }
 
 /* ---------- toast ---------- */
@@ -2517,28 +3314,36 @@ function fileCell(w) {
   return w.file ? `<span class="mono" title="${esc(w.file)}">${esc(w.file.length > 26 ? w.file.slice(0, 24) + "…" : w.file)}</span>` : `<span class="hint">—</span>`;
 }
 function statusCell(kind, w) {
+  /* Not Uploaded has no history yet, so no history icon */
+  const hist = w.status === "none"
+    ? ""
+    : `<button class="icon-btn" title="${esc(t("act.history"))}" onclick="event.stopPropagation();openHistory('${kind}','${w.id}')">${ico("i-history", "ico-sm")}</button>`;
   return `<span class="status-cell">
     ${statusPill(w.status)}
-    <button class="icon-btn" title="${esc(t("act.history"))}" onclick="event.stopPropagation();openHistory('${kind}','${w.id}')">${ico("i-history", "ico-sm")}</button>
+    ${hist}
   </span>`;
+}
+/* comments live on the audit trail: one history entry per comment */
+function commentEntries(w) { return (w.history || []).filter(e => e.type === "comment"); }
+function commentCount(w) { return commentEntries(w).length; }
+function commentAuthor() { return CURRENT_USER_FULL; }
+function commentButtonHTML(kind, w) {
+  const zh = state.lang === "zh";
+  const n = commentCount(w);
+  return `<span class="cmt-wrap"><button class="icon-btn act-comment" title="${esc(zh ? "评论" : "Comments")}" onclick="openComments('${kind}','${w.id}')">${ico("i-comment", "ico-sm")}</button>${n ? `<span class="cmt-badge">${n > 9 ? "9+" : n}</span>` : ""}</span>`;
 }
 function actionsCell(kind, w) {
   const zh = state.lang === "zh";
   const actionable = w.status === "pending" || w.status === "modified";
   const wrap = inner => `<span style="display:inline-flex;gap:2px">${inner}</span>`;
-  /* Not Uploaded / Reviewed -> grey tick only; Rejected -> grey cross only */
-  if (w.status === "rejected") {
-    return wrap(`<button class="icon-btn" disabled title="${esc(zh ? "已退回，等待重新上传" : "Rejected — waiting for re-upload")}">${ico("i-close", "ico-sm")}</button>`);
-  }
-  if (!actionable) {
-    return wrap(`<button class="icon-btn" disabled title="${esc(w.status === "reviewed" ? (zh ? "已审核通过" : "Reviewed") : (zh ? "尚未上传" : "Not uploaded yet"))}">${ico("i-check", "ico-sm")}</button>`);
-  }
-  /* Pending Review / Modified after Review -> green pass + red reject */
+  /* Not Uploaded / Reviewed -> the Review column stays empty (no actions available) */
+  if (!actionable) return "";
+  /* Pending Review / Modified after Review -> green pass + comment bubble */
   const off = canReview() ? "" : "disabled";
   const tip = canReview() ? "" : t("ttl.reviewOnly");
   return wrap(`
     <button class="icon-btn act-pass" ${off} title="${esc(tip || (zh ? "通过" : "Pass"))}" onclick="doReview('${kind}','${w.id}')">${ico("i-check", "ico-sm")}</button>
-    <button class="icon-btn act-reject" ${off} title="${esc(tip || (zh ? "退回" : "Reject"))}" onclick="openReject('${kind}','${w.id}')">${ico("i-close", "ico-sm")}</button>`);
+    ${commentButtonHTML(kind, w)}`);
 }
 /* ---------------- column sort / filter ---------------- */
 const COLS = {
@@ -2573,6 +3378,8 @@ const COLS = {
     sec:        { en: "Section",           cn: "类别",     sort: true, filter: true,  get: r => secLabel(r.sec) },
     standards:  { en: "Relevant Standard", cn: "适用准则", sort: true, filter: true,  get: r => (r.standards || []).join(", ") },
     workflow:   { en: "Workflow",          cn: "工作流",   sort: true, filter: true,  get: r => (r.workflow || []).join(", ") },
+    kcwEnh:     { en: "Related KCw Activity (Enhanced)", cn: "相关 KCw 活动（Enhanced）", sort: true, filter: false, get: r => (r.kcwEnh || []).join(" / ") },
+    kcwStd:     { en: "Related KCw Activity (Standard)", cn: "相关 KCw 活动（Standard）", sort: true, filter: false, get: r => (r.kcwStd || []).join(" / ") },
     entityType: { en: "Entity Type",       cn: "实体类型", sort: true, filter: true,  get: r => (r.entityType || []).join(", ") },
     exchange:   { en: "Stock Exchange",    cn: "证券交易所", sort: true, filter: true, get: r => (r.exchange || []).join(", ") },
     req:        { en: "Required Level",    cn: "必要级别", sort: true, filter: true,  get: r => reqLabel(r.req) },
@@ -2755,7 +3562,7 @@ function askReplace(kind, id) {
   setTimeout(() => { const b = el.querySelector(".btn-primary"); if (b) b.focus(); }, 20);
 }
 function closeModal() {
-  /* covers both the replace-confirm modal and the reject dialog */
+  /* covers the replace-confirm, delete, comment and audit-procedure dialogs */
   document.querySelectorAll(".modal-overlay").forEach(el => el.remove());
 }
 document.addEventListener("keydown", e => {
@@ -2817,48 +3624,60 @@ function doDeleteWp(kind, id) {
   toast(state.lang === "zh" ? "已删除该底稿" : "Workpaper deleted", "success");
 }
 function doDeleteSpec(id) { doDeleteWp("specialist", id); }
-function openReject(kind, id) {
+function openComments(kind, id) {
   const w = findWp(kind, id);
   if (!w) return;
   const zh = state.lang === "zh";
+  const canAdd = w.status === "pending" || w.status === "modified";
   closeModal();
   const el = document.createElement("div");
   el.className = "modal-overlay";
-  el.id = "rejectModal";
+  el.id = "commentModal";
   el.onclick = e => { if (e.target === el) closeModal(); };
-  el.innerHTML = `<div class="modal-card" role="dialog" aria-modal="true">
-      <div class="modal-title">${esc(zh ? "退回该底稿？" : "Reject this workpaper?")}</div>
-      <div class="modal-line">${esc(w.name)}</div>
-      <textarea class="modal-textarea" id="rejectComment" placeholder="${esc(zh ? "请填写退回原因（必填），上传人会收到该说明" : "Enter the reason for rejection (required) — the uploader will see it")}"></textarea>
-      <div class="modal-note">${ico("i-clock", "ico-sm")}<span>${esc(zh ? "退回后状态变为 Rejected，底稿必须重新上传。" : "Status becomes Rejected — the workpaper must be re-uploaded.")}</span></div>
+  el.innerHTML = `<div class="modal-card cmt-card" role="dialog" aria-modal="true">
+      <div class="modal-title">${esc(zh ? "评论" : "Comments")}</div>
+      <div class="modal-line">${esc(w.name)} ${statusPill(w.status)}</div>
+      <div class="cmt-list" id="cmtList">${commentsListHTML(w)}</div>
+      ${canAdd ? `
+      <textarea class="modal-textarea" id="commentText" placeholder="${esc(zh ? "输入评论，可连续提交多条" : "Write a comment — you can add more than one")}"></textarea>
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal()">${esc(zh ? "取消" : "Cancel")}</button>
-        <button class="btn btn-danger" onclick="submitReject('${kind}','${id}')">${esc(zh ? "退回" : "Reject")}</button>
-      </div>
+        <button class="btn" onclick="closeModal()">${esc(zh ? "关闭" : "Close")}</button>
+        <button class="btn btn-primary" onclick="submitComment('${kind}','${id}')">${esc(zh ? "发表评论" : "Comment")}</button>
+      </div>` : `
+      <div class="modal-note">${ico("i-clock", "ico-sm")}<span>${esc(zh ? "已审核通过，仅可查看历史评论。" : "Reviewed — comments are read-only.")}</span></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal()">${esc(zh ? "关闭" : "Close")}</button>
+      </div>`}
     </div>`;
   document.body.appendChild(el);
-  setTimeout(() => { const t = document.getElementById("rejectComment"); if (t) t.focus(); }, 30);
+  if (canAdd) setTimeout(() => { const t = document.getElementById("commentText"); if (t) t.focus(); }, 30);
 }
-function submitReject(kind, id) {
-  const t = document.getElementById("rejectComment");
-  const comment = (t ? t.value : "").trim();
-  if (!comment) {
-    toast(state.lang === "zh" ? "请填写退回原因" : "Please enter a rejection reason", "error");
+function commentsListHTML(w) {
+  const zh = state.lang === "zh";
+  const list = commentEntries(w);
+  if (!list.length) return `<div class="cmt-empty">${esc(zh ? "暂无评论" : "No comments yet")}</div>`;
+  return list.map(c => `<div class="cmt-item">
+      <div class="cmt-head"><b>${esc(c.by || "")}</b><span>${esc(c.at || "")}</span></div>
+      <div class="cmt-text">${esc(c.text || "")}</div>
+    </div>`).join("");
+}
+function submitComment(kind, id) {
+  const w = findWp(kind, id);
+  if (!w) return;
+  const t = document.getElementById("commentText");
+  const text = (t ? t.value : "").trim();
+  if (!text) {
+    toast(state.lang === "zh" ? "请填写评论内容" : "Please enter a comment", "error");
     if (t) t.focus();
     return;
   }
-  doReject(kind, id, comment);
-}
-function doReject(kind, id, comment) {
-  if (!canReview()) { toast(t("toast.noPerm"), "error"); return; }
-  const w = findWp(kind, id);
-  if (!w || (w.status !== "pending" && w.status !== "modified")) return;
-  w.status = "rejected";
   w.history = w.history || [];
-  w.history.push({ id: "h" + Date.now(), type: "reject", by: currentReviewer(), at: nowStr(), comment });
-  closeModal();
+  w.history.push(h("comment", commentAuthor(), nowStr(), { text }));
+  const list = document.getElementById("cmtList");
+  if (list) list.innerHTML = commentsListHTML(w);
+  if (t) { t.value = ""; t.focus(); }
   render();
-  toast(state.lang === "zh" ? "已退回，需重新上传" : "Rejected — re-upload required", "success");
+  toast(state.lang === "zh" ? "评论已添加" : "Comment added", "success");
 }
 function doReview(kind, id) {
   if (!canReview()) { toast(t("toast.noPerm"), "error"); return; }
@@ -3096,17 +3915,21 @@ function openHistory(kind, id) {
   const items = [];
   (w.history || []).forEach(ev => {
     const isUp = ev.type === "upload";
-    const isRej = ev.type === "reject";
-    const title = isUp ? (state.lang === "zh" ? "上传" : "Upload") : isRej ? (state.lang === "zh" ? "退回" : "Rejected") : (state.lang === "zh" ? "审核通过" : "Reviewed");
+    const isCmt = ev.type === "comment";
+    const title = isUp
+      ? (state.lang === "zh" ? "上传" : "Upload")
+      : isCmt
+        ? (state.lang === "zh" ? "评论" : "Comment")
+        : (state.lang === "zh" ? "审核通过" : "Reviewed");
     items.push(`<div class="tl-item">
-      <span class="tl-dot ${isUp ? "info" : isRej ? "err" : "ok"}"></span>
+      <span class="tl-dot ${isUp ? "info" : isCmt ? "cmt" : "ok"}"></span>
       <div class="tl-head">
         <span class="tl-title">${title}</span>
         <span class="tl-time">${esc(ev.at)}</span>
       </div>
       <div class="tl-meta"><span>${esc(ev.by)}</span>${isUp ? `<span>v${ev.ver}</span>` : ""}</div>
       ${isUp && ev.file ? `<div class="tl-file">${esc(ev.file)}</div>` : ""}
-      ${isRej && ev.comment ? `<div class="tl-comment">${esc(ev.comment)}</div>` : ""}
+      ${isCmt && ev.text ? `<div class="tl-comment">${esc(ev.text)}</div>` : ""}
     </div>`);
   });
   if (!items.length) items.push(`<div class="tl-item"><span class="tl-dot"></span><div class="tl-head"><span class="tl-title">${esc(t("st.none"))}</span></div><div class="tl-meta"><span>${state.lang === "zh" ? "尚无上传记录" : "No upload yet"}</span></div></div>`);
@@ -3311,6 +4134,192 @@ function attrStripHTML(op) {
   </div>`;
 }
 
+/* =========================================================================
+   Standard Workpapers — KCw activity tree pane
+   The tree is scoped to the current Opinion Profile's workflow; each node
+   carries the de-duplicated set of workpapers below it.
+   ========================================================================= */
+function actWorkflow() { return currentOp().workflow === "Standard" ? "Standard" : "Enhanced"; }
+
+function actBuildTree(roots, wpActs, statusOf) {
+  const byKey = {};
+  const zh = state.lang === "zh";
+  function walk(n, parentKey, depth) {
+    const key = parentKey ? parentKey + "/" + n.label : n.label;
+    const ids = new Set();
+    if (n.value) {
+      const k = kcwKey(n.value);
+      Object.keys(wpActs).forEach(id => { if (wpActs[id].indexOf(k) >= 0) ids.add(id); });
+    }
+    const kids = (n.children || []).map(c => walk(c, key, depth + 1));
+    kids.forEach(c => c.ids.forEach(id => ids.add(id)));
+    let pending = 0, untouched = 0;
+    ids.forEach(id => {
+      if (statusOf[id] !== "reviewed") pending++;
+      if (statusOf[id] === "none") untouched++;
+    });
+    const node = { key, label: n.label, value: n.value || null, depth, kids, ids, total: ids.size, pending, untouched };
+    byKey[key] = node;
+    return node;
+  }
+  const rs = roots.map(n => walk(n, "", 0));
+  const unmappedIds = new Set(Object.keys(wpActs).filter(id => !wpActs[id].length));
+  let up = 0, ut = 0;
+  unmappedIds.forEach(id => {
+    if (statusOf[id] !== "reviewed") up++;
+    if (statusOf[id] === "none") ut++;
+  });
+  const unmapped = {
+    key: "__unmapped", label: zh ? "未映射底稿" : "Unmapped", depth: 0, kids: [],
+    ids: unmappedIds, total: unmappedIds.size, pending: up, untouched: ut
+  };
+  return { roots: rs, byKey, unmapped };
+}
+
+function actMetaHTML(n) {
+  const zh = state.lang === "zh";
+  if (!n.total) return `<span class="act-meta zero">${zh ? "0 条" : "0"}</span>`;
+  const tip = `${n.total} ${zh ? "张底稿" : "workpapers"} · ${n.pending} ${zh ? "待处理" : "to do"}`;
+  const txt = n.pending
+    ? `${n.total}${zh ? " 条" : ""} · <b>${zh ? "待处理 " : ""}${n.pending}${zh ? "" : " to do"}</b>`
+    : `${n.total}${zh ? " 条" : ""}`;
+  return `<span class="act-meta" title="${esc(tip)}">${txt}</span>`;
+}
+function actMatch(n, q) {
+  return !q || n.label.toLowerCase().indexOf(q) >= 0 || n.kids.some(c => actMatch(c, q));
+}
+function actNodeOpen(n, q) {
+  if (q) return n.kids.some(c => actMatch(c, q));
+  if (n.key in state.actOpen) return state.actOpen[n.key];
+  return n.depth === 0 || n.total > 0;
+}
+function actPathSelected(n) {
+  if (!state.actSel) return false;
+  return (function has(x) { return x.kids.some(c => c.key === state.actSel || has(c)); })(n);
+}
+function actNodeHTML(n, q) {
+  if (q && !actMatch(n, q)) return "";
+  const open = n.kids.length && actNodeOpen(n, q);
+  const sel = state.actSel === n.key;
+  const inpath = !sel && actPathSelected(n);
+  const hit = !!q && n.label.toLowerCase().indexOf(q) >= 0;
+  const untouched = n.total > 0 && n.untouched === n.total;
+  return `<div class="act-node${open ? " open" : ""}">
+    <div class="act-row${sel ? " sel" : ""}${inpath ? " inpath" : ""}" data-key="${esc(n.key)}" style="padding-left:${8 + n.depth * 12}px" onclick="selectActNode(this.dataset.key)">
+      ${n.kids.length ? `<span class="act-tri" onclick="toggleActNode(event,this)"></span>` : `<span class="act-tri act-tri-empty"></span>`}
+      ${untouched ? `<span class="act-dot" title="${esc(state.lang === "zh" ? "该分支底稿均未上传" : "No workpaper uploaded in this branch")}"></span>` : ""}
+      <span class="act-label${untouched ? " dim" : ""}${n.total ? "" : " zero"}${hit ? " hit" : ""}" title="${esc(n.label)}">${esc(n.label)}</span>
+      ${actMetaHTML(n)}
+    </div>
+    ${n.kids.length && open ? `<div class="act-kids">${n.kids.map(c => actNodeHTML(c, q)).join("")}</div>` : ""}
+  </div>`;
+}
+function actUnmappedHTML(u) {
+  if (!u) return "";
+  const sel = state.actSel === u.key;
+  const untouched = u.total > 0 && u.untouched === u.total;
+  return `<div class="act-node"><div class="act-row${sel ? " sel" : ""}" data-key="${u.key}" onclick="selectActNode(this.dataset.key)" title="${esc(state.lang === "zh" ? "没有映射到任何 KCw 活动的底稿" : "Workpapers with no KCw activity mapping")}">
+    <span class="act-tri act-tri-empty"></span>
+    ${untouched ? `<span class="act-dot"></span>` : ""}
+    <span class="act-label${untouched ? " dim" : ""}">${esc(u.label)}</span>
+    ${actMetaHTML(u)}
+  </div></div>`;
+}
+function actTreeHTML() {
+  const A = window.__actTree;
+  if (!A) return "";
+  const q = state.actTreeQ.trim().toLowerCase();
+  return A.roots.map(n => actNodeHTML(n, q)).join("");
+}
+function actPaneHTML() {
+  const A = window.__actTree;
+  if (!A) return "";
+  const zh = state.lang === "zh";
+  if (!state.actPaneOpen) {
+    const sel = state.actSel ? (state.actSel === "__unmapped" ? A.unmapped : A.byKey[state.actSel]) : null;
+    return `<div class="act-pane collapsed">
+      <button class="icon-btn act-expand" title="${esc(zh ? "展开活动树" : "Expand activity tree")}" onclick="toggleActPane()">${ico("i-caret-down", "ico-sm")}</button>
+      ${sel
+        ? `<span class="rail-name" title="${esc(sel.label)}">${esc(sel.label)}</span><button class="icon-btn rail-x" title="${esc(zh ? "清除筛选" : "Clear filter")}" onclick="clearActSel(event)">${ico("i-close", "ico-sm")}</button>`
+        : `<span class="rail-name dim">${esc(zh ? "活动" : "Activities")}</span>`}
+    </div>`;
+  }
+  return `<div class="act-pane">
+    <div class="act-head">
+      <span class="act-title">${esc(zh ? "活动" : "Activities")}</span>
+      <input class="input sm act-q" id="actQ" value="${esc(state.actTreeQ)}" placeholder="${esc(zh ? "搜索活动" : "Search activities")}" oninput="onActQ(this.value)">
+      <button class="icon-btn act-reset${state.actSel || state.actTreeQ ? "" : " off"}" title="${esc(zh ? "重置筛选" : "Reset filters")}" onclick="resetActTree()">${ico("i-reset", "ico-sm")}</button>
+      <button class="icon-btn act-collapse" title="${esc(zh ? "收起" : "Collapse")}" onclick="toggleActPane()">${ico("i-caret-down", "ico-sm")}</button>
+    </div>
+    <div class="act-scroll" id="actScroller"><div id="actTreeBody">${actTreeHTML()}</div></div>
+    <div class="act-foot">${actUnmappedHTML(A.unmapped)}</div>
+  </div>`;
+}
+function toggleActPane() { state.actPaneOpen = !state.actPaneOpen; render(); }
+function resetActTree() {
+  if (!state.actSel && !state.actTreeQ) return;
+  state.actSel = null;
+  state.actTreeQ = "";
+  state.pageStd = 1;
+  render();
+}
+function selectActNode(key) {
+  state.actSel = state.actSel === key ? null : key;
+  state.pageStd = 1;
+  render();
+}
+function clearActSel(ev) {
+  if (ev) ev.stopPropagation();
+  state.actSel = null;
+  state.pageStd = 1;
+  render();
+}
+function toggleActNode(ev, el) {
+  if (ev) ev.stopPropagation();
+  const row = el.closest(".act-row");
+  const A = window.__actTree;
+  const n = row && A ? A.byKey[row.dataset.key] : null;
+  if (!n) return;
+  const cur = (n.key in state.actOpen) ? state.actOpen[n.key] : actNodeOpen(n, "");
+  state.actOpen[n.key] = !cur;
+  refreshActTree();
+}
+function onActQ(v) { state.actTreeQ = v; refreshActTree(); }
+function refreshActTree() {
+  const box = $("#actTreeBody");
+  if (!box) return;
+  const sc = $("#actScroller");
+  const top = sc ? sc.scrollTop : 0;
+  box.innerHTML = actTreeHTML();
+  if (sc) sc.scrollTop = top;
+}
+function stdEmptyHTML() {
+  const zh = state.lang === "zh";
+  const conds = [];
+  const A = window.__actTree;
+  if (state.actSel && A) {
+    const n = state.actSel === "__unmapped" ? A.unmapped : A.byKey[state.actSel];
+    if (n) conds.push((zh ? "活动：" : "Activity: ") + n.label);
+  }
+  if (state.qStd.trim()) conds.push((zh ? "搜索：" : "Search: ") + state.qStd.trim());
+  Object.keys(state.colFilter.std || {}).forEach(k => {
+    const v = state.colFilter.std[k];
+    if (v && v.length) conds.push((zh ? COLS.std[k].cn : COLS.std[k].en) + (zh ? "：" : ": ") + v.join(" / "));
+  });
+  if (!conds.length) {
+    return `<div class="empty">${ico("i-empty", "ei")}<div class="empty-title">${esc(t("empty.notitle"))}</div><div class="empty-desc">${esc(t("empty.nodesc"))}</div></div>`;
+  }
+  return `<div class="empty">${ico("i-empty", "ei")}<div class="empty-title">${esc(zh ? "当前筛选没有匹配的底稿" : "No workpapers match the current filters")}</div><div class="empty-desc">${esc(conds.join(" · "))}</div><button class="btn btn-xs" style="margin-top:8px" onclick="clearStdFilters()">${esc(zh ? "清除全部筛选" : "Clear all filters")}</button></div>`;
+}
+function clearStdFilters() {
+  state.actSel = null;
+  state.qStd = "";
+  state.colFilter.std = {};
+  state.colSort.std = null;
+  state.pageStd = 1;
+  render();
+}
+
 function kpiHTML(stdRows, procRows, extraClass, labels) {
   const L = labels || { a: { en: "Standard Workpapers", cn: "标准底稿" }, b: { en: "Substantive Procedures", cn: "实质性程序底稿" } };
   const rows = stdRows.concat(procRows);
@@ -3336,13 +4345,12 @@ function kpiHTML(stdRows, procRows, extraClass, labels) {
       </div>
     </div>`;
   };
-  /* Review status card: ring of the five statuses + per-table distribution bars */
+  /* Review status card: ring of the four statuses + per-table distribution bars */
   const ZH = state.lang === "zh";
   const STATUS_META = [
     { key: "reviewed", color: "#2aa99a" },
     { key: "pending",  color: "#dd8b22" },
     { key: "modified", color: "#1d4ed8" },
-    { key: "rejected", color: "#d95785" },
     { key: "none",     color: "#cbd5e1" }
   ];
   const countOf = (list, key) => key === "none" ? list.filter(w => w.status === "none").length : list.filter(w => w.status === key).length;
@@ -3974,7 +4982,27 @@ function renderProjectTeam() {
     }
   }
 
-  const stdFiltered = applyColState(lists.std.filter(w => !state.qStd || w.name.toLowerCase().includes(state.qStd.toLowerCase())), "std");
+  /* ---- KCw activity tree: join the standard workpapers of this workflow to activities ---- */
+  const wf = actWorkflow();
+  const ruleByName = {};
+  store.enr.forEach(r => { ruleByName[r.name] = r; });
+  const wpActs = {}, statusOf = {};
+  lists.std.forEach(w => {
+    statusOf[w.id] = w.status;
+    const rule = ruleByName[w.name];
+    const arr = rule ? ((wf === "Enhanced" ? rule.kcwEnh : rule.kcwStd) || []) : [];
+    wpActs[w.id] = arr.map(kcwKey);
+  });
+  window.__actTree = actBuildTree(KCW_TREE_WF[wf] || [], wpActs, statusOf);
+
+  let stdPool = lists.std.filter(w => !state.qStd || w.name.toLowerCase().includes(state.qStd.toLowerCase()));
+  if (state.actSel) {
+    const A = window.__actTree;
+    const node = state.actSel === "__unmapped" ? A.unmapped : A.byKey[state.actSel];
+    if (node) stdPool = stdPool.filter(w => node.ids.has(w.id));
+    else state.actSel = null;
+  }
+  const stdFiltered = applyColState(stdPool, "std");
   const PAGE_SIZE = 10;
   const stdPages = Math.max(1, Math.ceil(stdFiltered.length / PAGE_SIZE));
   const stdPage = Math.min(state.pageStd || 1, stdPages);
@@ -3990,6 +5018,27 @@ function renderProjectTeam() {
 
 
   const fileTotal = KCW_FILES.length;
+
+  const stdTableHTML = `<table class="dt fixtable">
+      <thead><tr>
+        ${thCol("std", "name")}
+        ${state.groupStd === "sec" ? "" : thCol("std", "sec", 'style="width:180px"')}
+        ${state.groupStd === "req" ? "" : thCol("std", "req", 'style="width:128px"')}
+        ${th("Workpaper Template", "底稿模版", 'style="width:100px"')}
+        ${th("Upload Workpaper", "底稿上传", 'style="width:104px"')}
+        ${th("Uploaded By / Datetime", "上传人 / 时间", 'style="width:120px"')}
+        ${thCol("std", "status", 'style="width:178px"')}
+        ${th("Review", "审核", 'class="col-act col-act-review" style="width:58px"')}
+      </tr></thead>
+        ${stdRows.length ? groupRenderer(stdRows, state.groupStd,
+          state.groupStd === "req" ? (w => w.req) : (w => w.sec),
+          state.groupStd === "req"
+            ? (k => reqLabel(k))
+            : (k => secLabel(k)),
+          "std", stdRow, state.groupStd === "none" ? 8 : 7,
+          k => state.groupStd === "req" ? (REQ_LEVELS.find(x => x.key === k) || {}).tag || "tag-neutral" : secColor(k))
+          : `<tbody><tr><td colspan="${state.groupStd === "none" ? 8 : 7}">${stdEmptyHTML()}</td></tr></tbody>`}
+    </table>`;
 
   return `
   <div class="card">
@@ -4052,28 +5101,9 @@ function renderProjectTeam() {
         <span class="muted">${esc(t("group.by"))}</span>
         ${groupSelect(state.groupStd, "setGroup('std', this.value)")}
       </div>
-      <div class="table-wrap">
-        <table class="dt fixtable">
-          <thead><tr>
-            ${thCol("std", "name")}
-            ${state.groupStd === "sec" ? "" : thCol("std", "sec", 'style="width:180px"')}
-            ${state.groupStd === "req" ? "" : thCol("std", "req", 'style="width:128px"')}
-            ${th("Workpaper Template", "底稿模版", 'style="width:100px"')}
-            ${th("Upload Workpaper", "底稿上传", 'style="width:104px"')}
-            ${th("Uploaded By / Datetime", "上传人 / 时间", 'style="width:120px"')}
-            ${thCol("std", "status", 'style="width:178px"')}
-            ${th("Review", "审核", 'class="col-act col-act-review" style="width:58px"')}
-          </tr></thead>
-            ${stdRows.length ? groupRenderer(stdRows, state.groupStd,
-              state.groupStd === "req" ? (w => w.req) : (w => w.sec),
-              state.groupStd === "req"
-                ? (k => reqLabel(k))
-                : (k => secLabel(k)),
-              "std", stdRow, state.groupStd === "none" ? 8 : 7,
-              k => state.groupStd === "req" ? (REQ_LEVELS.find(x => x.key === k) || {}).tag || "tag-neutral" : secColor(k))
-              : `<tbody><tr><td colspan="${state.groupStd === "none" ? 8 : 7}"><div class="empty">${ico("i-empty", "ei")}<div class="empty-title">${esc(t("empty.notitle"))}</div><div class="empty-desc">${esc(t("empty.nodesc"))}</div></div></td></tr></tbody>`}
-        </table>
-      </div>
+      ${state.groupStd === "none"
+        ? `<div class="std-split">${actPaneHTML()}<div class="table-wrap">${stdTableHTML}</div></div>`
+        : `<div class="table-wrap">${stdTableHTML}</div>`}
       ${stdGrouped
         ? `<div class="pagination"><span>${stdFiltered.length} ${esc(state.lang === "zh" ? "条记录" : "records")}</span></div>`
         : pagerHTML("std", stdFiltered.length, stdPage, stdPages)}
@@ -4347,22 +5377,29 @@ function adminTableHTML(tab, rows) {
     const n = (r.attachments || []).length;
     return n ? `<span class="tag tag-xs tag-soft">${n} ${esc(state.lang === "zh" ? "个附件" : "files")}</span>` : `<span class="hint">—</span>`;
   };
+  /* A workpaper can map to several alternative KCw activities; stack one per line */
+  const kcwCell = arr => {
+    if (!arr || !arr.length) return `<span class="hint">—</span>`;
+    return `<span class="kcw-cell" title="${esc(arr.join("\n"))}">${arr.map(x => `<span class="kcw-line">${esc(x)}</span>`).join("")}</span>`;
+  };
 
   let head = "", bodyFn = null;
   if (tab === "enr") {
-    head = `<tr>${thCol("enr","rule",'style="width:106px"')}${thCol("enr","name")}${thCol("enr","sec",'style="width:170px"')}${thCol("enr","standards",'style="width:116px"')}${thCol("enr","workflow",'style="width:148px"')}${thCol("enr","entityType",'style="width:100px"')}${thCol("enr","exchange",'style="width:104px"')}${thCol("enr","req",'style="width:140px"')}${thCol("enr","attachments",'style="width:118px"')}${thCol("enr","status",'style="width:84px"')}${th("Actions", "操作", 'class="col-act" style="width:62px"')}</tr>`;
+    head = `<tr>${thCol("enr","rule",'class="sticky-l1" style="width:106px"')}${thCol("enr","name",'class="sticky-l2"')}${thCol("enr","sec",'style="width:170px"')}${thCol("enr","standards",'style="width:116px"')}${thCol("enr","workflow",'style="width:148px"')}${thCol("enr","kcwEnh",'style="width:208px"')}${thCol("enr","kcwStd",'style="width:208px"')}${thCol("enr","entityType",'style="width:100px"')}${thCol("enr","exchange",'style="width:104px"')}${thCol("enr","req",'style="width:140px"')}${thCol("enr","attachments",'style="width:118px"')}${thCol("enr","status",'class="sticky-r2" style="width:84px"')}${th("Actions", "操作", 'class="col-act sticky-r1" style="width:62px"')}</tr>`;
     bodyFn = r => `<tr>
-      <td><span class="ref-code">${esc(r.rule)}</span></td>
-      <td><span class="cell-name" title="${esc(r.name)}">${esc(r.name)}</span></td>
+      <td class="sticky-l1"><span class="ref-code">${esc(r.rule)}</span></td>
+      <td class="sticky-l2"><span class="cell-name" title="${esc(r.name)}">${esc(r.name)}</span></td>
       <td>${secPill(r.sec)}</td>
       <td>${joinText(r.standards)}</td>
       <td>${joinText(r.workflow)}</td>
+      <td>${kcwCell(r.kcwEnh)}</td>
+      <td>${kcwCell(r.kcwStd)}</td>
       <td>${joinText(r.entityType)}</td>
       <td>${joinText(r.exchange)}</td>
       <td>${reqTag(r.req)}</td>
       <td>${attCell(r)}</td>
-      <td>${statusTag(r)}</td>
-      <td class="col-act">${actCell(tab, r)}</td></tr>`;
+      <td class="sticky-r2">${statusTag(r)}</td>
+      <td class="col-act sticky-r1">${actCell(tab, r)}</td></tr>`;
   } else if (tab === "spr") {
     /* v1.1: Workpaper Name / RMM ID / RMM Description removed from the master data */
     head = `<tr>${thCol("spr","rule",'style="width:106px"')}${thCol("spr","sec",'style="width:200px"')}${thCol("spr","ref",'style="width:120px"')}${thCol("spr","pnameCn",'style="width:320px"')}${thCol("spr","pnameEn",'style="width:320px"')}${thCol("spr","attachments",'style="width:120px"')}${thCol("spr","status",'style="width:84px"')}${th("Actions", "操作", 'class="col-act" style="width:64px"')}</tr>`;
@@ -4434,7 +5471,7 @@ function adminTableHTML(tab, rows) {
       </span>
     </div>`;
 
-  return { table: `<table class="dt compact admin-dt"><thead>${head}</thead><tbody>${slice.map(bodyFn).join("") || `<tr><td colspan="12"><div class="empty">${ico("i-empty", "ei")}<div class="empty-title">${esc(t("empty.notitle"))}</div></div></td></tr>`}</tbody></table>`, pager, count: rows.length };
+  return { table: `<table class="dt compact admin-dt${tab === "enr" ? " enr-dt" : ""}"><thead>${head}</thead><tbody>${slice.map(bodyFn).join("") || `<tr><td colspan="${tab === "enr" ? 14 : 12}"><div class="empty">${ico("i-empty", "ei")}<div class="empty-title">${esc(t("empty.notitle"))}</div></div></td></tr>`}</tbody></table>`, pager, count: rows.length };
 }
 
 function renderAdmin() {
@@ -4582,6 +5619,9 @@ function openRuleDrawer(tab, id) {
     draft.ms.workflow = base ? base.workflow.slice() : [];
     draft.ms.entityType = base ? base.entityType.slice() : [];
     draft.ms.exchange = base ? base.exchange.slice() : [];
+    /* tree-select selections: canonicalise labels so imported values tick the right node */
+    draft.kcwEnh = base ? (base.kcwEnh || []).map(kcwCanon) : [];
+    draft.kcwStd = base ? (base.kcwStd || []).map(kcwCanon) : [];
     draft.atts = base ? JSON.parse(JSON.stringify(base.attachments)) : [];
   } else if (tab === "spr") {
     draft.pnameCn = base ? (base.pnameCn || base.pname || "") : "";
@@ -4816,6 +5856,18 @@ function renderRuleDrawer() {
         </div>
       </div>
       <div class="drawer-section">
+        <div class="drawer-section-head">${esc(state.lang === "zh" ? "相关 KCw 活动" : "Related KCw Activity")}</div>
+        <div class="stack">
+          <div class="field-row">
+            <div class="field"><span class="field-label">${fl("Related KCw Activity (Enhanced)","相关 KCw 活动（Enhanced）")}</span>
+              ${kcwSelHTML("kcwEnh", draft.kcwEnh)}</div>
+            <div class="field"><span class="field-label">${fl("Related KCw Activity (Standard)","相关 KCw 活动（Standard）")}</span>
+              ${kcwSelHTML("kcwStd", draft.kcwStd)}</div>
+          </div>
+          <div class="field-help">${esc(state.lang === "zh" ? "从 KCw 活动库中选择，可多选；无对应活动可留空。" : "Pick from the KCw activity library; multiple selections allowed, leave blank if none.")}</div>
+        </div>
+      </div>
+      <div class="drawer-section">
         <div class="drawer-section-head">${esc(t("drawer.attach"))}</div>
         <div class="field-help" style="margin-bottom:6px">${esc(t("drawer.attachHint"))}</div>
         <div id="attBlock">${attBlockHTML()}</div>
@@ -4963,6 +6015,7 @@ function renderRuleDrawer() {
     foot: `${statusBtn}<button class="btn" onclick="closeDrawer()">${t("act.cancel")}</button>
            <button class="btn btn-primary" onclick="saveRule()">${t("act.save")}</button>`
   });
+  syncKcwIndeterminate($("#drawerBody"));
 }
 
 function syncReq(name) {
@@ -4985,10 +6038,15 @@ function saveRule() {
     if (!nm) { toast(state.lang === "zh" ? "请填写底稿名称" : "Workpaper name is required", "error"); return; }
     const matched = store.standard.find(x => x.name === nm);
     const req = draft.req || (matched ? matched.req : "Required");
+    /* tree-select selections live on the draft; keep order without duplicates */
+    const kcw = {
+      kcwEnh: draft.kcwEnh.filter((v, i, a) => v && a.indexOf(v) === i),
+      kcwStd: draft.kcwStd.filter((v, i, a) => v && a.indexOf(v) === i)
+    };
     if (editing) {
-      Object.assign(editing, { name: nm, sec: draft.sec, standards: draft.ms.standards.slice(), workflow: draft.ms.workflow.slice(), entityType: draft.ms.entityType.slice(), exchange: draft.ms.exchange.slice(), req: req, attachments: draft.atts.slice() });
+      Object.assign(editing, { name: nm, sec: draft.sec, standards: draft.ms.standards.slice(), workflow: draft.ms.workflow.slice(), entityType: draft.ms.entityType.slice(), exchange: draft.ms.exchange.slice(), req: req, kcwEnh: kcw.kcwEnh, kcwStd: kcw.kcwStd, attachments: draft.atts.slice() });
     } else {
-      store.enr.push({ id: "enr" + Date.now(), rule: nextRuleNo("enr"), name: nm, sec: draft.sec, standards: draft.ms.standards.slice(), workflow: draft.ms.workflow.slice(), entityType: draft.ms.entityType.slice(), exchange: draft.ms.exchange.slice(), req: req, attachments: draft.atts.slice(), active: true });
+      store.enr.push({ id: "enr" + Date.now(), rule: nextRuleNo("enr"), name: nm, sec: draft.sec, standards: draft.ms.standards.slice(), workflow: draft.ms.workflow.slice(), entityType: draft.ms.entityType.slice(), exchange: draft.ms.exchange.slice(), req: req, kcwEnh: kcw.kcwEnh, kcwStd: kcw.kcwStd, attachments: draft.atts.slice(), active: true });
     }
   } else if (tab === "spr") {
     const cn = (draft.pnameCn || "").trim();
@@ -5114,6 +6172,9 @@ function toggleRuleActive(tab, id) {
 function render() {
   const content = $("#content");
   const st = content.scrollTop;
+  /* expanding/filtering the activity tree must not jump its scroll position */
+  const actSc = document.querySelector(".act-scroll");
+  const actTop = actSc ? actSc.scrollTop : 0;
   renderShell();
   renderPageHead();
   renderTabs();
@@ -5121,9 +6182,50 @@ function render() {
   else if (state.area === "user") content.innerHTML = renderSpecialist();
   else content.innerHTML = renderAdmin();
   content.scrollTop = st;
+  const actSc2 = document.querySelector(".act-scroll");
+  if (actSc2) actSc2.scrollTop = actTop;
   syncStickyGroups();
   syncSubHold();
+  syncEnrSticky();
+  syncProcSticky();
+  syncStdPane();
   renderPackBar();
+}
+/* the frozen Review column is slightly wider than its 58px declaration:
+   offset Review Status by the rendered width so the two columns meet exactly */
+function syncProcSticky() {
+  document.querySelectorAll("table.proc-dt").forEach(t => {
+    const th = t.querySelector("thead th.sticky-r1");
+    if (th) t.style.setProperty("--proc-r1-w", th.getBoundingClientRect().width + "px");
+  });
+}
+/* The activity pane is exactly as tall as a 10-row page of the table:
+   header + 10 rows, plus the table's horizontal scrollbar when one is shown. */
+function syncStdPane() {
+  const wrap = document.querySelector(".std-split > .table-wrap");
+  const pane = document.querySelector(".std-split > .act-pane");
+  if (!wrap || !pane) return;
+  const table = wrap.querySelector("table.dt");
+  if (!table) return;
+  const thead = table.querySelector("thead");
+  const row = table.querySelector("tbody tr");
+  const headH = thead ? thead.getBoundingClientRect().height : 40;
+  const rowH = row && !row.querySelector(".empty") ? row.getBoundingClientRect().height : 30;
+  const tenRows = Math.ceil(headH + rowH * 10);
+  const sb = Math.max(0, Math.round(wrap.offsetHeight - wrap.clientHeight));
+  const cap = Math.max(180, Math.round(window.innerHeight - 330));
+  const h = Math.min(Math.max(tenRows, Math.ceil(table.getBoundingClientRect().height)) + sb, cap);
+  pane.style.height = h + "px";
+}
+/* ENR frozen left columns: Workpaper Name pins right after Rule Name, whose
+   rendered width is content-driven, so measure it instead of hard-coding */
+function syncEnrSticky() {
+  document.querySelectorAll("table.enr-dt").forEach(t => {
+    const th = t.querySelector("thead th.sticky-l1");
+    if (th) t.style.setProperty("--enr-l1-w", th.getBoundingClientRect().width + "px");
+    const thR = t.querySelector("thead th.sticky-r1");
+    if (thR) t.style.setProperty("--enr-r1-w", thR.getBoundingClientRect().width + "px");
+  });
 }
 /* the expanded subsystem block stays pinned under the frozen left column and spans the visible table width */
 function syncSubHold() {
@@ -5144,6 +6246,9 @@ function syncSubHold() {
   }
 }
 window.addEventListener("resize", syncSubHold);
+window.addEventListener("resize", syncEnrSticky);
+window.addEventListener("resize", syncProcSticky);
+window.addEventListener("resize", syncStdPane);
 /* Sticky section titles: only the group whose rows are currently in view stays pinned under the table head,
    so the next group's title takes over instead of every header piling up at the top. */
 function syncStickyGroups() {
@@ -5200,8 +6305,12 @@ function goView(area, tab) {
 }
 function setAdminTab(tab) { state.adminTab = tab; render(); }
 function setGroup(which, val) {
-  if (which === "std") state.groupStd = val;
-  else if (which === "spec") { state.groupSpec = val; state.pageSpec = 1; }
+  if (which === "std") {
+    state.groupStd = val;
+    /* the activity pane only exists when ungrouped; drop a filter it can no longer show */
+    if (val !== "none") { state.actSel = null; state.actTreeQ = ""; }
+    state.pageStd = 1;
+  } else if (which === "spec") { state.groupSpec = val; state.pageSpec = 1; }
   else state.groupProc = val;
   render();
 }
@@ -5214,6 +6323,10 @@ function selectOp(opId) {
   const opFiles = filesOfOp(opId);
   if (opFiles.length && !opFiles.some(f => f.id === state.fileId)) state.fileId = opFiles[0].id;
   if (opFiles.length) state.templateLang = opFiles[0].lang;
+  /* the activity tree follows the Opinion Profile's workflow — an old selection may not exist there */
+  state.actSel = null;
+  state.actTreeQ = "";
+  state.pageStd = 1;
   render();
 }
 function selectFile(opId, fileId) {
@@ -5221,6 +6334,9 @@ function selectFile(opId, fileId) {
   state.fileId = fileId;
   const f = fileById(fileId);
   if (f) state.templateLang = f.lang;
+  state.actSel = null;
+  state.actTreeQ = "";
+  state.pageStd = 1;
   render();
 }
 function setSampling(pid, val) {
